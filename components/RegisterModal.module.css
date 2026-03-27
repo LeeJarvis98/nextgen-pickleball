@@ -1,0 +1,91 @@
+.modalContent {
+  background-color: #1a1919 !important;
+  border: 1px solid rgba(184, 255, 0, 0.15) !important;
+}
+
+.modalHeader {
+  background-color: #1a1919 !important;
+  border-bottom: 1px solid rgba(72, 72, 71, 0.4) !important;
+  padding-bottom: 1rem !important;
+}
+
+.modalClose {
+  color: #adaaaa !important;
+}
+
+.modalTitle {
+  font-family: var(--font-epilogue);
+  font-weight: 900;
+  font-style: italic;
+  font-size: 1.3rem;
+  color: #b8ff00;
+}
+
+.seasonLabel {
+  font-family: var(--font-space-grotesk);
+  font-size: 0.7rem;
+  color: #b8ff00;
+  font-weight: 700;
+  letter-spacing: 0.2em;
+  text-transform: uppercase;
+}
+
+.inputLabel {
+  font-family: var(--font-space-grotesk);
+  font-size: 0.75rem;
+  font-weight: 700;
+  letter-spacing: 0.05em;
+  text-transform: uppercase;
+  color: #adaaaa;
+}
+
+.featureText {
+  font-size: 0.75rem;
+  color: #adaaaa;
+  font-family: var(--font-space-grotesk);
+}
+
+.submitButton {
+  background-color: #b8ff00 !important;
+  color: #486700 !important;
+  font-family: var(--font-space-grotesk) !important;
+  font-weight: 700 !important;
+  letter-spacing: 0.05em !important;
+  box-shadow: 0 10px 30px rgba(184, 255, 0, 0.15) !important;
+  margin-top: 8px;
+}
+
+.successIconBox {
+  width: 72px;
+  height: 72px;
+  border-radius: 50%;
+  background-color: rgba(184, 255, 0, 0.1);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border: 2px solid rgba(184, 255, 0, 0.3);
+}
+
+.successTitle {
+  font-family: var(--font-epilogue);
+  font-size: 1.5rem;
+  font-weight: 900;
+  font-style: italic;
+  color: #ffffff;
+  text-align: center;
+}
+
+.successSubtext {
+  color: #adaaaa;
+  text-align: center;
+}
+
+.successCloseButton {
+  background-color: #b8ff00 !important;
+  color: #486700 !important;
+  font-weight: 700 !important;
+}
+
+.divider {
+  border-color: rgba(72, 72, 71, 0.4) !important;
+}

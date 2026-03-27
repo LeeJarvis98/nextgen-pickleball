@@ -1,0 +1,109 @@
+.section {
+  position: relative;
+  min-height: 100vh;
+  display: flex;
+  align-items: center;
+  overflow: hidden;
+  background-color: #0e0e0e;
+}
+
+.gradientOverlay {
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(to bottom, transparent, rgba(14, 14, 14, 0.5), #0e0e0e);
+  pointer-events: none;
+}
+
+.content {
+  position: relative;
+  z-index: 10;
+  width: 100%;
+}
+
+.seasonBadge {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5rem;
+  border-left: 2px solid #b8ff00;
+  padding-left: 1rem;
+}
+
+.seasonLabel {
+  font-family: var(--font-space-grotesk);
+  color: #b8ff00;
+  font-weight: 700;
+  letter-spacing: 0.2em;
+  font-size: 0.7rem;
+  text-transform: uppercase;
+}
+
+.headlineWhite {
+  font-family: var(--font-epilogue);
+  font-size: clamp(3.5rem, 10vw, 8rem);
+  line-height: 0.9;
+  font-weight: 900;
+  font-style: italic;
+  color: #ffffff;
+  display: block;
+  margin: 0;
+}
+
+.headlineLime {
+  font-family: var(--font-epilogue);
+  font-size: clamp(3.5rem, 10vw, 8rem);
+  line-height: 0.9;
+  font-weight: 900;
+  font-style: italic;
+  color: #b8ff00;
+  display: block;
+}
+
+.subtitle {
+  font-size: 1.1rem;
+  color: #adaaaa;
+  max-width: 600px;
+  line-height: 1.6;
+}
+
+.ctaPrimary {
+  background: linear-gradient(135deg, #acee00, #b8ff00) !important;
+  color: #486700 !important;
+  font-family: var(--font-space-grotesk) !important;
+  font-weight: 700 !important;
+  letter-spacing: 0.05em !important;
+  box-shadow: 0 0 30px rgba(184, 255, 0, 0.15) !important;
+}
+
+.ctaSecondary {
+  color: #b8ff00 !important;
+  border-color: rgba(184, 255, 0, 0.15) !important;
+  font-family: var(--font-space-grotesk) !important;
+  font-weight: 700 !important;
+  letter-spacing: 0.05em !important;
+  background-color: rgba(26, 25, 25, 0.5) !important;
+}
+
+.imageWrapper {
+  position: relative;
+}
+
+.imageGlow {
+  position: absolute;
+  inset: -1rem;
+  background-color: rgba(184, 255, 0, 0.1);
+  filter: blur(40px);
+  border-radius: 50%;
+}
+
+.heroImage {
+  position: relative;
+  z-index: 10;
+  object-fit: cover;
+  aspect-ratio: 3 / 4;
+  filter: grayscale(100%);
+  transition: filter 0.7s ease;
+}
+
+.heroImage:hover {
+  filter: grayscale(0%);
+}

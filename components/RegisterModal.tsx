@@ -1,4 +1,4 @@
-﻿'use client';
+'use client';
 
 import { useState } from 'react';
 import {
@@ -8,7 +8,6 @@ import {
   Select,
   Button,
   Stack,
-  Text,
   Group,
   Box,
   Divider,
@@ -17,6 +16,7 @@ import { useForm } from '@mantine/form';
 import { notifications } from '@mantine/notifications';
 import { User, Phone, Mail, Users, CheckCircle } from 'lucide-react';
 import type { RegistrationFormValues } from '@/types';
+import styles from './RegisterModal.module.css';
 
 interface RegisterModalProps {
   opened: boolean;
@@ -82,107 +82,43 @@ export default function RegisterModal({ opened, onClose }: RegisterModalProps) {
     onClose();
   };
 
-  const labelStyle = {
-    fontFamily: 'var(--font-space-grotesk)',
-    fontSize: '0.75rem',
-    fontWeight: 700,
-    letterSpacing: '0.05em',
-    textTransform: 'uppercase' as const,
-    color: '#ADAAAA',
-  };
-
   return (
     <Modal
       opened={opened}
       onClose={handleClose}
-      title={
-        <Text
-          style={{
-            fontFamily: 'var(--font-epilogue)',
-            fontWeight: 900,
-            fontStyle: 'italic',
-            fontSize: '1.3rem',
-            color: '#B8FF00',
-          }}
-        >
-          ĐĂNG KÝ THAM DỰ
-        </Text>
-      }
+      title={<span className={styles.modalTitle}>ĐĂNG KÝ THAM DỰ</span>}
       size="lg"
-      styles={{
-        content: {
-          backgroundColor: '#1A1919',
-          border: '1px solid rgba(184,255,0,0.15)',
-        },
-        header: {
-          backgroundColor: '#1A1919',
-          borderBottom: '1px solid rgba(72,72,71,0.4)',
-          paddingBottom: '1rem',
-        },
-        close: { color: '#ADAAAA' },
+      classNames={{
+        content: styles.modalContent,
+        header: styles.modalHeader,
+        close: styles.modalClose,
       }}
       centered
     >
       {success ? (
         <Stack align="center" py={32} gap="lg">
-          <Box
-            style={{
-              width: 72,
-              height: 72,
-              borderRadius: '50%',
-              backgroundColor: 'rgba(184,255,0,0.1)',
-              display: 'flex',
-              alignItems: 'center',
-              justifyContent: 'center',
-              border: '2px solid rgba(184,255,0,0.3)',
-            }}
-          >
+          <Box className={styles.successIconBox}>
             <CheckCircle size={36} color="#B8FF00" />
           </Box>
-          <Text
-            style={{
-              fontFamily: 'var(--font-epilogue)',
-              fontSize: '1.5rem',
-              fontWeight: 900,
-              fontStyle: 'italic',
-              color: '#FFFFFF',
-              textAlign: 'center',
-            }}
-          >
-            Đăng Ký Thành Công!
-          </Text>
-          <Text style={{ color: '#ADAAAA', textAlign: 'center' }}>
+          <span className={styles.successTitle}>Đăng Ký Thành Công!</span>
+          <p className={styles.successSubtext}>
             Chúng tôi sẽ liên hệ xác nhận thông tin qua email và số điện thoại của bạn.
-          </Text>
-          <Button
-            onClick={handleClose}
-            style={{ backgroundColor: '#B8FF00', color: '#486700', fontWeight: 700 }}
-          >
+          </p>
+          <Button onClick={handleClose} className={styles.successCloseButton}>
             Đóng
           </Button>
         </Stack>
       ) : (
         <form onSubmit={form.onSubmit(handleSubmit)}>
           <Stack gap="md" mt="sm">
-            <Text
-              style={{
-                fontFamily: 'var(--font-space-grotesk)',
-                fontSize: '0.7rem',
-                color: '#B8FF00',
-                fontWeight: 700,
-                letterSpacing: '0.2em',
-                textTransform: 'uppercase',
-              }}
-            >
-              Season 1 · 2026
-            </Text>
+            <span className={styles.seasonLabel}>Season 1 · 2026</span>
 
             <TextInput
               label="Họ và Tên"
               placeholder="Nguyễn Văn A"
               required
               leftSection={<User size={16} color="#ADAAAA" />}
-              styles={{ label: labelStyle }}
+              classNames={{ label: styles.inputLabel }}
               {...form.getInputProps('full_name')}
             />
 
@@ -192,7 +128,7 @@ export default function RegisterModal({ opened, onClose }: RegisterModalProps) {
                 placeholder="0912 345 678"
                 required
                 leftSection={<Phone size={16} color="#ADAAAA" />}
-                styles={{ label: labelStyle }}
+                classNames={{ label: styles.inputLabel }}
                 {...form.getInputProps('phone')}
               />
               <TextInput
@@ -200,7 +136,7 @@ export default function RegisterModal({ opened, onClose }: RegisterModalProps) {
                 placeholder="email@example.com"
                 required
                 leftSection={<Mail size={16} color="#ADAAAA" />}
-                styles={{ label: labelStyle }}
+                classNames={{ label: styles.inputLabel }}
                 {...form.getInputProps('email')}
               />
             </Group>
@@ -210,7 +146,7 @@ export default function RegisterModal({ opened, onClose }: RegisterModalProps) {
               placeholder="Chọn hạng mục"
               required
               leftSection={<Users size={16} color="#ADAAAA" />}
-              styles={{ label: labelStyle }}
+              classNames={{ label: styles.inputLabel }}
               data={[
                 { value: 'singles', label: '1vs1 — Đơn' },
                 { value: 'doubles', label: '2vs2 — Đôi' },
@@ -224,7 +160,7 @@ export default function RegisterModal({ opened, onClose }: RegisterModalProps) {
                 placeholder="Họ và tên người cùng thi đấu"
                 required
                 leftSection={<User size={16} color="#ADAAAA" />}
-                styles={{ label: labelStyle }}
+                classNames={{ label: styles.inputLabel }}
                 {...form.getInputProps('partner_name')}
               />
             )}
@@ -232,27 +168,19 @@ export default function RegisterModal({ opened, onClose }: RegisterModalProps) {
             <Textarea
               label="Ghi Chú (Tùy chọn)"
               placeholder="Thông tin thêm, yêu cầu đặc biệt..."
-              styles={{ label: labelStyle }}
+              classNames={{ label: styles.inputLabel }}
               minRows={2}
               {...form.getInputProps('notes')}
             />
 
-            <Divider style={{ borderColor: 'rgba(72,72,71,0.4)' }} mt="xs" />
+            <Divider className={styles.divider} mt="xs" />
 
             <Group gap="xs" wrap="wrap">
               {['Thi đấu 1vs1 & 2vs2', 'Trọng tài chuyên nghiệp', 'Giải thưởng hấp dẫn'].map(
                 (item) => (
                   <Group key={item} gap={6}>
                     <CheckCircle size={14} color="#B8FF00" />
-                    <Text
-                      style={{
-                        fontSize: '0.75rem',
-                        color: '#ADAAAA',
-                        fontFamily: 'var(--font-space-grotesk)',
-                      }}
-                    >
-                      {item}
-                    </Text>
+                    <span className={styles.featureText}>{item}</span>
                   </Group>
                 )
               )}
@@ -263,15 +191,7 @@ export default function RegisterModal({ opened, onClose }: RegisterModalProps) {
               loading={loading}
               fullWidth
               size="lg"
-              style={{
-                backgroundColor: '#B8FF00',
-                color: '#486700',
-                fontFamily: 'var(--font-space-grotesk)',
-                fontWeight: 700,
-                letterSpacing: '0.05em',
-                boxShadow: '0 10px 30px rgba(184,255,0,0.15)',
-                marginTop: 8,
-              }}
+              className={styles.submitButton}
             >
               {loading ? 'ĐANG GỬI...' : '[ ĐĂNG KÝ NGAY ]'}
             </Button>

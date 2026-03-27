@@ -1,0 +1,137 @@
+.slideName {
+  font-family: var(--font-epilogue);
+  font-size: clamp(1.4rem, 3vw, 2rem);
+  font-weight: 900;
+  font-style: italic;
+  color: #ffffff;
+  margin-bottom: 2rem;
+}
+
+.calendarIconBox {
+  padding: 1rem;
+  background-color: rgba(184, 255, 0, 0.1);
+  border-radius: 8px;
+}
+
+.timeCardTitle {
+  font-family: var(--font-epilogue);
+  font-size: 1.6rem;
+  font-weight: 900;
+  font-style: italic;
+  color: #ffffff;
+  margin: 0;
+}
+
+.statusBadge {
+  background-color: rgba(184, 255, 0, 0.1) !important;
+  border-color: rgba(184, 255, 0, 0.2) !important;
+  color: #b8ff00 !important;
+  font-family: var(--font-space-grotesk) !important;
+  letter-spacing: 0.1em !important;
+  font-size: 0.6rem !important;
+}
+
+.infoRowLabel {
+  font-family: var(--font-space-grotesk);
+  font-size: 0.75rem;
+  text-transform: uppercase;
+  letter-spacing: 0.1em;
+  color: #adaaaa;
+}
+
+.infoRowValue {
+  font-weight: 700;
+  color: #ffffff;
+  font-size: 1rem;
+}
+
+.infoRow {
+  border-bottom: 1px solid rgba(72, 72, 71, 0.3);
+}
+
+.venueCard {
+  position: relative;
+  border-radius: 12px;
+  overflow: hidden;
+  min-height: 420px;
+}
+
+.venueImage {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+.venueGradient {
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(to top, #0e0e0e, rgba(14, 14, 14, 0.6), transparent);
+}
+
+.venueContent {
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  padding: 2.5rem;
+}
+
+.venueIconBox {
+  padding: 0.75rem;
+  background-color: #b8ff00;
+  border-radius: 8px;
+  box-shadow: 0 0 20px rgba(184, 255, 0, 0.4);
+}
+
+.venueLabel {
+  font-family: var(--font-space-grotesk);
+  font-size: 0.65rem;
+  font-weight: 700;
+  letter-spacing: 0.3em;
+  color: #b8ff00;
+  text-transform: uppercase;
+}
+
+.venueName {
+  font-family: var(--font-epilogue);
+  font-size: 1.8rem;
+  font-weight: 900;
+  font-style: italic;
+  color: #ffffff;
+  margin-bottom: 1.5rem;
+}
+
+.venueStatBox {
+  background-color: rgba(14, 14, 14, 0.8);
+  backdrop-filter: blur(10px);
+  padding: 1rem;
+  border-radius: 8px;
+  border: 1px solid rgba(72, 72, 71, 0.3);
+}
+
+.venueStatLabel {
+  font-family: var(--font-space-grotesk);
+  font-size: 0.6rem;
+  color: rgba(184, 255, 0, 0.7);
+  text-transform: uppercase;
+  letter-spacing: 0.1em;
+  margin-bottom: 4px;
+}
+
+.venueStatValue {
+  font-weight: 700;
+  color: #ffffff;
+}
+
+.venueLocation {
+  font-size: 0.85rem;
+  color: #adaaaa;
+}
+
+.timeCard {
+  border-radius: 12px;
+  padding: 2.5rem;
+  height: 100%;
+}

@@ -1,0 +1,83 @@
+.nav {
+  position: sticky;
+  top: 0;
+  z-index: 50;
+  backdrop-filter: blur(20px);
+  border-bottom: 1px solid rgba(184, 255, 0, 0.15);
+  box-shadow: 0 0 20px rgba(184, 255, 0, 0.05);
+  transition: background-color 0.3s ease;
+}
+
+.navScrolled {
+  background-color: rgba(14, 14, 14, 0.95);
+}
+
+.navTop {
+  background-color: rgba(14, 14, 14, 0.8);
+}
+
+.logo {
+  font-family: var(--font-epilogue);
+  font-size: 1.2rem;
+  font-weight: 900;
+  font-style: italic;
+  letter-spacing: -0.03em;
+  color: #b8ff00;
+  cursor: pointer;
+}
+
+.navLink {
+  font-family: var(--font-space-grotesk);
+  font-size: 0.8rem;
+  font-weight: 700;
+  letter-spacing: 0.1em;
+  color: #adaaaa;
+  text-decoration: none;
+  cursor: pointer;
+  transition: color 0.2s;
+}
+
+.navLink:hover {
+  color: #b8ff00;
+}
+
+.ctaButton {
+  background-color: #b8ff00 !important;
+  color: #486700 !important;
+  font-family: var(--font-space-grotesk) !important;
+  font-weight: 700 !important;
+  font-size: 0.8rem !important;
+  letter-spacing: 0.05em !important;
+}
+
+.drawerContent {
+  background-color: #0e0e0e !important;
+  border: 1px solid rgba(184, 255, 0, 0.15) !important;
+}
+
+.drawerHeader {
+  background-color: #0e0e0e !important;
+}
+
+.drawerTitle {
+  color: #b8ff00 !important;
+  font-family: var(--font-epilogue) !important;
+  font-weight: 900 !important;
+}
+
+.drawerNavLink {
+  font-family: var(--font-space-grotesk);
+  font-size: 0.9rem;
+  font-weight: 700;
+  letter-spacing: 0.1em;
+  color: #adaaaa;
+  text-decoration: none;
+  cursor: pointer;
+}
+
+.drawerCtaButton {
+  background-color: #b8ff00 !important;
+  color: #486700 !important;
+  font-family: var(--font-space-grotesk) !important;
+  font-weight: 700 !important;
+}

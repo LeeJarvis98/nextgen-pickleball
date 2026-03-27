@@ -1,0 +1,138 @@
+.section {
+  background-color: #0e0e0e;
+  padding: 6rem 0;
+  position: relative;
+  overflow: hidden;
+}
+
+.glow {
+  position: absolute;
+  top: 0;
+  right: 0;
+  width: 384px;
+  height: 384px;
+  background-color: rgba(184, 255, 0, 0.05);
+  filter: blur(120px);
+  border-radius: 50%;
+  pointer-events: none;
+}
+
+.accentBar {
+  width: 48px;
+  height: 4px;
+  background-color: #b8ff00;
+}
+
+.sectionLabel {
+  font-family: var(--font-space-grotesk);
+  color: #b8ff00;
+  font-weight: 700;
+  letter-spacing: 0.2em;
+  font-size: 0.7rem;
+  text-transform: uppercase;
+}
+
+.sectionTitle {
+  font-family: var(--font-epilogue);
+  font-size: clamp(2rem, 5vw, 3rem);
+  font-weight: 900;
+  font-style: italic;
+  color: #ffffff;
+  margin: 0;
+  text-align: center;
+}
+
+.totalPrize {
+  font-family: var(--font-epilogue);
+  font-size: clamp(3rem, 8vw, 6rem);
+  font-weight: 900;
+  color: #b8ff00;
+  font-style: italic;
+  line-height: 1;
+  text-align: center;
+}
+
+.podium {
+  border-radius: 12px;
+  text-align: center;
+  position: relative;
+}
+
+.podiumHighlight {
+  background-color: #201f1f;
+  padding: 2.5rem;
+  margin-top: 0;
+  transform: scale(1.05);
+  z-index: 20;
+  box-shadow: 0 10px 50px rgba(0, 0, 0, 0.5);
+}
+
+.podiumDefault {
+  background-color: #1a1919;
+  padding: 2rem;
+  margin-top: 32px;
+  transform: scale(1);
+  z-index: 1;
+  box-shadow: none;
+}
+
+.podiumIconCenter {
+  position: absolute;
+  left: 50%;
+  transform: translateX(-50%);
+  border-radius: 50%;
+}
+
+.podiumIconCenterHighlight {
+  top: -32px;
+  background-color: #201f1f;
+  padding: 1rem;
+}
+
+.podiumIconCenterDefault {
+  top: -24px;
+  background-color: #1a1919;
+  padding: 0.75rem;
+}
+
+.podiumTitle {
+  font-family: var(--font-epilogue);
+  font-weight: 900;
+  color: #ffffff;
+  margin-top: 1.5rem;
+  margin-bottom: 0.5rem;
+  font-style: italic;
+}
+
+.podiumTitleHighlight {
+  font-size: 1.5rem;
+}
+
+.podiumTitleDefault {
+  font-size: 1.2rem;
+}
+
+.podiumAmount {
+  font-family: var(--font-epilogue);
+  font-weight: 900;
+  font-style: italic;
+}
+
+.podiumAmountHighlight {
+  font-size: 2rem;
+  color: #b8ff00;
+}
+
+.podiumAmountDefault {
+  font-size: 1.6rem;
+  color: #adaaaa;
+}
+
+.podiumBonus {
+  font-family: var(--font-space-grotesk);
+  font-size: 0.6rem;
+  color: rgba(184, 255, 0, 0.6);
+  margin-top: 0.75rem;
+  letter-spacing: 0.2em;
+  text-transform: uppercase;
+}

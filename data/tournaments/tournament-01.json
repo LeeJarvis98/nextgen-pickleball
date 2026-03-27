@@ -1,0 +1,21 @@
+﻿{
+  "id": "tournament-01",
+  "name": "NextGen Pickleball Open #1",
+  "status": "UPCOMING",
+  "schedule": {
+    "startDate": "2026-03-15",
+    "endDate": "2026-03-16",
+    "displayDate": "15 - 16 / 03 / 2026",
+    "checkInTime": "07:00 AM",
+    "openingTime": "08:00 AM",
+    "closingTime": "06:00 PM"
+  },
+  "venue": {
+    "name": "NextGen Arena District 7",
+    "imageUrl": "https://lh3.googleusercontent.com/aida-public/AB6AXuC1eQSROKYoouBgQAu2u-hWzMWRun0dj9KIzdSGcA-yKNBSJ61aR-Z7l2t82E4AqchdvwlaS-LkhR8fIJpE9sk66L3ZkX_iVx18u5lStBKd-fwXRb9HN2u_uKQ6TF3wbLyPuNOmzxjiXCs4pOFYSPI_jHmUNUAekH2pemN6Qw7UZV-8A8KmADMiZE4-atrPbhJmBEgEb4zy7hlHytY9ocPWFxyoHkM_HKSNQwc9g_0fQFE2TP1NoBApMhU7J2Sy72e7_EPNhpU-Ah2P",
+    "courts": 8,
+    "courtType": "Indoor Hard Court",
+    "city": "TP. Hồ Chí Minh",
+    "country": "Việt Nam"
+  }
+}

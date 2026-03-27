@@ -1,5 +1,6 @@
-﻿import { Box, Container, Grid, GridCol, Text, Paper, Stack, Center } from '@mantine/core';
+import { Box, Container, Grid, GridCol, Stack, Center } from '@mantine/core';
 import { Trophy, Medal, Award } from 'lucide-react';
+import styles from './PrizesSection.module.css';
 
 interface PrizePodiumProps {
   rank: number;
@@ -11,166 +12,51 @@ interface PrizePodiumProps {
   iconBorderColor?: string;
 }
 
-function PrizePodium({
-  title,
-  amount,
-  icon,
-  highlight,
-  borderColor,
-  iconBorderColor,
-}: PrizePodiumProps) {
+function PrizePodium({ title, amount, icon, highlight, borderColor, iconBorderColor }: PrizePodiumProps) {
   return (
-    <Paper
-      className="ghost-border"
-      style={{
-        backgroundColor: highlight ? '#201F1F' : '#1A1919',
-        borderRadius: 12,
-        padding: highlight ? '2.5rem' : '2rem',
-        borderTop: `4px solid ${borderColor ?? 'rgba(255,255,255,0.2)'}`,
-        position: 'relative',
-        marginTop: highlight ? 0 : 32,
-        transform: highlight ? 'scale(1.05)' : 'scale(1)',
-        zIndex: highlight ? 20 : 1,
-        boxShadow: highlight ? '0 10px 50px rgba(0,0,0,0.5)' : 'none',
-        textAlign: 'center',
-      }}
+    <Box
+      className={`ghost-border ${styles.podium} ${highlight ? styles.podiumHighlight : styles.podiumDefault}`}
+      style={{ borderTop: `4px solid ${borderColor ?? 'rgba(255,255,255,0.2)'}` }}
     >
       <Center
-        style={{
-          position: 'absolute',
-          top: highlight ? -32 : -24,
-          left: '50%',
-          transform: 'translateX(-50%)',
-          backgroundColor: highlight ? '#201F1F' : '#1A1919',
-          padding: highlight ? '1rem' : '0.75rem',
-          borderRadius: '50%',
-          border: `1px solid ${iconBorderColor ?? 'rgba(255,255,255,0.3)'}`,
-        }}
+        className={`${styles.podiumIconCenter} ${highlight ? styles.podiumIconCenterHighlight : styles.podiumIconCenterDefault}`}
+        style={{ border: `1px solid ${iconBorderColor ?? 'rgba(255,255,255,0.3)'}` }}
       >
         {icon}
       </Center>
-      <Text
-        component="h4"
-        style={{
-          fontFamily: 'var(--font-epilogue)',
-          fontSize: highlight ? '1.5rem' : '1.2rem',
-          fontWeight: 900,
-          color: '#FFFFFF',
-          marginTop: '1.5rem',
-          marginBottom: '0.5rem',
-          fontStyle: 'italic',
-        }}
+      <h4
+        className={`${styles.podiumTitle} ${highlight ? styles.podiumTitleHighlight : styles.podiumTitleDefault}`}
       >
         {title}
-      </Text>
-      <Text
-        className={highlight ? 'neon-glow' : ''}
-        style={{
-          fontFamily: 'var(--font-epilogue)',
-          fontSize: highlight ? '2rem' : '1.6rem',
-          fontWeight: 900,
-          fontStyle: 'italic',
-          color: highlight ? '#B8FF00' : '#ADAAAA',
-        }}
+      </h4>
+      <span
+        className={`${highlight ? 'neon-glow' : ''} ${styles.podiumAmount} ${highlight ? styles.podiumAmountHighlight : styles.podiumAmountDefault}`}
       >
         {amount}
-      </Text>
+      </span>
       {highlight && (
-        <Text
-          style={{
-            fontFamily: 'var(--font-space-grotesk)',
-            fontSize: '0.6rem',
-            color: 'rgba(184,255,0,0.6)',
-            marginTop: '0.75rem',
-            letterSpacing: '0.2em',
-            textTransform: 'uppercase',
-          }}
-        >
-          + CUP &amp; HUY CHƯƠNG VÀNG
-        </Text>
+        <p className={styles.podiumBonus}>+ CUP &amp; HUY CHƯƠNG VÀNG</p>
       )}
-    </Paper>
+    </Box>
   );
 }
 
 export default function PrizesSection() {
   return (
-    <Box
-      component="section"
-      id="prizes"
-      style={{
-        backgroundColor: '#0E0E0E',
-        padding: '6rem 0',
-        position: 'relative',
-        overflow: 'hidden',
-      }}
-    >
-      {/* Glow effect */}
-      <Box
-        style={{
-          position: 'absolute',
-          top: 0,
-          right: 0,
-          width: 384,
-          height: 384,
-          backgroundColor: 'rgba(184,255,0,0.05)',
-          filter: 'blur(120px)',
-          borderRadius: '50%',
-          pointerEvents: 'none',
-        }}
-      />
+    <Box component="section" id="prizes" className={styles.section}>
+      <Box className={styles.glow} />
 
       <Container size="xl" style={{ position: 'relative', zIndex: 10 }}>
-        {/* Header */}
         <Stack align="center" mb={64}>
-          <Box style={{ width: 48, height: 4, backgroundColor: '#B8FF00' }} />
-          <Text
-            style={{
-              fontFamily: 'var(--font-space-grotesk)',
-              color: '#B8FF00',
-              fontWeight: 700,
-              letterSpacing: '0.2em',
-              fontSize: '0.7rem',
-              textTransform: 'uppercase',
-            }}
-          >
-            GIẢI THƯỞNG
-          </Text>
-          <Text
-            component="h2"
-            style={{
-              fontFamily: 'var(--font-epilogue)',
-              fontSize: 'clamp(2rem, 5vw, 3rem)',
-              fontWeight: 900,
-              fontStyle: 'italic',
-              color: '#FFFFFF',
-              margin: 0,
-              textAlign: 'center',
-            }}
-          >
-            Tổng Giải Thưởng
-          </Text>
+          <Box className={styles.accentBar} />
+          <span className={styles.sectionLabel}>GIẢI THƯỞNG</span>
+          <h2 className={styles.sectionTitle}>Tổng Giải Thưởng</h2>
         </Stack>
 
-        {/* Total prize */}
         <Center mb={80}>
-          <Text
-            className="neon-glow"
-            style={{
-              fontFamily: 'var(--font-epilogue)',
-              fontSize: 'clamp(3rem, 8vw, 6rem)',
-              fontWeight: 900,
-              color: '#B8FF00',
-              fontStyle: 'italic',
-              lineHeight: 1,
-              textAlign: 'center',
-            }}
-          >
-            10.000.000 VNĐ
-          </Text>
+          <span className={`neon-glow ${styles.totalPrize}`}>10.000.000 VNĐ</span>
         </Center>
 
-        {/* Podium */}
         <Grid gutter="xl" align="flex-end">
           <GridCol span={{ base: 12, md: 4 }} order={{ base: 2, md: 1 }}>
             <PrizePodium

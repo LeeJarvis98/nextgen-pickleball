@@ -1,5 +1,6 @@
 ﻿@import "@mantine/core/styles.css";
 @import "@mantine/notifications/styles.css";
+@import "@mantine/carousel/styles.css";
 
 :root {
   --color-background: #0e0e0e;
@@ -51,6 +52,21 @@ body {
 
 .ghost-border {
   border: 1px solid rgba(184, 255, 0, 0.15);
+}
+
+.carousel-control {
+  background-color: rgba(184, 255, 0, 0.1) !important;
+  border: 1px solid rgba(184, 255, 0, 0.3) !important;
+  color: #b8ff00 !important;
+}
+
+.carousel-indicator {
+  background-color: rgba(184, 255, 0, 0.3) !important;
+  transition: background-color 0.2s;
+}
+
+.carousel-indicator[data-active] {
+  background-color: #b8ff00 !important;
 }
 
 /* Mantine overrides for dark theme */

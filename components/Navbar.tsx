@@ -1,8 +1,9 @@
-﻿'use client';
+'use client';
 
 import { useState, useEffect } from 'react';
-import { Box, Container, Group, Text, Button, Burger, Drawer, Stack, Anchor } from '@mantine/core';
+import { Box, Container, Group, Button, Burger, Drawer, Stack, Anchor } from '@mantine/core';
 import { useDisclosure } from '@mantine/hooks';
+import styles from './Navbar.module.css';
 
 const navLinks = [
   { label: 'TOURNAMENT', href: '#tournament-info' },
@@ -31,97 +32,55 @@ export default function Navbar() {
     <>
       <Box
         component="nav"
-        style={{
-          position: 'sticky',
-          top: 0,
-          zIndex: 50,
-          backgroundColor: scrolled ? 'rgba(14,14,14,0.95)' : 'rgba(14,14,14,0.80)',
-          backdropFilter: 'blur(20px)',
-          borderBottom: '1px solid rgba(184,255,0,0.15)',
-          boxShadow: '0 0 20px rgba(184,255,0,0.05)',
-          transition: 'background-color 0.3s ease',
-        }}
+        className={`${styles.nav} ${scrolled ? styles.navScrolled : styles.navTop}`}
       >
         <Container size="xl" py="md">
           <Group justify="space-between" align="center">
-            {/* Logo */}
-            <Text
-              style={{
-                fontFamily: 'var(--font-epilogue)',
-                fontSize: '1.2rem',
-                fontWeight: 900,
-                fontStyle: 'italic',
-                letterSpacing: '-0.03em',
-                color: '#B8FF00',
-                cursor: 'pointer',
-              }}
+            <span
+              className={styles.logo}
               onClick={() => window.scrollTo({ top: 0, behavior: 'smooth' })}
+              role="button"
+              tabIndex={0}
+              onKeyDown={(e) => e.key === 'Enter' && window.scrollTo({ top: 0, behavior: 'smooth' })}
             >
               NEXTGEN PICKLEBALL SERIES
-            </Text>
+            </span>
 
-            {/* Desktop nav */}
             <Group gap="xl" visibleFrom="md">
               {navLinks.map((link) => (
                 <Anchor
                   key={link.label}
+                  className={styles.navLink}
                   onClick={() => handleNavClick(link.href)}
-                  style={{
-                    fontFamily: 'var(--font-space-grotesk)',
-                    fontSize: '0.8rem',
-                    fontWeight: 700,
-                    letterSpacing: '0.1em',
-                    color: '#ADAAAA',
-                    textDecoration: 'none',
-                    cursor: 'pointer',
-                    transition: 'color 0.2s',
-                  }}
-                  onMouseEnter={(e) => (e.currentTarget.style.color = '#B8FF00')}
-                  onMouseLeave={(e) => (e.currentTarget.style.color = '#ADAAAA')}
                 >
                   {link.label}
                 </Anchor>
               ))}
             </Group>
 
-            {/* CTA + Burger */}
             <Group gap="sm">
               <Button
                 visibleFrom="md"
+                className={styles.ctaButton}
                 onClick={() => handleNavClick('#registration')}
-                style={{
-                  backgroundColor: '#B8FF00',
-                  color: '#486700',
-                  fontFamily: 'var(--font-space-grotesk)',
-                  fontWeight: 700,
-                  fontSize: '0.8rem',
-                  letterSpacing: '0.05em',
-                }}
               >
                 REGISTER NOW
               </Button>
-              <Burger
-                opened={opened}
-                onClick={toggle}
-                hiddenFrom="md"
-                color="#B8FF00"
-                size="sm"
-              />
+              <Burger opened={opened} onClick={toggle} hiddenFrom="md" color="#B8FF00" size="sm" />
             </Group>
           </Group>
         </Container>
       </Box>
 
-      {/* Mobile drawer */}
       <Drawer
         opened={opened}
         onClose={close}
         position="right"
         size="xs"
-        styles={{
-          content: { backgroundColor: '#0E0E0E', border: '1px solid rgba(184,255,0,0.15)' },
-          header: { backgroundColor: '#0E0E0E' },
-          title: { color: '#B8FF00', fontFamily: 'var(--font-epilogue)', fontWeight: 900 },
+        classNames={{
+          content: styles.drawerContent,
+          header: styles.drawerHeader,
+          title: styles.drawerTitle,
         }}
         title="NEXTGEN"
       >
@@ -129,29 +88,16 @@ export default function Navbar() {
           {navLinks.map((link) => (
             <Anchor
               key={link.label}
+              className={styles.drawerNavLink}
               onClick={() => handleNavClick(link.href)}
-              style={{
-                fontFamily: 'var(--font-space-grotesk)',
-                fontSize: '0.9rem',
-                fontWeight: 700,
-                letterSpacing: '0.1em',
-                color: '#ADAAAA',
-                textDecoration: 'none',
-                cursor: 'pointer',
-              }}
             >
               {link.label}
             </Anchor>
           ))}
           <Button
+            className={styles.drawerCtaButton}
             onClick={() => handleNavClick('#registration')}
             fullWidth
-            style={{
-              backgroundColor: '#B8FF00',
-              color: '#486700',
-              fontFamily: 'var(--font-space-grotesk)',
-              fontWeight: 700,
-            }}
           >
             REGISTER NOW
           </Button>
