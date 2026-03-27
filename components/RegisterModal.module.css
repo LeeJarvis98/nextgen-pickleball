@@ -45,6 +45,188 @@
   font-family: var(--font-space-grotesk);
 }
 
+.partnerModeNote {
+  font-family: var(--font-space-grotesk);
+  font-size: 0.78rem;
+  color: #b8ff00;
+  background-color: rgba(184, 255, 0, 0.07);
+  border: 1px solid rgba(184, 255, 0, 0.2);
+  border-radius: 6px;
+  padding: 8px 12px;
+}
+
+/* ── Category DataTable ──────────────────────────────────── */
+
+/* Wrapper: override mantine-datatable's default colors to match modal */
+.categoryDataTableWrapper {
+  border-radius: 8px;
+  overflow: hidden;
+}
+
+/* Table shell */
+.categoryDataTableWrapper table {
+  background: transparent !important;
+}
+
+/* Header row */
+.categoryDataTableWrapper thead tr th {
+  background: rgba(255, 255, 255, 0.04) !important;
+  border-color: rgba(255, 255, 255, 0.08) !important;
+  font-family: var(--font-space-grotesk) !important;
+  font-size: 0.65rem !important;
+  font-weight: 700 !important;
+  letter-spacing: 0.1em !important;
+  text-transform: uppercase !important;
+  color: #555 !important;
+  padding: 8px 12px !important;
+}
+
+/* Body cells */
+.categoryDataTableWrapper tbody tr td {
+  background: transparent !important;
+  border-color: rgba(255, 255, 255, 0.05) !important;
+  padding: 0 !important; /* rows control their own padding via rowClassName */
+}
+
+/* Outer border */
+.categoryDataTableWrapper [data-datatable-border],
+.categoryDataTableWrapper table {
+  border-color: rgba(255, 255, 255, 0.1) !important;
+}
+
+/* ── Row states ───────────────────────────────────────────── */
+.categoryRow {
+  cursor: pointer;
+  transition: background 0.12s;
+}
+
+/* DataTable adds td > div wrapper; pad that instead */
+.categoryRow td > div,
+.categoryRow td > span {
+  padding: 10px 12px;
+}
+
+.categoryRow:hover:not(.categoryRowFull) td {
+  background: rgba(255, 255, 255, 0.04) !important;
+}
+
+.categoryRowSelected td {
+  background: rgba(184, 255, 0, 0.08) !important;
+}
+
+.categoryRowSelected td:first-child {
+  box-shadow: inset 3px 0 0 #b8ff00;
+}
+
+.categoryRowSelected:hover td {
+  background: rgba(184, 255, 0, 0.12) !important;
+}
+
+.categoryRowFull {
+  opacity: 0.38;
+  cursor: not-allowed !important;
+}
+
+/* ── Checkbox ─────────────────────────────────────────────── */
+.categoryCheckOff {
+  width: 16px;
+  height: 16px;
+  border-radius: 3px;
+  border: 1.5px solid rgba(255, 255, 255, 0.2);
+  flex-shrink: 0;
+}
+
+.categoryCheckOn {
+  width: 16px;
+  height: 16px;
+  border-radius: 3px;
+  background: #b8ff00;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+}
+
+/* ── Cell content ─────────────────────────────────────────── */
+.categoryName {
+  font-family: var(--font-space-grotesk);
+  font-size: 0.82rem;
+  color: #e0e0e0;
+}
+
+.categorySlots {
+  font-family: var(--font-space-grotesk);
+  font-size: 0.75rem;
+  color: #666;
+  font-variant-numeric: tabular-nums;
+  white-space: nowrap;
+}
+
+.categoryFee {
+  font-family: var(--font-space-grotesk);
+  font-size: 0.78rem;
+  font-weight: 700;
+  color: #b8ff00;
+  font-variant-numeric: tabular-nums;
+  white-space: nowrap;
+}
+
+.flatFeeRow {
+  margin-top: 10px;
+  padding: 10px 14px;
+  border-radius: 6px;
+  background-color: rgba(184, 255, 0, 0.06);
+  border: 1px solid rgba(184, 255, 0, 0.15);
+}
+
+.flatFeeLabel {
+  font-family: var(--font-space-grotesk);
+  font-size: 0.78rem;
+  font-weight: 700;
+  color: #adaaaa;
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+}
+
+.flatFeeAmount {
+  font-family: var(--font-epilogue);
+  font-size: 1rem;
+  font-weight: 900;
+  font-style: italic;
+  color: #b8ff00;
+  font-variant-numeric: tabular-nums;
+}
+
+.categorySlotsLow {
+  font-family: var(--font-space-grotesk);
+  font-size: 0.75rem;
+  font-variant-numeric: tabular-nums;
+  white-space: nowrap;
+  color: #FF7351;
+}
+
+.categorySlotsFull {
+  font-family: var(--font-space-grotesk);
+  font-size: 0.75rem;
+  font-variant-numeric: tabular-nums;
+  white-space: nowrap;
+  color: #444;
+}
+
+.randomNote {
+  font-family: var(--font-space-grotesk);
+  font-size: 0.72rem;
+  color: #b8ff00;
+  opacity: 0.8;
+  white-space: nowrap;
+}
+
+.categoryError {
+  margin-top: 5px;
+  font-size: 0.75rem;
+  color: var(--mantine-color-red-6);
+}
+
 .submitButton {
   background-color: #b8ff00 !important;
   color: #486700 !important;

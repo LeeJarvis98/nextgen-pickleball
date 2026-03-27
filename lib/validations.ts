@@ -1,6 +1,12 @@
 ﻿import { z } from 'zod';
 
+const VALID_CATEGORIES = [
+  'singles_male', 'singles_female',
+  'doubles_male', 'doubles_female', 'doubles_mixed',
+] as const;
+
 export const registrationSchema = z.object({
+  tournament_id: z.string().uuid(),
   full_name: z.string().min(2, 'Vui lòng nhập họ và tên (ít nhất 2 ký tự)').max(100),
   phone: z
     .string()
@@ -8,17 +14,14 @@ export const registrationSchema = z.object({
     .max(15)
     .regex(/^[0-9+\-\s()]+$/, 'Số điện thoại không hợp lệ'),
   email: z.string().email('Email không hợp lệ'),
-  category: z.enum(['singles', 'doubles'] as const, {
-    error: 'Vui lòng chọn hạng mục thi đấu',
+  gender: z.enum(['male', 'female'] as const, {
+    error: 'Vui lòng chọn giới tính',
   }),
-  partner_name: z.string().max(100).optional(),
+  category: z
+    .array(z.enum(VALID_CATEGORIES))
+    .min(1, 'Vui lòng chọn ít nhất một hạng mục thi đấu'),
+  partner_names: z.record(z.enum(VALID_CATEGORIES), z.string().max(100).optional()).optional(),
   notes: z.string().max(500).optional(),
-}).refine(
-  (data) => data.category === 'singles' || (data.partner_name && data.partner_name.length >= 2),
-  {
-    message: 'Vui lòng nhập tên đồng đội (ít nhất 2 ký tự)',
-    path: ['partner_name'],
-  }
-);
+});
 
 export type RegistrationInput = z.infer<typeof registrationSchema>;

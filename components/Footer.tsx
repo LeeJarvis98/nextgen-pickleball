@@ -1,5 +1,6 @@
 'use client';
 
+import Link from 'next/link';
 import { Box, Container, Group, Stack, Anchor } from '@mantine/core';
 import { Globe, Share2, Mail } from 'lucide-react';
 import styles from './Footer.module.css';
@@ -38,12 +39,15 @@ export default function Footer() {
             ))}
           </Group>
 
-          <Group gap="md">
+          <Group gap="md" align="center">
             {socialIcons.map(({ icon: Icon, href, label }) => (
               <Anchor key={label} href={href} aria-label={label} className={styles.socialIcon}>
                 <Icon size={20} />
               </Anchor>
             ))}
+            <Link href="/admin/login" className={styles.adminLink} aria-label="Admin">
+              ADMIN
+            </Link>
           </Group>
         </Group>
       </Container>

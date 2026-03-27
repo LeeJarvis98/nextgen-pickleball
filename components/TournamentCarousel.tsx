@@ -99,7 +99,12 @@ function TournamentSlide({ tournament }: { tournament: Tournament }) {
   );
 }
 
-export default function TournamentCarousel({ tournaments }: { tournaments: Tournament[] }) {
+interface TournamentCarouselProps {
+  tournaments: Tournament[];
+  onSlideChange?: (index: number) => void;
+}
+
+export default function TournamentCarousel({ tournaments, onSlideChange }: TournamentCarouselProps) {
   if (tournaments.length === 1) {
     return <TournamentSlide tournament={tournaments[0]} />;
   }
@@ -110,6 +115,7 @@ export default function TournamentCarousel({ tournaments }: { tournaments: Tourn
       emblaOptions={{ loop: true }}
       previousControlIcon={<ChevronLeft size={20} color="#B8FF00" />}
       nextControlIcon={<ChevronRight size={20} color="#B8FF00" />}
+      onSlideChange={onSlideChange}
       classNames={{
         control: 'carousel-control',
         indicator: 'carousel-indicator',

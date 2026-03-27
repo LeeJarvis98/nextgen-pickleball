@@ -1,6 +1,6 @@
-'use client';
+﻿'use client';
 
-import { useState } from 'react';
+import { useState, useMemo } from 'react';
 import {
   Modal,
   TextInput,
@@ -14,26 +14,72 @@ import {
 } from '@mantine/core';
 import { useForm } from '@mantine/form';
 import { notifications } from '@mantine/notifications';
-import { User, Phone, Mail, Users, CheckCircle } from 'lucide-react';
-import type { RegistrationFormValues } from '@/types';
+import { DataTable } from 'mantine-datatable';
+import { User, Phone, Mail, Check, CheckCircle, VenusAndMars } from 'lucide-react';
+import type { RegistrationCategory, RegistrationFormValues, CategorySlotInfo } from '@/types';
 import styles from './RegisterModal.module.css';
+
+const DOUBLES_CATEGORIES: RegistrationCategory[] = [
+  'doubles_male',
+  'doubles_female',
+  'doubles_mixed',
+];
+
+const CATEGORY_LABELS: Record<RegistrationCategory, string> = {
+  singles_male:   'Đấu Đơn — Nam',
+  singles_female: 'Đấu Đơn — Nữ',
+  doubles_male:   'Đấu Đôi — Nam / Nam',
+  doubles_female: 'Đấu Đôi — Nữ / Nữ',
+  doubles_mixed:  'Đấu Đôi — Nam / Nữ',
+};
+
+interface CategoryRow {
+  id: RegistrationCategory;
+  label: string;
+  available: number | null;
+  capacity: number | null;
+  isFull: boolean;
+  isLow: boolean;
+  isDoubles: boolean;
+  fee: string | null;
+  partner: null; // virtual accessor for the partner column
+}
 
 interface RegisterModalProps {
   opened: boolean;
   onClose: () => void;
+  tournamentId: string;
+  availableCategories: RegistrationCategory[];
+  doublesPartnerMode: 'fixed' | 'random';
+  categorySlots: Partial<Record<RegistrationCategory, CategorySlotInfo>>;
+  entryFeeMode: 'per_category' | 'flat';
+  entryFee?: string;
+  categoryFees?: Partial<Record<RegistrationCategory, string>>;
 }
 
-export default function RegisterModal({ opened, onClose }: RegisterModalProps) {
+export default function RegisterModal({
+  opened,
+  onClose,
+  tournamentId,
+  availableCategories,
+  doublesPartnerMode,
+  categorySlots,
+  entryFeeMode,
+  entryFee,
+  categoryFees,
+}: RegisterModalProps) {
   const [loading, setLoading] = useState(false);
   const [success, setSuccess] = useState(false);
 
   const form = useForm<RegistrationFormValues>({
     initialValues: {
+      tournament_id: tournamentId,
       full_name: '',
       phone: '',
       email: '',
-      category: 'singles',
-      partner_name: '',
+      gender: 'male',
+      category: [],
+      partner_names: {},
       notes: '',
     },
     validate: {
@@ -42,13 +88,180 @@ export default function RegisterModal({ opened, onClose }: RegisterModalProps) {
       phone: (v) =>
         /^[0-9+\-\s()]{9,15}$/.test(v.trim()) ? null : 'Số điện thoại không hợp lệ',
       email: (v) => (/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(v) ? null : 'Email không hợp lệ'),
-      partner_name: (v, values) =>
-        values.category === 'doubles' && (!v || v.trim().length < 2)
-          ? 'Vui lòng nhập tên đồng đội'
-          : null,
+      gender: (v) => (v ? null : 'Vui lòng chọn giới tính'),
+      category: (v) =>
+        v.length === 0 ? 'Vui lòng chọn ít nhất một hạng mục thi đấu' : null,
+      partner_names: (v, values) => {
+        if (doublesPartnerMode !== 'fixed') return null;
+        const selectedDoubles = values.category.filter((c) => DOUBLES_CATEGORIES.includes(c));
+        if (selectedDoubles.length === 0) return null;
+        return selectedDoubles.every((c) => v[c] && (v[c] as string).trim().length >= 2)
+          ? null
+          : 'required';
+      },
     },
   });
 
+  // ── Visible categories filtered by gender ────────────────
+  const visibleCategories = useMemo(() => {
+    const g = form.values.gender;
+    return availableCategories.filter((cat) => {
+      if (cat === 'singles_male')   return g === 'male';
+      if (cat === 'singles_female') return g === 'female';
+      if (cat === 'doubles_male')   return g === 'male';
+      if (cat === 'doubles_female') return g === 'female';
+      return true; // doubles_mixed open to all
+    });
+  }, [availableCategories, form.values.gender]);
+
+  // ── DataTable row data ────────────────────────────────────
+  const tableRows: CategoryRow[] = useMemo(
+    () =>
+      visibleCategories.map((cat) => {
+        const slot = categorySlots[cat];
+        const avail = slot !== undefined ? slot.capacity - slot.used : null;
+        return {
+          id: cat,
+          label: CATEGORY_LABELS[cat],
+          available: avail,
+          capacity: slot?.capacity ?? null,
+          isFull: avail !== null && avail <= 0,
+          isLow: avail !== null && avail > 0 && avail <= 5,
+          isDoubles: DOUBLES_CATEGORIES.includes(cat),
+          fee: categoryFees?.[cat] ?? null,
+          partner: null,
+        };
+      }),
+    [visibleCategories, categorySlots, categoryFees],
+  );
+
+  const feeColumn = {
+    accessor: 'fee' as const,
+    title: 'Phí',
+    width: 130,
+    textAlign: 'right' as const,
+    render: (row: CategoryRow) =>
+      row.fee ? (
+        <span className={styles.categoryFee}>{row.fee}</span>
+      ) : (
+        <span className={styles.categorySlots}>—</span>
+      ),
+  };
+
+  const hasDoubles = form.values.category.some((c) => DOUBLES_CATEGORIES.includes(c));
+
+  // ── Category toggle ───────────────────────────────────────
+  const toggleCategory = (cat: RegistrationCategory) => {
+    const current = form.values.category;
+    if (current.includes(cat)) {
+      form.setFieldValue('category', current.filter((c) => c !== cat));
+      if (DOUBLES_CATEGORIES.includes(cat)) {
+        const newNames = { ...form.values.partner_names };
+        delete newNames[cat];
+        form.setFieldValue('partner_names', newNames);
+      }
+    } else {
+      form.setFieldValue('category', [...current, cat]);
+    }
+  };
+
+  // ── Gender change — also prunes incompatible categories ───
+  const handleGenderChange = (value: string | null) => {
+    const newGender = (value ?? 'male') as 'male' | 'female';
+    form.setFieldValue('gender', newGender);
+    const removed = form.values.category.filter((c) => {
+      if (c === 'singles_male')   return newGender !== 'male';
+      if (c === 'singles_female') return newGender !== 'female';
+      if (c === 'doubles_male')   return newGender !== 'male';
+      if (c === 'doubles_female') return newGender !== 'female';
+      return false;
+    });
+    form.setFieldValue(
+      'category',
+      form.values.category.filter((c) => !removed.includes(c)),
+    );
+    const removedDoubles = removed.filter((c) => DOUBLES_CATEGORIES.includes(c));
+    if (removedDoubles.length > 0) {
+      const newNames = { ...form.values.partner_names };
+      removedDoubles.forEach((c) => delete newNames[c]);
+      form.setFieldValue('partner_names', newNames);
+    }
+  };
+
+  // ── DataTable columns ─────────────────────────────────────
+  const categoryColumn = {
+    accessor: 'id' as const,
+    title: 'Hạng Mục',
+    render: (row: CategoryRow) => {
+      const isSelected = form.values.category.includes(row.id);
+      return (
+        <Group gap={10} wrap="nowrap">
+          <Box className={isSelected ? styles.categoryCheckOn : styles.categoryCheckOff}>
+            {isSelected && <Check size={10} strokeWidth={3} color="#1a1919" />}
+          </Box>
+          <span className={styles.categoryName}>{row.label}</span>
+        </Group>
+      );
+    },
+  };
+
+  const slotsColumn = {
+    accessor: 'available' as const,
+    title: 'Còn Lại',
+    width: 90,
+    textAlign: 'center' as const,
+    render: (row: CategoryRow) => {
+      if (row.available === null) return <span className={styles.categorySlots}>—</span>;
+      if (row.isFull) return <span className={styles.categorySlotsFull}>Hết chỗ</span>;
+      return (
+        <span className={row.isLow ? styles.categorySlotsLow : styles.categorySlots}>
+          {row.available} / {row.capacity}
+        </span>
+      );
+    },
+  };
+
+  const partnerColumn = {
+    accessor: 'partner' as const,
+    title: 'Đồng Đội',
+    render: (row: CategoryRow) => {
+      if (!row.isDoubles) return null;
+      const isSelected = form.values.category.includes(row.id);
+      if (!isSelected) return null;
+
+      if (doublesPartnerMode === 'random') {
+        return <span className={styles.randomNote}>BTC ghép ngẫu nhiên ✨</span>;
+      }
+
+      // fixed mode — show partner name input
+      const value = form.values.partner_names[row.id] ?? '';
+      const showError = !!form.errors.partner_names && value.trim().length < 2;
+      return (
+        <div onClick={(e) => e.stopPropagation()} onKeyDown={(e) => e.stopPropagation()}>
+          <TextInput
+            placeholder="Tên đồng đội..."
+            size="xs"
+            value={value}
+            onChange={(e) =>
+              form.setFieldValue('partner_names', {
+                ...form.values.partner_names,
+                [row.id]: e.currentTarget.value,
+              })
+            }
+            error={showError ? ' ' : undefined}
+          />
+        </div>
+      );
+    },
+  };
+
+  const hasFees = entryFeeMode === 'per_category' && tableRows.some((r) => r.fee !== null);
+  const baseColumns = hasFees
+    ? [categoryColumn, feeColumn, slotsColumn]
+    : [categoryColumn, slotsColumn];
+  const columns = hasDoubles ? [...baseColumns, partnerColumn] : baseColumns;
+
+  // ── Form submit ───────────────────────────────────────────
   const handleSubmit = async (values: RegistrationFormValues) => {
     setLoading(true);
     try {
@@ -58,11 +271,7 @@ export default function RegisterModal({ opened, onClose }: RegisterModalProps) {
         body: JSON.stringify(values),
       });
       const data = await res.json();
-
-      if (!res.ok) {
-        throw new Error(data.error ?? 'Đăng ký thất bại');
-      }
-
+      if (!res.ok) throw new Error(data.error ?? 'Đăng ký thất bại');
       setSuccess(true);
       form.reset();
     } catch (err) {
@@ -87,7 +296,7 @@ export default function RegisterModal({ opened, onClose }: RegisterModalProps) {
       opened={opened}
       onClose={handleClose}
       title={<span className={styles.modalTitle}>ĐĂNG KÝ THAM DỰ</span>}
-      size="lg"
+      size="xl"
       classNames={{
         content: styles.modalContent,
         header: styles.modalHeader,
@@ -142,28 +351,60 @@ export default function RegisterModal({ opened, onClose }: RegisterModalProps) {
             </Group>
 
             <Select
-              label="Hạng Mục Thi Đấu"
-              placeholder="Chọn hạng mục"
+              label="Giới Tính"
+              placeholder="Chọn giới tính"
               required
-              leftSection={<Users size={16} color="#ADAAAA" />}
+              leftSection={<VenusAndMars size={16} color="#ADAAAA" />}
               classNames={{ label: styles.inputLabel }}
               data={[
-                { value: 'singles', label: '1vs1 — Đơn' },
-                { value: 'doubles', label: '2vs2 — Đôi' },
+                { value: 'male', label: 'Nam' },
+                { value: 'female', label: 'Nữ' },
               ]}
-              {...form.getInputProps('category')}
+              value={form.values.gender}
+              onChange={handleGenderChange}
+              error={form.errors.gender}
             />
 
-            {form.values.category === 'doubles' && (
-              <TextInput
-                label="Tên Đồng Đội"
-                placeholder="Họ và tên người cùng thi đấu"
-                required
-                leftSection={<User size={16} color="#ADAAAA" />}
-                classNames={{ label: styles.inputLabel }}
-                {...form.getInputProps('partner_name')}
-              />
-            )}
+            {/* ── Category selection table ── */}
+            <Box>
+              <Box component="label" className={styles.inputLabel} mb={6} display="block">
+                Hạng Mục Thi Đấu{' '}
+                <span style={{ color: 'var(--mantine-color-red-6)' }}>*</span>
+              </Box>
+              <Box className={styles.categoryDataTableWrapper}>
+                <DataTable
+                  withTableBorder
+                  borderRadius="sm"
+                  records={tableRows}
+                  idAccessor="id"
+                  columns={columns}
+                  onRowClick={({ record: row }) => !row.isFull && toggleCategory(row.id)}
+                  rowClassName={(row) =>
+                    [
+                      styles.categoryRow,
+                      form.values.category.includes(row.id) ? styles.categoryRowSelected : '',
+                      row.isFull ? styles.categoryRowFull : '',
+                    ]
+                      .filter(Boolean)
+                      .join(' ')
+                  }
+                />
+              </Box>
+              {form.errors.category && (
+                <Box className={styles.categoryError}>{form.errors.category}</Box>
+              )}
+              {form.errors.partner_names && (
+                <Box className={styles.categoryError}>
+                  Vui lòng nhập tên đồng đội cho tất cả hạng mục đôi đã chọn
+                </Box>
+              )}
+              {entryFeeMode === 'flat' && entryFee && (
+                <Group justify="space-between" className={styles.flatFeeRow}>
+                  <span className={styles.flatFeeLabel}>Phí tham dự</span>
+                  <span className={styles.flatFeeAmount}>{entryFee}</span>
+                </Group>
+              )}
+            </Box>
 
             <Textarea
               label="Ghi Chú (Tùy chọn)"
@@ -174,17 +415,6 @@ export default function RegisterModal({ opened, onClose }: RegisterModalProps) {
             />
 
             <Divider className={styles.divider} mt="xs" />
-
-            <Group gap="xs" wrap="wrap">
-              {['Thi đấu 1vs1 & 2vs2', 'Trọng tài chuyên nghiệp', 'Giải thưởng hấp dẫn'].map(
-                (item) => (
-                  <Group key={item} gap={6}>
-                    <CheckCircle size={14} color="#B8FF00" />
-                    <span className={styles.featureText}>{item}</span>
-                  </Group>
-                )
-              )}
-            </Group>
 
             <Button
               type="submit"

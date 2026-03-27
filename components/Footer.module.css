@@ -49,3 +49,22 @@
   color: #b8ff00;
   opacity: 1;
 }
+
+.adminLink {
+  font-family: var(--font-space-grotesk);
+  font-size: 0.55rem;
+  font-weight: 700;
+  letter-spacing: 0.15em;
+  text-transform: uppercase;
+  text-decoration: none;
+  color: rgba(255, 255, 255, 0.15);
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  border-radius: 3px;
+  padding: 3px 7px;
+  transition: color 0.2s, border-color 0.2s;
+}
+
+.adminLink:hover {
+  color: #b8ff00;
+  border-color: rgba(184, 255, 0, 0.3);
+}

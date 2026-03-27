@@ -1,6 +1,7 @@
 ﻿@import "@mantine/core/styles.css";
 @import "@mantine/notifications/styles.css";
 @import "@mantine/carousel/styles.css";
+@import "mantine-datatable/styles.css";
 
 :root {
   --color-background: #0e0e0e;
@@ -63,6 +64,7 @@ body {
 .carousel-indicator {
   background-color: rgba(184, 255, 0, 0.3) !important;
   transition: background-color 0.2s;
+  margin-bottom: 430px !important;
 }
 
 .carousel-indicator[data-active] {

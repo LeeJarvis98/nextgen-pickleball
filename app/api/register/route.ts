@@ -14,15 +14,17 @@ export async function POST(req: NextRequest) {
       );
     }
 
-    const { partner_name, notes, ...required } = parsed.data;
+    const { partner_names, notes, ...required } = parsed.data;
     const supabase = createServerSupabaseClient();
 
     const { data, error } = await supabase
       .from('registrations')
       .insert({
         ...required,
-        partner_name: partner_name || null,
+        partner_names:
+          partner_names && Object.keys(partner_names).length > 0 ? partner_names : null,
         notes: notes || null,
+        status: 'pending',
       })
       .select('id')
       .single();

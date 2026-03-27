@@ -1,0 +1,125 @@
+.page {
+  min-height: 100vh;
+  background-color: #0e0e0e;
+}
+
+.header {
+  background-color: #131313;
+  border-bottom: 1px solid rgba(184, 255, 0, 0.15);
+  padding: 1.25rem 0;
+}
+
+.headerTitle {
+  font-family: var(--font-epilogue);
+  font-size: 1.2rem;
+  font-weight: 900;
+  font-style: italic;
+  color: #b8ff00;
+  letter-spacing: -0.01em;
+}
+
+.headerSub {
+  font-family: var(--font-space-grotesk);
+  font-size: 0.6rem;
+  font-weight: 700;
+  letter-spacing: 0.15em;
+  text-transform: uppercase;
+  color: #adaaaa;
+}
+
+.logoutButton {
+  color: #adaaaa !important;
+  font-family: var(--font-space-grotesk) !important;
+  font-size: 0.75rem !important;
+  font-weight: 700 !important;
+  letter-spacing: 0.05em !important;
+}
+
+.logoutButton:hover {
+  color: #ff7351 !important;
+}
+
+.tabList {
+  border-bottom: 1px solid rgba(184, 255, 0, 0.1) !important;
+}
+
+.tab {
+  font-family: var(--font-space-grotesk) !important;
+  font-size: 0.75rem !important;
+  font-weight: 700 !important;
+  letter-spacing: 0.08em !important;
+  text-transform: uppercase !important;
+  color: #adaaaa !important;
+}
+
+.tab[data-active] {
+  color: #b8ff00 !important;
+  border-bottom-color: #b8ff00 !important;
+}
+
+.dataTable {
+  background-color: #131313 !important;
+  font-family: var(--font-space-grotesk) !important;
+  font-size: 0.8rem !important;
+}
+
+.filterSelect {
+  background-color: #1a1919 !important;
+  border-color: rgba(184, 255, 0, 0.15) !important;
+  color: #ffffff !important;
+  font-size: 0.8rem !important;
+}
+
+.modalContent {
+  background-color: #1a1919 !important;
+  border: 1px solid rgba(184, 255, 0, 0.15) !important;
+}
+
+.modalHeader {
+  background-color: #1a1919 !important;
+  border-bottom: 1px solid rgba(184, 255, 0, 0.1) !important;
+}
+
+.modalTitle {
+  font-family: var(--font-epilogue);
+  font-size: 1rem;
+  font-weight: 900;
+  font-style: italic;
+  color: #ffffff;
+}
+
+.sectionHeading {
+  font-family: var(--font-space-grotesk) !important;
+  font-size: 0.65rem !important;
+  font-weight: 700 !important;
+  letter-spacing: 0.15em !important;
+  text-transform: uppercase !important;
+  color: #b8ff00 !important;
+  border-bottom: 1px solid rgba(184, 255, 0, 0.1);
+  padding-bottom: 6px;
+  margin-top: 8px;
+}
+
+.inputLabel {
+  font-family: var(--font-space-grotesk);
+  font-size: 0.7rem;
+  font-weight: 700;
+  letter-spacing: 0.05em;
+  text-transform: uppercase;
+  color: #adaaaa;
+}
+
+.saveButton {
+  background-color: #b8ff00 !important;
+  color: #486700 !important;
+  font-family: var(--font-epilogue) !important;
+  font-weight: 900 !important;
+  font-style: italic !important;
+}
+
+.cancelButton {
+  color: #adaaaa !important;
+  font-family: var(--font-space-grotesk) !important;
+  font-size: 0.75rem !important;
+  font-weight: 700 !important;
+}

@@ -6,10 +6,10 @@ import { useDisclosure } from '@mantine/hooks';
 import styles from './Navbar.module.css';
 
 const navLinks = [
-  { label: 'TOURNAMENT', href: '#tournament-info' },
-  { label: 'PRIZES', href: '#prizes' },
-  { label: 'REGISTRATION', href: '#registration' },
-  { label: 'SCHEDULE', href: '#tournament-info' },
+  { label: 'GIẢI ĐẤU', href: '#tournament-info' },
+  { label: 'GIẢI THƯỞNG', href: '#prizes' },
+  { label: 'ĐĂNG KÝ', href: '#registration' },
+  { label: 'LỊCH TRÌNH', href: '#tournament-info' },
 ];
 
 export default function Navbar() {
@@ -64,7 +64,7 @@ export default function Navbar() {
                 className={styles.ctaButton}
                 onClick={() => handleNavClick('#registration')}
               >
-                REGISTER NOW
+                ĐĂNG KÝ NGAY
               </Button>
               <Burger opened={opened} onClick={toggle} hiddenFrom="md" color="#B8FF00" size="sm" />
             </Group>
