@@ -44,6 +44,7 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
     <html
       lang="vi"
       className={`${epilogue.variable} ${inter.variable} ${spaceGrotesk.variable}`}
+      suppressHydrationWarning
     >
       <head>
         <ColorSchemeScript defaultColorScheme="dark" />
