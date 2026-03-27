@@ -6,6 +6,22 @@ import { CalendarDays, MapPin, ChevronLeft, ChevronRight } from 'lucide-react';
 import type { Tournament } from '@/types';
 import styles from './TournamentCarousel.module.css';
 
+function parseFeeVND(fee: string): number {
+  return parseInt(fee.replace(/[^\d]/g, ''), 10) || 0;
+}
+
+function formatVND(amount: number): string {
+  return amount.toString().replace(/\B(?=(\d{3})+(?!\d))/g, '.') + ' VNĐ';
+}
+
+function getCategoryFeeRange(categoryFees: Partial<Record<string, string>>): string {
+  const values = Object.values(categoryFees).filter(Boolean).map((f) => parseFeeVND(f!));
+  if (values.length === 0) return '';
+  const min = Math.min(...values);
+  const max = Math.max(...values);
+  return min === max ? formatVND(min) : `${formatVND(min)} – ${formatVND(max)}`;
+}
+
 interface InfoRowProps {
   label: string;
   value: string;
@@ -44,10 +60,27 @@ function TournamentSlide({ tournament }: { tournament: Tournament }) {
                 <InfoRow label="Ngày thi đấu" value={tournament.schedule.displayDate} />
                 <InfoRow label="Check-in" value={tournament.schedule.checkInTime} />
                 <InfoRow label="Khai mạc" value={tournament.schedule.openingTime} />
-                <Group justify="space-between" pt="sm">
+                <Group justify="space-between" py="sm" className={styles.infoRow}>
                   <span className={styles.infoRowLabel}>Kết thúc</span>
                   <span className={styles.infoRowValue}>{tournament.schedule.closingTime}</span>
                 </Group>
+                <Box className={styles.entryFeeBox}>
+                  <span className={styles.entryFeeLabel}>Phí Tham Dự</span>
+                  {tournament.registration.entryFeeMode === 'flat' ? (
+                    <span className={styles.entryFeeValue}>
+                      {tournament.registration.entryFee
+                        ? formatVND(parseFeeVND(tournament.registration.entryFee))
+                        : '—'}
+                    </span>
+                  ) : (
+                    <>
+                      <span className={styles.entryFeeValue}>
+                        {getCategoryFeeRange(tournament.registration.categoryFees ?? {})}
+                      </span>
+                      <span className={styles.entryFeeRangeHint}>tuỳ nội dung thi đấu</span>
+                    </>
+                  )}
+                </Box>
               </Stack>
             </Paper>
           </GridCol>
