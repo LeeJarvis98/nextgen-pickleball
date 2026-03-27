@@ -123,3 +123,106 @@
   font-size: 0.75rem !important;
   font-weight: 700 !important;
 }
+
+/* ── Edit Tournament Modal Tabs ── */
+.editModalTabList {
+  border-bottom: 1px solid rgba(184, 255, 0, 0.1) !important;
+  gap: 2px !important;
+}
+
+.editModalTab {
+  font-family: var(--font-space-grotesk) !important;
+  font-size: 0.7rem !important;
+  font-weight: 700 !important;
+  letter-spacing: 0.06em !important;
+  text-transform: uppercase !important;
+  color: #adaaaa !important;
+  padding: 6px 12px !important;
+  position: relative !important;
+}
+
+.editModalTab[data-active] {
+  color: #b8ff00 !important;
+  border-bottom-color: #b8ff00 !important;
+}
+
+.editModalTab:hover:not([data-active]) {
+  color: #ffffff !important;
+  background-color: rgba(255, 255, 255, 0.04) !important;
+}
+
+/* Dirty indicator dot on tab */
+.tabDot {
+  position: absolute;
+  top: 6px;
+  right: 4px;
+  width: 5px;
+  height: 5px;
+  border-radius: 50%;
+  background-color: #f59f00;
+  display: inline-block;
+}
+
+.dirtyBadge {
+  font-family: var(--font-space-grotesk) !important;
+  font-size: 0.6rem !important;
+  font-weight: 700 !important;
+  letter-spacing: 0.04em !important;
+}
+
+/* ── Prize entries ── */
+.prizeEntryHeader {
+  padding: 0 4px;
+  opacity: 0.6;
+}
+
+.prizeEntryRow {
+  background-color: rgba(255, 255, 255, 0.03);
+  border: 1px solid rgba(255, 255, 255, 0.06);
+  border-radius: 6px;
+  padding: 6px 8px;
+  transition: border-color 0.15s;
+}
+
+.prizeEntryRow:hover {
+  border-color: rgba(184, 255, 0, 0.2);
+}
+
+.prizeRank {
+  font-family: var(--font-epilogue);
+  font-size: 0.75rem;
+  font-weight: 900;
+  color: #b8ff00;
+  min-width: 24px;
+  text-align: center;
+  padding-top: 4px;
+}
+
+/* ── KV / add row button ── */
+.addRowButton {
+  color: #adaaaa !important;
+  font-family: var(--font-space-grotesk) !important;
+  font-size: 0.7rem !important;
+  font-weight: 700 !important;
+  letter-spacing: 0.04em !important;
+  border: 1px dashed rgba(255, 255, 255, 0.12) !important;
+  width: 100% !important;
+  justify-content: flex-start !important;
+}
+
+.addRowButton:hover {
+  color: #b8ff00 !important;
+  border-color: rgba(184, 255, 0, 0.3) !important;
+  background-color: rgba(184, 255, 0, 0.04) !important;
+}
+
+/* ── Divider labels ── */
+.dividerLabel {
+  font-family: var(--font-space-grotesk);
+  font-size: 0.65rem;
+  font-weight: 700;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  color: #adaaaa;
+}
+

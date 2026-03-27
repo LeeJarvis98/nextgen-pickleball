@@ -1,0 +1,106 @@
+.modalContent {
+  background-color: #131313 !important;
+  border: 1px solid rgba(184, 255, 0, 0.12) !important;
+}
+
+.modalHeader {
+  background-color: #131313 !important;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.06) !important;
+  padding-bottom: 12px !important;
+}
+
+.modalTitle {
+  font-family: var(--font-epilogue);
+  font-size: 1rem;
+  font-weight: 900;
+  font-style: italic;
+  color: #b8ff00;
+  letter-spacing: 0.04em;
+}
+
+.modalClose {
+  color: #adaaaa !important;
+}
+
+.modalClose:hover {
+  background-color: rgba(255, 255, 255, 0.06) !important;
+  color: #ffffff !important;
+}
+
+.instrText {
+  font-family: var(--font-space-grotesk);
+  font-size: 0.85rem;
+  color: #adaaaa;
+  margin: 0;
+  line-height: 1.6;
+}
+
+.queryInput input {
+  background-color: #0e0e0e !important;
+  border-color: rgba(255, 255, 255, 0.12) !important;
+  color: #ffffff !important;
+  font-family: var(--font-space-grotesk) !important;
+  font-size: 0.9rem !important;
+}
+
+.queryInput input:focus {
+  border-color: rgba(184, 255, 0, 0.4) !important;
+}
+
+.queryInput input::placeholder {
+  color: #5a5959 !important;
+}
+
+.searchButton {
+  background-color: #b8ff00 !important;
+  color: #0e0e0e !important;
+  font-family: var(--font-space-grotesk) !important;
+  font-size: 0.8rem !important;
+  font-weight: 700 !important;
+  border: none !important;
+  flex-shrink: 0;
+}
+
+.searchButton:hover {
+  background-color: #ceff44 !important;
+}
+
+.errorText {
+  color: #ff6b6b !important;
+  font-family: var(--font-space-grotesk) !important;
+}
+
+.emptyState {
+  background: rgba(255, 255, 255, 0.03);
+  border: 1px solid rgba(255, 255, 255, 0.06);
+  border-radius: 8px;
+  padding: 20px;
+}
+
+.resultCard {
+  background: rgba(255, 255, 255, 0.03);
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  border-radius: 10px;
+  padding: 16px;
+  transition: border-color 0.2s;
+}
+
+.resultCard:hover {
+  border-color: rgba(184, 255, 0, 0.15);
+}
+
+.resultName {
+  font-family: var(--font-space-grotesk) !important;
+  font-size: 0.95rem !important;
+  font-weight: 700 !important;
+  color: #ffffff !important;
+}
+
+.statusMessage {
+  margin: 0;
+  padding-left: 10px;
+  border-left: 2px solid;
+  font-family: var(--font-space-grotesk);
+  font-size: 0.8rem;
+  line-height: 1.55;
+}

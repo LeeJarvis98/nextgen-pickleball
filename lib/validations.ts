@@ -6,7 +6,7 @@ const VALID_CATEGORIES = [
 ] as const;
 
 export const registrationSchema = z.object({
-  tournament_id: z.string().uuid(),
+  tournament_id: z.string().min(1),
   full_name: z.string().min(2, 'Vui lòng nhập họ và tên (ít nhất 2 ký tự)').max(100),
   phone: z
     .string()

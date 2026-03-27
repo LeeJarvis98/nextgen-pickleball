@@ -1,6 +1,7 @@
 ﻿'use client';
 
 import { useState, useMemo } from 'react';
+import { useRouter } from 'next/navigation';
 import {
   Modal,
   TextInput,
@@ -15,7 +16,7 @@ import {
 import { useForm } from '@mantine/form';
 import { notifications } from '@mantine/notifications';
 import { DataTable } from 'mantine-datatable';
-import { User, Phone, Mail, Check, CheckCircle, VenusAndMars } from 'lucide-react';
+import { User, Phone, Mail, Check, VenusAndMars } from 'lucide-react';
 import type { RegistrationCategory, RegistrationFormValues, CategorySlotInfo } from '@/types';
 import styles from './RegisterModal.module.css';
 
@@ -68,8 +69,8 @@ export default function RegisterModal({
   entryFee,
   categoryFees,
 }: RegisterModalProps) {
+  const router = useRouter();
   const [loading, setLoading] = useState(false);
-  const [success, setSuccess] = useState(false);
 
   const form = useForm<RegistrationFormValues>({
     initialValues: {
@@ -272,8 +273,23 @@ export default function RegisterModal({
       });
       const data = await res.json();
       if (!res.ok) throw new Error(data.error ?? 'Đăng ký thất bại');
-      setSuccess(true);
+      const catFeesObj =
+        entryFeeMode === 'per_category'
+          ? Object.fromEntries(
+              values.category
+                .filter((c) => categoryFees?.[c])
+                .map((c) => [c, categoryFees![c]]),
+            )
+          : {};
+      const urlParams = new URLSearchParams({
+        n: values.full_name,
+        cats: values.category.join(','),
+        ...(entryFeeMode === 'flat' && entryFee ? { fee: entryFee } : {}),
+        ...(Object.keys(catFeesObj).length > 0 ? { cf: JSON.stringify(catFeesObj) } : {}),
+      });
       form.reset();
+      onClose();
+      router.push(`/checkout?${urlParams.toString()}`);
     } catch (err) {
       notifications.show({
         title: 'Lỗi đăng ký',
@@ -286,7 +302,6 @@ export default function RegisterModal({
   };
 
   const handleClose = () => {
-    setSuccess(false);
     form.reset();
     onClose();
   };
@@ -304,21 +319,7 @@ export default function RegisterModal({
       }}
       centered
     >
-      {success ? (
-        <Stack align="center" py={32} gap="lg">
-          <Box className={styles.successIconBox}>
-            <CheckCircle size={36} color="#B8FF00" />
-          </Box>
-          <span className={styles.successTitle}>Đăng Ký Thành Công!</span>
-          <p className={styles.successSubtext}>
-            Chúng tôi sẽ liên hệ xác nhận thông tin qua email và số điện thoại của bạn.
-          </p>
-          <Button onClick={handleClose} className={styles.successCloseButton}>
-            Đóng
-          </Button>
-        </Stack>
-      ) : (
-        <form onSubmit={form.onSubmit(handleSubmit)}>
+      <form onSubmit={form.onSubmit(handleSubmit)}>
           <Stack gap="md" mt="sm">
             <span className={styles.seasonLabel}>Season 1 · 2026</span>
 
@@ -427,7 +428,6 @@ export default function RegisterModal({
             </Button>
           </Stack>
         </form>
-      )}
     </Modal>
   );
 }
