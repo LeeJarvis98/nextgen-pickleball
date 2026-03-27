@@ -1,0 +1,78 @@
+﻿@import "@mantine/core/styles.css";
+@import "@mantine/notifications/styles.css";
+
+:root {
+  --color-background: #0e0e0e;
+  --color-surface: #0e0e0e;
+  --color-surface-low: #131313;
+  --color-surface-container: #1a1919;
+  --color-surface-high: #201f1f;
+  --color-surface-highest: #262626;
+  --color-primary: #b8ff00;
+  --color-primary-dim: #acee00;
+  --color-on-primary: #486700;
+  --color-on-surface: #ffffff;
+  --color-on-surface-variant: #adaaaa;
+  --color-outline-variant: #484847;
+  --color-error: #ff7351;
+}
+
+*,
+*::before,
+*::after {
+  box-sizing: border-box;
+}
+
+html {
+  scroll-behavior: smooth;
+}
+
+body {
+  background-color: var(--color-background);
+  color: var(--color-on-surface);
+  font-family: var(--font-inter), Inter, sans-serif;
+  -webkit-font-smoothing: antialiased;
+}
+
+/* Custom effects from Stitch design */
+.diagonal-texture {
+  background-image: repeating-linear-gradient(
+    45deg,
+    rgba(184, 255, 0, 0.03) 0px,
+    rgba(184, 255, 0, 0.03) 1px,
+    transparent 1px,
+    transparent 20px
+  );
+}
+
+.neon-glow {
+  text-shadow: 0 0 20px rgba(184, 255, 0, 0.4);
+}
+
+.ghost-border {
+  border: 1px solid rgba(184, 255, 0, 0.15);
+}
+
+/* Mantine overrides for dark theme */
+.mantine-Modal-content {
+  background-color: var(--color-surface-container) !important;
+  border: 1px solid rgba(184, 255, 0, 0.15);
+}
+
+.mantine-Modal-header {
+  background-color: var(--color-surface-container) !important;
+}
+
+.mantine-TextInput-input,
+.mantine-Textarea-input,
+.mantine-Select-input {
+  background-color: var(--color-surface-high) !important;
+  border-color: var(--color-outline-variant) !important;
+  color: var(--color-on-surface) !important;
+}
+
+.mantine-TextInput-input:focus,
+.mantine-Textarea-input:focus,
+.mantine-Select-input:focus {
+  border-color: var(--color-primary) !important;
+}
