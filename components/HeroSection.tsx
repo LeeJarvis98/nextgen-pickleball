@@ -22,8 +22,12 @@ export default function HeroSection() {
               </Box>
 
               <Box>
-                <h1 className={styles.headlineWhite}>NEXTGEN</h1>
-                <span className={styles.headlineLime}>PICKLEBALL SERIES</span>
+                <Image
+                  src="/logos/Nextgen_Logo.webp"
+                  alt="NextGen Pickleball Series"
+                  className={styles.heroLogo}
+                  fit="contain"
+                />
               </Box>
 
               <p className={styles.subtitle}>
@@ -76,7 +80,7 @@ export default function HeroSection() {
             <Box className={styles.imageWrapper}>
               <Box className={styles.imageGlow} />
               <Image
-                src="https://lh3.googleusercontent.com/aida-public/AB6AXuB2wV7EYRRs4Hd5hlvF6QNau1-hZn9Dwo_QjoeWKKW8LyltcmkjtgMNdLRMoxpZ_-E0GgndkHeozcxesTu6N86HSteNSDNtsJ9wmcsOUbhVyUUjNYOAJDD5gtqWxzufd3tiffrLqptBL45BwOZhyKC0Gilr7eno4T9k-ulpijqisaHoBJf8MVGdpszXWy_GHn1nPdK6cDe8lO5VGvHt2NCnJas84Rnnbmt_cWqQAnaxH5u6jX6LGayQd1dzjNhNTuHhylBNu3XVUs0w"
+                src="/hero.webp"
                 alt="Pickleball Action"
                 radius="md"
                 className={`ghost-border ${styles.heroImage}`}

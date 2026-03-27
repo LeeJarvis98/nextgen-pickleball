@@ -12,6 +12,7 @@ export interface TournamentSchedule {
 export interface TournamentVenue {
   name: string;
   imageUrl: string;
+  logoUrl?: string;
   courts: number;
   courtType: string;
   city: string;

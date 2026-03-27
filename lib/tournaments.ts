@@ -10,7 +10,7 @@ export async function getTournaments(): Promise<Tournament[]> {
       .select(`
         id, name, status,
         tournament_schedule ( start_date, end_date, display_date, check_in_time, opening_time, closing_time ),
-        tournament_venues ( name, image_url, courts, court_type, city, country ),
+        tournament_venues ( name, image_url, logo_url, courts, court_type, city, country ),
         tournament_prizes ( total_prize ),
         tournament_prize_entries ( rank, title, amount, bonus ),
         tournament_registration_info ( deadline, deadline_date_time, total_slots, registration_link, cta_title, cta_description, features, available_categories, doubles_partner_mode, category_slots, category_fees, entry_fee_mode, entry_fee )
@@ -63,6 +63,7 @@ export async function getTournaments(): Promise<Tournament[]> {
       venue: {
         name: venue.name,
         imageUrl: venue.image_url,
+        logoUrl: (venue.logo_url as string | null) ?? undefined,
         courts: venue.courts,
         courtType: venue.court_type,
         city: venue.city,

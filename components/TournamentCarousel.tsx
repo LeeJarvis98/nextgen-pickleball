@@ -100,6 +100,15 @@ function TournamentSlide({ tournament }: { tournament: Tournament }) {
                   </Box>
                   <span className={styles.venueLabel}>Tournament Venue</span>
                 </Group>
+                {tournament.venue.logoUrl && (
+                  <Box className={styles.venueLogoWrapper}>
+                    <img
+                      src={tournament.venue.logoUrl}
+                      alt="Tournament logo"
+                      className={styles.venueLogo}
+                    />
+                  </Box>
+                )}
                 <h4 className={`neon-glow ${styles.venueName}`}>{tournament.venue.name}</h4>
                 <Grid gutter="sm">
                   <GridCol span={6}>

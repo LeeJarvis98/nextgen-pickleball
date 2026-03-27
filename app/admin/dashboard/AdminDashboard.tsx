@@ -93,6 +93,15 @@ const DATE_FIELDS = new Set(['start_date', 'end_date', 'deadline_date_time']);
 const URL_FIELDS = new Set(['registration_link', 'image_url']);
 // Time-type field keys
 const TIME_FIELDS = new Set(['check_in_time', 'opening_time', 'closing_time']);
+// Logo field keys
+const LOGO_FIELDS = new Set(['logo_url']);
+
+const LOGO_OPTIONS = [
+  { value: '/logos/Family_Cup.webp',       label: 'Family Cup' },
+  { value: '/logos/Open_Division.webp',    label: 'Open Division' },
+  { value: '/logos/School_League.webp',    label: 'School League' },
+  { value: '/logos/University_League.webp', label: 'University League' },
+];
 
 /** Section heading with optional dirty indicator */
 function SectionTag({ label, dirty }: { label: string; dirty?: boolean }) {
@@ -566,6 +575,26 @@ export default function AdminDashboard() {
     }
     if (URL_FIELDS.has(key)) {
       return <TextInput {...commonProps} type="url" value={strVal} placeholder="https://" />;
+    }
+    if (LOGO_FIELDS.has(key)) {
+      return (
+        <Stack key={key} gap={6}>
+          <Select
+            label={label}
+            data={LOGO_OPTIONS}
+            value={strVal || null}
+            onChange={(v) => setSubField(subKey, key, v ?? '', section)}
+            classNames={{ label: styles.inputLabel }}
+            clearable
+            placeholder="Select tournament logo"
+          />
+          {strVal && (
+            <Box className={styles.logoPreviewBox}>
+              <img src={strVal} alt="Logo preview" className={styles.logoPreviewImg} />
+            </Box>
+          )}
+        </Stack>
+      );
     }
     return <TextInput {...commonProps} value={strVal} />;
   };

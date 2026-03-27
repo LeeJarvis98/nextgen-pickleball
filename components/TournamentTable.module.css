@@ -1,0 +1,59 @@
+.searchInput {
+  flex: 1;
+  min-width: 240px;
+}
+
+.statusSelect {
+  width: 180px;
+}
+
+.tableWrapper {
+  border-radius: 12px;
+  overflow: hidden;
+  border: 1px solid rgba(184, 255, 0, 0.12);
+}
+
+.activeRow {
+  background-color: rgba(184, 255, 0, 0.06) !important;
+  border-left: 3px solid #b8ff00 !important;
+}
+
+.logoCell {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 6px 0;
+}
+
+.logoImg {
+  width: 72px;
+  height: 44px;
+  object-fit: contain;
+  filter: drop-shadow(0 2px 8px rgba(0, 0, 0, 0.7));
+}
+
+.logoPlaceholder {
+  width: 72px;
+  height: 44px;
+}
+
+.nameCell {
+  font-family: var(--font-epilogue);
+  font-weight: 700;
+  font-style: italic;
+  color: #ffffff;
+  font-size: 1rem;
+}
+
+.cell {
+  color: var(--color-on-surface-variant);
+  font-size: 0.875rem;
+}
+
+.feeCell {
+  font-family: var(--font-epilogue);
+  font-weight: 700;
+  font-style: italic;
+  color: #b8ff00;
+  font-size: 0.95rem;
+}

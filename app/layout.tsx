@@ -32,6 +32,9 @@ export const metadata: Metadata = {
   description:
     "Vietnam's Premier Pickleball Tournament. Experience the high-velocity precision of the pro-circuit in a high-performance environment.",
   keywords: ['pickleball', 'tournament', 'Vietnam', 'NextGen', 'Season 1'],
+  icons: {
+    icon: '/favicon.webp',
+  },
   openGraph: {
     title: 'NEXTGEN PICKLEBALL SERIES',
     description: "Vietnam's Premier Pickleball Tournament",
