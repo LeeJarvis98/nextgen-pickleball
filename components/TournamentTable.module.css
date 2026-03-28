@@ -79,7 +79,19 @@
   border-color: rgba(184, 255, 0, 0.8);
 }
 
-/* ===== Detail Card (modal) ===== */
+.selectBtn:disabled {
+  background: rgba(72, 72, 71, 0.4);
+  border-color: rgba(72, 72, 71, 0.4);
+  color: #6b6b6b;
+  cursor: not-allowed;
+}
+
+.selectBtn:disabled:hover {
+  background: rgba(72, 72, 71, 0.4);
+  border-color: rgba(72, 72, 71, 0.4);
+}
+
+/* ===== Detail Card (modal) =====
 
 .modalBackdrop {
   position: fixed;
@@ -405,6 +417,18 @@
 .detailSelectBtn:hover {
   background: #d0ff5a;
   border-color: rgba(184, 255, 0, 0.8);
+}
+
+.detailSelectBtn:disabled {
+  background: rgba(72, 72, 71, 0.4);
+  border-color: rgba(72, 72, 71, 0.4);
+  color: #6b6b6b;
+  cursor: not-allowed;
+}
+
+.detailSelectBtn:disabled:hover {
+  background: rgba(72, 72, 71, 0.4);
+  border-color: rgba(72, 72, 71, 0.4);
 }
 
 /* ── Slot cells (main table) ── */

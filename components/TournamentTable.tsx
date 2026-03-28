@@ -256,8 +256,12 @@ function TournamentDetailCard({ tournament: t, onClose, onSelectTournament }: To
                     </Box>
                   )}
               </Stack>
-              <button className={styles.detailSelectBtn} onClick={onSelectTournament}>
-                Chọn Giải Đấu
+              <button
+                className={styles.detailSelectBtn}
+                onClick={onSelectTournament}
+                disabled={getSlotSummary(t.registration)?.isFull ?? false}
+              >
+                {getSlotSummary(t.registration)?.isFull ? 'Hết Chỗ' : 'Chọn Giải Đấu'}
               </button>
             </Box>
           </GridCol>
@@ -438,6 +442,7 @@ export default function TournamentTable({
               width: 160,
               render: (t) => {
                 const idx = tournaments.findIndex((ti) => ti.id === t.id);
+                const isFull = getSlotSummary(t.registration)?.isFull ?? false;
                 return (
                   <button
                     className={styles.selectBtn}
@@ -445,8 +450,9 @@ export default function TournamentTable({
                       e.stopPropagation();
                       onSelectTournament?.(idx);
                     }}
+                    disabled={isFull}
                   >
-                    Chọn giải đấu
+                    {isFull ? 'Hết chỗ' : 'Chọn giải đấu'}
                   </button>
                 );
               },

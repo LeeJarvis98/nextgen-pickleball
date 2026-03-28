@@ -39,7 +39,7 @@ export type RegistrationCategory =
   | 'doubles_male'
   | 'doubles_female'
   | 'doubles_mixed';
-export type RegistrationStatus = 'pending' | 'confirmed' | 'cancelled';
+export type RegistrationStatus = 'pending' | 'confirmed' | 'cancelled' | 'rejected';
 
 export interface CategorySlotInfo {
   capacity: number;

@@ -106,6 +106,81 @@
   color: #ff6b6b;
 }
 
+.statusMessage[data-status="rejected"] {
+  border-left-color: #ff922b;
+  color: #ff922b;
+}
+
+.cancelButton {
+  font-family: var(--font-space-grotesk);
+  font-size: 0.75rem;
+  font-weight: 600;
+  letter-spacing: 0.04em;
+  background: transparent;
+  border: 1px solid rgba(255, 107, 107, 0.35);
+  color: #ff6b6b;
+  border-radius: 6px;
+  padding: 4px 12px;
+  cursor: pointer;
+  transition: background 0.15s, border-color 0.15s;
+  height: 28px;
+}
+
+.cancelButton:hover {
+  background: rgba(255, 107, 107, 0.1);
+  border-color: rgba(255, 107, 107, 0.6);
+}
+
+.cancelConfirmGroup {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  flex-wrap: wrap;
+}
+
+.cancelConfirmText {
+  font-family: var(--font-space-grotesk);
+  font-size: 0.78rem;
+  color: #ff6b6b;
+}
+
+.cancelConfirmYes {
+  font-family: var(--font-space-grotesk);
+  font-size: 0.75rem;
+  font-weight: 600;
+  background: rgba(255, 107, 107, 0.15);
+  border: 1px solid rgba(255, 107, 107, 0.5);
+  color: #ff6b6b;
+  border-radius: 6px;
+  padding: 3px 12px;
+  cursor: pointer;
+  height: 26px;
+  transition: background 0.15s;
+}
+
+.cancelConfirmYes:hover {
+  background: rgba(255, 107, 107, 0.28);
+}
+
+.cancelConfirmNo {
+  font-family: var(--font-space-grotesk);
+  font-size: 0.75rem;
+  font-weight: 600;
+  background: transparent;
+  border: 1px solid rgba(255, 255, 255, 0.12);
+  color: #777;
+  border-radius: 6px;
+  padding: 3px 12px;
+  cursor: pointer;
+  height: 26px;
+  transition: background 0.15s;
+}
+
+.cancelConfirmNo:hover {
+  background: rgba(255, 255, 255, 0.06);
+  color: #aaa;
+}
+
 /* ── Participants section ── */
 
 .participantsTitle {

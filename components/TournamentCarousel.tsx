@@ -210,8 +210,12 @@ function TournamentSlide({ tournament, onSelectTournament }: TournamentSlideProp
               );
             })()}
 
-            <button className={styles.compactSelectBtn} onClick={onSelectTournament}>
-              Chọn giải đấu
+            <button
+              className={styles.compactSelectBtn}
+              onClick={onSelectTournament}
+              disabled={getSlotSummary(tournament.registration)?.isFull ?? false}
+            >
+              {getSlotSummary(tournament.registration)?.isFull ? 'Hết chỗ' : 'Chọn giải đấu'}
             </button>
           </Box>
         </Box>
@@ -332,8 +336,12 @@ function TournamentSlide({ tournament, onSelectTournament }: TournamentSlideProp
                     <MapPin size={28} color="#B8FF00" />
                   </Box>
                   <span className={styles.venueLabel}>Địa Điểm Tổ Chức</span>
-                  <button className={styles.selectBtn} onClick={onSelectTournament}>
-                    Chọn giải đấu
+                  <button
+                    className={styles.selectBtn}
+                    onClick={onSelectTournament}
+                    disabled={getSlotSummary(tournament.registration)?.isFull ?? false}
+                  >
+                    {getSlotSummary(tournament.registration)?.isFull ? 'Hết chỗ' : 'Chọn giải đấu'}
                   </button>
                 </Group>
                 {tournament.venue.logoUrl && (

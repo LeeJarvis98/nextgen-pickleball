@@ -67,7 +67,7 @@ interface SlotEntry {
 
 const STATUS_COLORS: Record<string, string> = {
   UPCOMING: 'yellow', ONGOING: 'green', COMPLETED: 'gray',
-  pending: 'yellow', confirmed: 'green', cancelled: 'red',
+  pending: 'yellow', confirmed: 'green', cancelled: 'red', rejected: 'orange',
 };
 
 function StatusBadge({ value }: { value: string }) {
@@ -1620,7 +1620,7 @@ export default function AdminDashboard() {
             <TextInput label="Email" value={editReg.email} disabled classNames={{ label: styles.inputLabel }} />
             <Select
               label="Status"
-              data={['pending', 'confirmed', 'cancelled']}
+              data={['pending', 'confirmed', 'cancelled', 'rejected']}
               value={editReg.status}
               onChange={(v) => setEditReg({ ...editReg, status: v ?? 'pending' })}
               classNames={{ label: styles.inputLabel }}

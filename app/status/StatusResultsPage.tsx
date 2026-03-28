@@ -53,6 +53,11 @@ const STATUS_INFO: Record<string, { label: string; color: string; message: strin
     color: "#ff6b6b",
     message: "Đăng ký đã bị hủy. Vui lòng liên hệ ban tổ chức để biết thêm.",
   },
+  rejected: {
+    label: "Từ chối",
+    color: "#ff922b",
+    message: "Đăng ký đã bị từ chối bởi ban tổ chức. Vui lòng liên hệ BTC để biết thêm chi tiết.",
+  },
 };
 
 export default function StatusResultsPage() {
@@ -63,6 +68,8 @@ export default function StatusResultsPage() {
   const [participantsMap, setParticipantsMap] = useState<Record<string, ParticipantData>>({});
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState("");
+  const [cancelConfirmId, setCancelConfirmId] = useState<string | null>(null);
+  const [cancellingId, setCancellingId] = useState<string | null>(null);
 
   useEffect(() => {
     if (!query || query.length < 6) {
@@ -109,6 +116,27 @@ export default function StatusResultsPage() {
 
     fetchData();
   }, [query]);
+
+  const handleCancelConfirm = async (id: string) => {
+    setCancellingId(id);
+    try {
+      const res = await fetch("/api/status/cancel", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ id, q: query }),
+      });
+      const data = await res.json();
+      if (!res.ok) throw new Error(data.error ?? "Không thể hủy đăng ký");
+      setRegistrations((prev) =>
+        prev ? prev.map((r) => (r.id === id ? { ...r, status: "cancelled" } : r)) : prev,
+      );
+      setCancelConfirmId(null);
+    } catch (err) {
+      setError(err instanceof Error ? err.message : "Không thể hủy. Vui lòng thử lại.");
+    } finally {
+      setCancellingId(null);
+    }
+  };
 
   return (
     <>
@@ -158,9 +186,12 @@ export default function StatusResultsPage() {
                       const StatusIcon =
                         r.status === "confirmed"
                           ? CheckCircle
-                          : r.status === "cancelled"
+                          : r.status === "cancelled" || r.status === "rejected"
                             ? XCircle
                             : Clock;
+                      const canCancel = r.status === "pending" || r.status === "confirmed";
+                      const isConfirming = cancelConfirmId === r.id;
+                      const isCancelling = cancellingId === r.id;
                       return (
                         <Box key={r.id} className={styles.resultCard}>
                           <Group justify="space-between" align="flex-start" mb={8}>
@@ -186,9 +217,39 @@ export default function StatusResultsPage() {
                           >
                             {info.message}
                           </p>
-                          <Text size="xs" c="dimmed" mt={4}>
-                            Đăng ký: {new Date(r.created_at).toLocaleDateString("vi-VN")}
-                          </Text>
+                          <Group justify="space-between" align="center" mt={6} wrap="wrap">
+                            <Text size="xs" c="dimmed">
+                              Đăng ký: {new Date(r.created_at).toLocaleDateString("vi-VN")}
+                            </Text>
+                            {canCancel && (
+                              isConfirming ? (
+                                <div className={styles.cancelConfirmGroup}>
+                                  <span className={styles.cancelConfirmText}>Xác nhận hủy?</span>
+                                  <button
+                                    className={styles.cancelConfirmYes}
+                                    onClick={() => handleCancelConfirm(r.id)}
+                                    disabled={isCancelling}
+                                  >
+                                    {isCancelling ? "Đang hủy..." : "Hủy đăng ký"}
+                                  </button>
+                                  <button
+                                    className={styles.cancelConfirmNo}
+                                    onClick={() => setCancelConfirmId(null)}
+                                    disabled={isCancelling}
+                                  >
+                                    Không
+                                  </button>
+                                </div>
+                              ) : (
+                                <button
+                                  className={styles.cancelButton}
+                                  onClick={() => setCancelConfirmId(r.id)}
+                                >
+                                  Hủy đăng ký
+                                </button>
+                              )
+                            )}
+                          </Group>
                         </Box>
                       );
                     })}

@@ -3,7 +3,7 @@ import CheckoutPage from './CheckoutPage';
 import { createServerSupabaseClient } from '@/lib/supabase-server';
 
 export const metadata = {
-  title: 'Xac nhan dang ky — NextGen Pickleball',
+  title: 'Xác nhận đăng ký — NextGen Pickleball',
 };
 
 const DEFAULT_PAYMENT_SETTINGS = {
