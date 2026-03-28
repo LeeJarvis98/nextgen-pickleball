@@ -4,15 +4,26 @@ import { useDisclosure } from '@mantine/hooks';
 import { Box, Container, Grid, GridCol, Button, Group, Stack, Paper } from '@mantine/core';
 import { Timer, CheckCircle, RocketIcon, ChevronLeft } from 'lucide-react';
 import type { TournamentRegistration } from '@/types';
+import type { TournamentSummary } from './RegisterModal';
 import RegisterModal from './RegisterModal';
 import styles from './RegistrationSection.module.css';
 
+const CATEGORY_LABELS: Record<string, string> = {
+  singles_male:   'Đấu Đơn — Nam',
+  singles_female: 'Đấu Đơn — Nữ',
+  doubles_male:   'Đấu Đôi — Nam / Nam',
+  doubles_female: 'Đấu Đôi — Nữ / Nữ',
+  doubles_mixed:  'Đấu Đôi — Nam / Nữ',
+};
+
 export default function RegistrationSection({
   tournamentId,
+  tournament,
   registration,
   onBack,
 }: {
   tournamentId: string;
+  tournament: TournamentSummary;
   registration: TournamentRegistration;
   onBack?: () => void;
 }) {
@@ -25,7 +36,7 @@ export default function RegistrationSection({
           <Group justify="space-between" align="flex-end" mb={64} wrap="wrap" gap="md">
             <Box>
               <Box className={styles.accentBar} />
-              <span className={styles.sectionLabel}>ĐĂNG KÝ THAM DỰ</span>
+              <span className={styles.sectionLabel}>ĐĂNG KÝ THAM GIA</span>
               <h2 className={styles.sectionTitle}>Sẵn Sàng Chinh Phục?</h2>
             </Box>
             {/* <Group gap="xs" align="center">
@@ -72,6 +83,30 @@ export default function RegistrationSection({
                     ))}
                   </Group>
 
+                  {registration.availableCategories.some((cat) => !!registration.categorySlots[cat]) && (
+                    <Box className={styles.slotGrid}>
+                      <span className={styles.slotGridTitle}>TÌNH TRẠNG ĐĂNG KÝ</span>
+                      <Box className={styles.slotRows}>
+                        {registration.availableCategories
+                          .filter((cat) => !!registration.categorySlots[cat])
+                          .map((cat) => {
+                            const slot = registration.categorySlots[cat]!;
+                            const available = slot.capacity - slot.used;
+                            const isFull = available <= 0;
+                            const isLow = available > 0 && available <= 5;
+                            return (
+                              <Group key={cat} justify="space-between" wrap="nowrap" className={styles.slotItem}>
+                                <span className={styles.slotCatLabel}>{CATEGORY_LABELS[cat] ?? cat}</span>
+                                <span className={isFull ? styles.slotFull : isLow ? styles.slotLow : styles.slotOpen}>
+                                  {isFull ? 'Hết chỗ' : `${available} / ${slot.capacity}`}
+                                </span>
+                              </Group>
+                            );
+                          })}
+                      </Box>
+                    </Box>
+                  )}
+
                   <Box className={styles.closingDivider}>
                     <Group justify="center" gap="sm" wrap="wrap">
                       <span className={styles.closingLabel}>Cổng đăng ký sẽ đóng sau:</span>
@@ -89,6 +124,7 @@ export default function RegistrationSection({
         opened={opened}
         onClose={close}
         tournamentId={tournamentId}
+        tournament={tournament}
         availableCategories={registration.availableCategories}
         doublesPartnerMode={registration.doublesPartnerMode}
         categorySlots={registration.categorySlots}

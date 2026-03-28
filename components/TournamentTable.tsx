@@ -31,6 +31,30 @@ function getEntryFeeDisplay(t: Tournament): string {
   return min === max ? formatVND(min) : `${formatVND(min)} – ${formatVND(max)}`;
 }
 
+const CATEGORY_LABELS: Record<string, string> = {
+  singles_male:   'Đơn Nam',
+  singles_female: 'Đơn Nữ',
+  doubles_male:   'Đôi Nam',
+  doubles_female: 'Đôi Nữ',
+  doubles_mixed:  'Đôi Hỗn Hợp',
+};
+
+function getSlotSummary(reg: Tournament['registration']): {
+  totalCap: number; totalUsed: number; remaining: number; pct: number; isFull: boolean; isLow: boolean;
+} | null {
+  const entries = Object.values(reg.categorySlots);
+  if (entries.length === 0) return null;
+  const totalCap = entries.reduce((s, e) => s + (e?.capacity ?? 0), 0);
+  const totalUsed = entries.reduce((s, e) => s + (e?.used ?? 0), 0);
+  const remaining = totalCap - totalUsed;
+  return {
+    totalCap, totalUsed, remaining,
+    pct: totalCap > 0 ? Math.min(100, (totalUsed / totalCap) * 100) : 0,
+    isFull: remaining <= 0,
+    isLow: remaining > 0 && remaining <= 10,
+  };
+}
+
 const STATUS_COLORS: Record<TournamentStatus, { border: string; color: string }> = {
   UPCOMING:  { border: 'rgba(184, 255, 0, 0.5)',   color: '#b8ff00' },
   ONGOING:   { border: 'rgba(0, 212, 255, 0.5)',   color: '#00d4ff' },
@@ -169,10 +193,52 @@ function TournamentDetailCard({ tournament: t, onClose, onSelectTournament }: To
                   <span className={styles.detailInfoLabel}>Hạn đăng ký</span>
                   <span className={styles.detailInfoValue}>{t.registration.deadline}</span>
                 </Group>
-                <Group justify="space-between" py="xs" className={styles.detailInfoRow}>
-                  <span className={styles.detailInfoLabel}>Tổng số slots</span>
-                  <span className={styles.detailInfoValue}>{t.registration.totalSlots}</span>
-                </Group>
+                {(() => {
+                  const slot = getSlotSummary(t.registration);
+                  if (!slot) return (
+                    <Group justify="space-between" py="xs" className={styles.detailInfoRow}>
+                      <span className={styles.detailInfoLabel}>Tổng số slots</span>
+                      <span className={styles.detailInfoValue}>{t.registration.totalSlots}</span>
+                    </Group>
+                  );
+                  const catEntries = Object.entries(t.registration.categorySlots);
+                  return (
+                    <>
+                      <Group justify="space-between" py="xs" className={styles.detailInfoRow}>
+                        <span className={styles.detailInfoLabel}>Slots còn lại</span>
+                        <span className={slot.isFull ? styles.detailSlotFull : slot.isLow ? styles.detailSlotLow : styles.detailSlotOpen}>
+                          {slot.isFull ? 'Hết chỗ' : `${slot.remaining} / ${slot.totalCap}`}
+                        </span>
+                      </Group>
+                      <Box py="xs">
+                        <Box className={styles.detailSlotBar}>
+                          <Box
+                            className={slot.isFull ? styles.detailSlotBarFillFull : styles.detailSlotBarFill}
+                            style={{ width: `${slot.pct}%` }}
+                          />
+                        </Box>
+                        {catEntries.length > 1 && (
+                          <Stack gap={4} mt={8}>
+                            {catEntries.map(([cat, s]) => {
+                              if (!s) return null;
+                              const avail = s.capacity - s.used;
+                              const catFull = avail <= 0;
+                              const catLow = avail > 0 && avail <= 5;
+                              return (
+                                <Group key={cat} justify="space-between">
+                                  <span className={styles.detailSlotCatLabel}>{CATEGORY_LABELS[cat] ?? cat}</span>
+                                  <span className={`${styles.detailSlotCatValue} ${catFull ? styles.detailSlotFull : catLow ? styles.detailSlotLow : styles.detailSlotOpen}`}>
+                                    {catFull ? 'Hết chỗ' : `${avail} / ${s.capacity}`}
+                                  </span>
+                                </Group>
+                              );
+                            })}
+                          </Stack>
+                        )}
+                      </Box>
+                    </>
+                  );
+                })()}
                 {t.registration.entryFeeMode === 'per_category' &&
                   Object.keys(t.registration.categoryFees ?? {}).length > 0 && (
                     <Box pt="sm">
@@ -345,6 +411,20 @@ export default function TournamentTable({
               sortable: true,
               width: 170,
               render: (t) => <span className={styles.cell}>{t.schedule.displayDate}</span>,
+            },
+            {
+              accessor: 'slots',
+              title: 'Slots',
+              width: 110,
+              render: (t) => {
+                const slot = getSlotSummary(t.registration);
+                if (!slot) return <span className={styles.cell}>—</span>;
+                return (
+                  <span className={slot.isFull ? styles.slotsCellFull : slot.isLow ? styles.slotsCellLow : styles.slotsCell}>
+                    {slot.isFull ? 'Hết chỗ' : `${slot.remaining} / ${slot.totalCap}`}
+                  </span>
+                );
+              },
             },
             {
               accessor: 'entryFee',

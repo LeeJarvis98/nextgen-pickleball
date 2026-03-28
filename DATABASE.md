@@ -132,6 +132,7 @@ One row per tournament. Drives the registration section UI.
 | `entry_fee_mode`        | text    | NO       | `'per_category'`| Enum: `per_category` \| `flat`. Controls how the entry fee is presented in the registration modal. |
 | `entry_fee`             | text    | YES      | `NULL`          | Used when `entry_fee_mode = 'flat'`. A single display string shown below the category table, e.g. `"200.000 VNĐ"`. Ignored when mode is `per_category`. |
 | `category_fees`         | jsonb   | YES      | `NULL`          | Used when `entry_fee_mode = 'per_category'`. Per-category fee display strings. Keys are category values (e.g. `singles_male`). Values are display strings, e.g. `"200.000 VNĐ"`. If `NULL` or a key is absent, no fee is shown for that category. |
+| `category_slots`        | jsonb   | NO       | `{}`            | Per-category slot capacity. Keys are category values (e.g. `singles_male`). Values are objects with a `capacity` integer: `{"singles_male":{"capacity":32},"doubles_male":{"capacity":16}}`. 1 slot = 1 person. Category capacities should be distributed within the `total_slots` cap. |
 
 ---
 

@@ -30,14 +30,14 @@ const spaceGrotesk = Space_Grotesk({
 export const metadata: Metadata = {
   title: 'NEXTGEN PICKLEBALL SERIES | Season 1 - 2026',
   description:
-    "Vietnam's Premier Pickleball Tournament. Experience the high-velocity precision of the pro-circuit in a high-performance environment.",
+    "Đánh thức kỹ năng tại đấu trường NextGen Pickleball đỉnh cao tại Việt Nam. Trải nghiệm không gian thi đấu chuyên nghiệp bậc nhất.",
   keywords: ['pickleball', 'tournament', 'Vietnam', 'NextGen', 'Season 1'],
   icons: {
     icon: '/favicon.webp',
   },
   openGraph: {
     title: 'NEXTGEN PICKLEBALL SERIES',
-    description: "Vietnam's Premier Pickleball Tournament",
+    description: "Đánh thức kỹ năng tại đấu trường NextGen Pickleball đỉnh cao tại Việt Nam. Trải nghiệm không gian thi đấu chuyên nghiệp bậc nhất.",
     type: 'website',
   },
 };

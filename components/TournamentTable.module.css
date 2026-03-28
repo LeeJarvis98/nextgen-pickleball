@@ -182,7 +182,7 @@
   bottom: 0;
   left: 0;
   right: 0;
-  padding: 2rem;
+  padding: 0rem 2rem;
   z-index: 1;
 }
 
@@ -405,4 +405,80 @@
 .detailSelectBtn:hover {
   background: #d0ff5a;
   border-color: rgba(184, 255, 0, 0.8);
+}
+
+/* ── Slot cells (main table) ── */
+
+.slotsCell {
+  font-weight: 700;
+  font-size: 0.85rem;
+  color: #b8ff00;
+}
+
+.slotsCellLow {
+  font-weight: 700;
+  font-size: 0.85rem;
+  color: #ff9500;
+}
+
+.slotsCellFull {
+  font-weight: 700;
+  font-size: 0.85rem;
+  color: #ff6450;
+}
+
+/* ── Slot status (detail card) ── */
+
+.detailSlotBar {
+  height: 4px;
+  background: rgba(255, 255, 255, 0.08);
+  border-radius: 2px;
+  overflow: hidden;
+  margin-bottom: 2px;
+}
+
+.detailSlotBarFill {
+  height: 100%;
+  background: #b8ff00;
+  border-radius: 2px;
+  transition: width 0.4s ease;
+}
+
+.detailSlotBarFillFull {
+  height: 100%;
+  background: rgba(255, 100, 80, 0.8);
+  border-radius: 2px;
+}
+
+.detailSlotOpen {
+  font-weight: 700;
+  font-size: 0.9rem;
+  color: #b8ff00;
+}
+
+.detailSlotLow {
+  font-weight: 700;
+  font-size: 0.9rem;
+  color: #ff9500;
+}
+
+.detailSlotFull {
+  font-weight: 700;
+  font-size: 0.9rem;
+  color: #ff6450;
+}
+
+.detailSlotCatLabel {
+  font-family: var(--font-space-grotesk);
+  font-size: 0.68rem;
+  color: #adaaaa;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+}
+
+.detailSlotCatValue {
+  font-family: var(--font-epilogue);
+  font-weight: 700;
+  font-style: italic;
+  font-size: 0.85rem;
 }

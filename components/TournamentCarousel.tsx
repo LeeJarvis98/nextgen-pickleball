@@ -46,6 +46,30 @@ function getCategoryFeeNumbers(categoryFees: Partial<Record<string, string>>): s
   return min === max ? formatNumber(min) : `${formatNumber(min)} – ${formatNumber(max)}`;
 }
 
+const CATEGORY_LABELS: Record<string, string> = {
+  singles_male:   'Đơn Nam',
+  singles_female: 'Đơn Nữ',
+  doubles_male:   'Đôi Nam',
+  doubles_female: 'Đôi Nữ',
+  doubles_mixed:  'Đôi Hỗn Hợp',
+};
+
+function getSlotSummary(reg: Tournament['registration']): {
+  totalCap: number; totalUsed: number; remaining: number; pct: number; isFull: boolean; isLow: boolean;
+} | null {
+  const entries = Object.values(reg.categorySlots);
+  if (entries.length === 0) return null;
+  const totalCap = entries.reduce((s, e) => s + (e?.capacity ?? 0), 0);
+  const totalUsed = entries.reduce((s, e) => s + (e?.used ?? 0), 0);
+  const remaining = totalCap - totalUsed;
+  return {
+    totalCap, totalUsed, remaining,
+    pct: totalCap > 0 ? Math.min(100, (totalUsed / totalCap) * 100) : 0,
+    isFull: remaining <= 0,
+    isLow: remaining > 0 && remaining <= 10,
+  };
+}
+
 interface InfoRowProps {
   label: string;
   value: string;
@@ -82,7 +106,6 @@ function TournamentSlide({ tournament, onSelectTournament }: TournamentSlideProp
             <Box className={styles.compactVenueBannerGradient} />
             <Box className={styles.compactStatusOverlay}>
               <Badge
-                variant="outline"
                 className={styles.statusBadge}
                 style={{
                   borderColor: STATUS_COLORS[tournament.status].border,
@@ -166,6 +189,27 @@ function TournamentSlide({ tournament, onSelectTournament }: TournamentSlideProp
               </GridCol>
             </Grid>
 
+            {(() => {
+              const slot = getSlotSummary(tournament.registration);
+              if (!slot) return null;
+              return (
+                <Box className={styles.slotStatusBox} mb={14}>
+                  <Group justify="space-between" align="center" mb={6}>
+                    <span className={styles.slotStatusLabel}>Slots còn lại</span>
+                    <span className={slot.isFull ? styles.slotFull : slot.isLow ? styles.slotLow : styles.slotOpen}>
+                      {slot.isFull ? 'Hết chỗ' : `${slot.remaining} / ${slot.totalCap}`}
+                    </span>
+                  </Group>
+                  <Box className={styles.slotBar}>
+                    <Box
+                      className={slot.isFull ? styles.slotBarFillFull : styles.slotBarFill}
+                      style={{ width: `${slot.pct}%` }}
+                    />
+                  </Box>
+                </Box>
+              );
+            })()}
+
             <button className={styles.compactSelectBtn} onClick={onSelectTournament}>
               Chọn giải đấu
             </button>
@@ -212,6 +256,45 @@ function TournamentSlide({ tournament, onSelectTournament }: TournamentSlideProp
                   <span className={styles.infoRowLabel}>Kết thúc</span>
                   <span className={styles.infoRowValue}>{tournament.schedule.closingTime}</span>
                 </Group>
+                {(() => {
+                  const slot = getSlotSummary(tournament.registration);
+                  if (!slot) return null;
+                  const catEntries = Object.entries(tournament.registration.categorySlots);
+                  return (
+                    <Box className={styles.slotStatusBox}>
+                      <Group justify="space-between" align="center" mb={6}>
+                        <span className={styles.slotStatusLabel}>Slots còn lại</span>
+                        <span className={slot.isFull ? styles.slotFull : slot.isLow ? styles.slotLow : styles.slotOpen}>
+                          {slot.isFull ? 'Hết chỗ' : `${slot.remaining} / ${slot.totalCap}`}
+                        </span>
+                      </Group>
+                      <Box className={styles.slotBar}>
+                        <Box
+                          className={slot.isFull ? styles.slotBarFillFull : styles.slotBarFill}
+                          style={{ width: `${slot.pct}%` }}
+                        />
+                      </Box>
+                      {catEntries.length > 1 && (
+                        <Stack gap={4} mt={10}>
+                          {catEntries.map(([cat, s]) => {
+                            if (!s) return null;
+                            const avail = s.capacity - s.used;
+                            const catFull = avail <= 0;
+                            const catLow = avail > 0 && avail <= 5;
+                            return (
+                              <Group key={cat} justify="space-between">
+                                <span className={styles.slotCatLabel}>{CATEGORY_LABELS[cat] ?? cat}</span>
+                                <span className={catFull ? styles.slotFull : catLow ? styles.slotLow : styles.slotOpen}>
+                                  {catFull ? 'Hết chỗ' : `${avail} / ${s.capacity}`}
+                                </span>
+                              </Group>
+                            );
+                          })}
+                        </Stack>
+                      )}
+                    </Box>
+                  );
+                })()}
                 <Box className={styles.entryFeeBox}>
                   <div className={styles.entryFeeHeader}>
                     <span className={styles.entryFeeLabel}>Phí Tham Gia</span>
@@ -298,18 +381,17 @@ function TournamentSlide({ tournament, onSelectTournament }: TournamentSlideProp
 interface TournamentCarouselProps {
   tournaments: Tournament[];
   onSlideChange?: (index: number) => void;
-  onSelectTournament?: () => void;
+  onSelectTournament?: (index: number) => void;
 }
 
 export default function TournamentCarousel({ tournaments, onSlideChange, onSelectTournament }: TournamentCarouselProps) {
-  if (tournaments.length === 1) {
-    return <TournamentSlide tournament={tournaments[0]} onSelectTournament={onSelectTournament} />;
-  }
+  const isSingle = tournaments.length === 1;
 
   return (
     <Carousel
-      withIndicators
-      emblaOptions={{ loop: true }}
+      withIndicators={!isSingle}
+      withControls={!isSingle}
+      emblaOptions={{ loop: !isSingle }}
       previousControlIcon={<ChevronLeft size={20} color="#B8FF00" />}
       nextControlIcon={<ChevronRight size={20} color="#B8FF00" />}
       onSlideChange={onSlideChange}
@@ -318,8 +400,8 @@ export default function TournamentCarousel({ tournaments, onSlideChange, onSelec
         indicator: 'carousel-indicator',
       }}
     >
-      {tournaments.map((tournament) => (
-        <TournamentSlide key={tournament.id} tournament={tournament} onSelectTournament={onSelectTournament} />
+      {tournaments.map((tournament, idx) => (
+        <TournamentSlide key={tournament.id} tournament={tournament} onSelectTournament={() => onSelectTournament?.(idx)} />
       ))}
     </Carousel>
   );

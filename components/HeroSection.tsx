@@ -31,8 +31,7 @@ export default function HeroSection() {
               </Box>
 
               <p className={styles.subtitle}>
-                Vietnam&apos;s Premier Pickleball Tournament. Experience the high-velocity precision
-                of the pro-circuit in a high-performance environment.
+                Đánh thức kỹ năng tại đấu trường NextGen Pickleball đỉnh cao tại Việt Nam. Trải nghiệm không gian thi đấu chuyên nghiệp bậc nhất.
               </p>
 
               <Group gap="md" wrap="wrap">

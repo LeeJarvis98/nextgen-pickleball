@@ -12,13 +12,20 @@ import {
   Group,
   Box,
   Divider,
+  SimpleGrid,
 } from '@mantine/core';
 import { useForm } from '@mantine/form';
 import { notifications } from '@mantine/notifications';
 import { DataTable } from 'mantine-datatable';
-import { User, Phone, Mail, Check, VenusAndMars } from 'lucide-react';
+import { User, Phone, Mail, Check, MapPin, CalendarDays } from 'lucide-react';
 import type { RegistrationCategory, RegistrationFormValues, CategorySlotInfo } from '@/types';
 import styles from './RegisterModal.module.css';
+
+export interface TournamentSummary {
+  name: string;
+  venue: { name: string; logoUrl?: string; city: string; country: string };
+  schedule: { displayDate: string };
+}
 
 function parseFeeVND(fee: string): number {
   return parseInt(fee.replace(/[^\d]/g, ''), 10) || 0;
@@ -59,6 +66,7 @@ interface RegisterModalProps {
   opened: boolean;
   onClose: () => void;
   tournamentId: string;
+  tournament: TournamentSummary;
   availableCategories: RegistrationCategory[];
   doublesPartnerMode: 'fixed' | 'random';
   categorySlots: Partial<Record<RegistrationCategory, CategorySlotInfo>>;
@@ -71,6 +79,7 @@ export default function RegisterModal({
   opened,
   onClose,
   tournamentId,
+  tournament,
   availableCategories,
   doublesPartnerMode,
   categorySlots,
@@ -112,17 +121,23 @@ export default function RegisterModal({
     },
   });
 
-  // ── Visible categories filtered by gender ────────────────
+  // ── Visible categories filtered by slot config + gender ──
   const visibleCategories = useMemo(() => {
     const g = form.values.gender;
-    return availableCategories.filter((cat) => {
+    // When category slots are configured, restrict to only those categories.
+    // This keeps the modal consistent with the slot-availability display.
+    const slotKeys = Object.keys(categorySlots) as RegistrationCategory[];
+    const base = slotKeys.length > 0
+      ? availableCategories.filter((cat) => categorySlots[cat] !== undefined)
+      : availableCategories;
+    return base.filter((cat) => {
       if (cat === 'singles_male')   return g === 'male';
       if (cat === 'singles_female') return g === 'female';
       if (cat === 'doubles_male')   return g === 'male';
       if (cat === 'doubles_female') return g === 'female';
       return true; // doubles_mixed open to all
     });
-  }, [availableCategories, form.values.gender]);
+  }, [availableCategories, categorySlots, form.values.gender]);
 
   // ── DataTable row data ────────────────────────────────────
   const tableRows: CategoryRow[] = useMemo(
@@ -319,7 +334,7 @@ export default function RegisterModal({
     <Modal
       opened={opened}
       onClose={handleClose}
-      title={<span className={styles.modalTitle}>ĐĂNG KÝ THAM DỰ</span>}
+      title={<span className={styles.modalTitle}>ĐĂNG KÝ THAM GIA</span>}
       size="xl"
       classNames={{
         content: styles.modalContent,
@@ -330,18 +345,77 @@ export default function RegisterModal({
     >
       <form onSubmit={form.onSubmit(handleSubmit)}>
           <Stack gap="md" mt="sm">
-            <span className={styles.seasonLabel}>Season 1 · 2026</span>
+            {/* ── Mobile logo banner (full-width, above summary card) ── */}
+            {tournament.venue.logoUrl && (
+              <Box className={styles.summaryLogoBanner}>
+                <img
+                  src={tournament.venue.logoUrl}
+                  alt={tournament.name}
+                  className={styles.summaryLogoBannerImg}
+                />
+              </Box>
+            )}
 
-            <TextInput
-              label="Họ và Tên"
-              placeholder="Nguyễn Văn A"
-              required
-              leftSection={<User size={16} color="#ADAAAA" />}
-              classNames={{ label: styles.inputLabel }}
-              {...form.getInputProps('full_name')}
-            />
+            {/* ── Tournament summary ── */}
+            <Box className={styles.tournamentSummary}>
+              {tournament.venue.logoUrl && (
+                <img
+                  src={tournament.venue.logoUrl}
+                  alt={tournament.name}
+                  className={styles.summaryLogo}
+                />
+              )}
+              <Box className={styles.summaryInfo}>
+                <span className={styles.summaryName}>{tournament.name}</span>
+                <Group gap={12} mt={4} wrap="wrap">
+                  <Group gap={5} style={{ minWidth: 0, overflow: 'hidden' }}>                    
+                    <span className={styles.summaryMeta}><MapPin size={12} color="#b8ff00" style={{ flexShrink: 0 }} /> {tournament.venue.name} · {tournament.venue.city}</span>
+                  </Group>
+                  <Group gap={5} style={{ minWidth: 0, overflow: 'hidden' }}>
+                    <CalendarDays size={12} color="#b8ff00" style={{ flexShrink: 0 }} />
+                    <span className={styles.summaryMeta}>{tournament.schedule.displayDate}</span>
+                  </Group>
+                </Group>
+              </Box>
+            </Box>
 
-            <Group grow>
+            <SimpleGrid cols={{ base: 1, sm: 2 }} spacing="md" style={{ alignItems: 'start' }}>
+              <TextInput
+                label="Họ và Tên"
+                placeholder="Nguyễn Văn A"
+                required
+                leftSection={<User size={16} color="#ADAAAA" />}
+                classNames={{ label: styles.inputLabel }}
+                {...form.getInputProps('full_name')}
+              />
+
+              <Box>
+                <Box component="label" className={styles.inputLabel} mb={6} display="block">
+                  Giới Tính <span className={styles.requiredStar}>*</span>
+                </Box>
+                <Group gap={10}>
+                  {(['male', 'female'] as const).map((g) => {
+                    const isActive = form.values.gender === g;
+                    return (
+                      <button
+                        key={g}
+                        type="button"
+                        className={`${styles.genderBtn} ${isActive ? styles.genderBtnActive : ''}`}
+                        onClick={() => handleGenderChange(g)}
+                      >
+                        <span className={`${styles.genderDot} ${isActive ? styles.genderDotActive : ''}`} />
+                        {g === 'male' ? 'Nam' : 'Nữ'}
+                      </button>
+                    );
+                  })}
+                </Group>
+                {form.errors.gender && (
+                  <Box className={styles.categoryError}>{form.errors.gender}</Box>
+                )}
+              </Box>
+            </SimpleGrid>
+
+            <SimpleGrid cols={{ base: 1, sm: 2 }} spacing="md">
               <TextInput
                 label="Số Điện Thoại"
                 placeholder="0912 345 678"
@@ -358,28 +432,13 @@ export default function RegisterModal({
                 classNames={{ label: styles.inputLabel }}
                 {...form.getInputProps('email')}
               />
-            </Group>
-
-            <Select
-              label="Giới Tính"
-              placeholder="Chọn giới tính"
-              required
-              leftSection={<VenusAndMars size={16} color="#ADAAAA" />}
-              classNames={{ label: styles.inputLabel }}
-              data={[
-                { value: 'male', label: 'Nam' },
-                { value: 'female', label: 'Nữ' },
-              ]}
-              value={form.values.gender}
-              onChange={handleGenderChange}
-              error={form.errors.gender}
-            />
+            </SimpleGrid>
 
             {/* ── Category selection table ── */}
             <Box>
               <Box component="label" className={styles.inputLabel} mb={6} display="block">
                 Hạng Mục Thi Đấu{' '}
-                <span style={{ color: 'var(--mantine-color-red-6)' }}>*</span>
+                <span className={styles.requiredStar}>*</span>
               </Box>
               <Box className={styles.categoryDataTableWrapper}>
                 <DataTable

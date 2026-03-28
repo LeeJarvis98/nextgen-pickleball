@@ -14,7 +14,7 @@ import { DataTable } from 'mantine-datatable';
 import {
   LogOut, Trophy, Users, RefreshCw, Edit, Trash2, Save, X,
   Calendar, MapPin, Award, ClipboardList, AlertCircle, Plus,
-  ChevronUp, ChevronDown,
+  ChevronUp, ChevronDown, Shuffle,
 } from 'lucide-react';
 import styles from './AdminDashboard.module.css';
 
@@ -56,6 +56,11 @@ interface PrizeEntry {
 interface KVPair {
   key: string;
   value: string;
+}
+
+interface SlotEntry {
+  key: string;
+  capacity: number;
 }
 
 // ─── Helpers ──────────────────────────────────────────────────────────────────
@@ -227,6 +232,128 @@ function KVEditor({ pairs, onChange }: { pairs: KVPair[]; onChange: (pairs: KVPa
   );
 }
 
+/** Category slot capacity editor */
+const SINGLES_CATEGORIES = new Set(['singles_male', 'singles_female']);
+
+/** Match boundary: singles need 2 persons/match, doubles need 4 persons/match. */
+function matchSize(cat: string): number {
+  return SINGLES_CATEGORIES.has(cat) ? 2 : 4;
+}
+
+/**
+ * Distribute totalSlots evenly across categories, rounding each down to its
+ * match boundary (2 for singles, 4 for doubles).
+ * If there is only 1 category it receives the full cap (rounded to boundary).
+ */
+function autoDistributeSlots(cats: string[], totalSlots: number): SlotEntry[] {
+  if (cats.length === 0 || totalSlots <= 0) return cats.map((key) => ({ key, capacity: 0 }));
+  if (cats.length === 1) {
+    const ms = matchSize(cats[0]);
+    return [{ key: cats[0], capacity: Math.floor(totalSlots / ms) * ms }];
+  }
+  const base = totalSlots / cats.length;
+  return cats.map((key) => {
+    const ms = matchSize(key);
+    return { key, capacity: Math.floor(base / ms) * ms };
+  });
+}
+
+function CategorySlotsEditor({
+  slots,
+  totalSlots,
+  availableCategories,
+  onChange,
+}: {
+  slots: SlotEntry[];
+  totalSlots: number;
+  availableCategories: string[];
+  onChange: (slots: SlotEntry[]) => void;
+}) {
+  const update = (i: number, field: 'key' | 'capacity', val: string | number) => {
+    onChange(slots.map((s, idx) => (idx === i ? { ...s, [field]: val } : s)));
+  };
+  const remove = (i: number) => onChange(slots.filter((_, idx) => idx !== i));
+
+  const usedKeys = new Set(slots.map((s) => s.key).filter(Boolean));
+  const add = () => {
+    const next = CATEGORY_OPTIONS.find((o) => !usedKeys.has(o.value));
+    onChange([...slots, { key: next?.value ?? '', capacity: 0 }]);
+  };
+  const allUsed = CATEGORY_OPTIONS.every((o) => usedKeys.has(o.value));
+  const totalAllocated = slots.reduce((sum, s) => sum + (s.capacity || 0), 0);
+  const overCap = totalSlots > 0 && totalAllocated > totalSlots;
+
+  const handleAutoDistribute = () => {
+    // Use existing slot keys; fall back to available categories if slots is empty
+    const cats = slots.length > 0
+      ? slots.map((s) => s.key).filter(Boolean)
+      : availableCategories;
+    onChange(autoDistributeSlots(cats, totalSlots));
+  };
+
+  const canAutoDistribute = totalSlots > 0 && (
+    slots.some((s) => s.key) || availableCategories.length > 0
+  );
+
+  return (
+    <Stack gap={6}>
+      <Group justify="space-between" align="center">
+        <Button
+          size="xs"
+          variant="light"
+          color="neonLime"
+          leftSection={<Shuffle size={12} />}
+          onClick={handleAutoDistribute}
+          disabled={!canAutoDistribute}
+          title="Distribute total slots evenly across categories (singles=2pp/match, doubles=4pp/match)"
+        >
+          Auto Distribute
+        </Button>
+        <Text size="xs" c={overCap ? 'red' : 'dimmed'}>
+          {overCap && '⚠ '}Allocated: {totalAllocated} / {totalSlots || '∞'}
+        </Text>
+      </Group>
+      {slots.map((s, i) => (
+        <Group key={i} gap={8} wrap="nowrap">
+          <Select
+            placeholder="Select category"
+            data={CATEGORY_OPTIONS.map((o) => ({
+              ...o,
+              disabled: usedKeys.has(o.value) && o.value !== s.key,
+            }))}
+            value={s.key || null}
+            onChange={(v) => update(i, 'key', v ?? '')}
+            style={{ flex: 1.4 }}
+            size="xs"
+            allowDeselect={false}
+          />
+          <NumberInput
+            placeholder="Capacity"
+            value={s.capacity}
+            onChange={(v) => update(i, 'capacity', Number(v))}
+            min={0}
+            style={{ flex: 0.8 }}
+            size="xs"
+          />
+          <ActionIcon size="sm" variant="subtle" color="red" onClick={() => remove(i)}>
+            <X size={12} />
+          </ActionIcon>
+        </Group>
+      ))}
+      <Button
+        size="xs"
+        variant="subtle"
+        leftSection={<Plus size={12} />}
+        onClick={add}
+        className={styles.addRowButton}
+        disabled={allUsed}
+      >
+        {allUsed ? 'All categories added' : 'Add category slot'}
+      </Button>
+    </Stack>
+  );
+}
+
 /** Prize entries editor */
 function PrizeEntriesEditor({ entries, onChange }: { entries: PrizeEntry[]; onChange: (entries: PrizeEntry[]) => void }) {
   const update = (i: number, field: keyof PrizeEntry, val: string | number) => {
@@ -324,6 +451,7 @@ export default function AdminDashboard() {
   const [categoryFees, setCategoryFees] = useState<KVPair[]>([]);
   const [categoryFeesJson, setCategoryFeesJson] = useState('');
   const [categoryFeesJsonError, setCategoryFeesJsonError] = useState('');
+  const [categorySlots, setCategorySlots] = useState<SlotEntry[]>([]);
   // ISO datetime string driving the deadline display auto-compute (not stored directly)
   const [deadlinePicker, setDeadlinePicker] = useState('');
 
@@ -453,6 +581,19 @@ export default function AdminDashboard() {
     }
     setCategoryFeesJsonError('');
 
+    // Init category slots
+    const slotsRaw = (row.tournament_registration_info as Record<string, unknown>)?.category_slots;
+    if (slotsRaw && typeof slotsRaw === 'object' && !Array.isArray(slotsRaw)) {
+      setCategorySlots(
+        Object.entries(slotsRaw as Record<string, { capacity: number }>).map(([key, val]) => ({
+          key,
+          capacity: Number(val?.capacity ?? 0),
+        }))
+      );
+    } else {
+      setCategorySlots([]);
+    }
+
     // Init deadline picker from stored display string
     const regInfoRow = row.tournament_registration_info as Record<string, unknown> | null;
     const storedDdt = String(regInfoRow?.deadline_date_time ?? '');
@@ -483,6 +624,13 @@ export default function AdminDashboard() {
         ? Object.fromEntries(categoryFees.filter((p) => p.key).map((p) => [p.key, p.value]))
         : null;
 
+      // Merge category_slots back from slot entries
+      const slotsObj = categorySlots.length > 0
+        ? Object.fromEntries(
+            categorySlots.filter((s) => s.key).map((s) => [s.key, { capacity: s.capacity }])
+          )
+        : {};
+
       const updates: Array<{ table: string; data: Record<string, unknown> }> = [
         { table: 'tournaments', data: { name, status, sort_order } },
       ];
@@ -492,7 +640,7 @@ export default function AdminDashboard() {
       if (tournament_registration_info) {
         updates.push({
           table: 'tournament_registration_info',
-          data: { ...tournament_registration_info, category_fees: feesObj },
+          data: { ...tournament_registration_info, category_fees: feesObj, category_slots: slotsObj },
         });
       }
 
@@ -1089,10 +1237,25 @@ export default function AdminDashboard() {
                         </Group>
                         <NumberInput
                           label="Total Slots"
+                          description="Maximum number of persons who can participate"
                           value={Number(regInfo.total_slots ?? 0)}
                           onChange={(v) => setSubField('tournament_registration_info', 'total_slots', Number(v), 'registration')}
                           min={0}
                           classNames={{ label: styles.inputLabel }}
+                        />
+                        <Divider
+                          label={<span className={styles.dividerLabel}>Category Slots</span>}
+                          labelPosition="left"
+                          my={4}
+                        />
+                        <Text size="xs" c="dimmed">
+                          Set slot capacity per category (1 slot = 1 person). Total allocated should not exceed the slot cap above.
+                        </Text>
+                        <CategorySlotsEditor
+                          slots={categorySlots}
+                          totalSlots={Number(regInfo.total_slots ?? 0)}
+                          availableCategories={Array.isArray(regInfo.available_categories) ? (regInfo.available_categories as string[]) : []}
+                          onChange={(slots) => { setCategorySlots(slots); markDirty('registration'); }}
                         />
                         <TextInput
                           label="Registration Link"

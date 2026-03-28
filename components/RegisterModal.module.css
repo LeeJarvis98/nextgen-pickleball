@@ -30,6 +30,67 @@
   text-transform: uppercase;
 }
 
+/* ── Mobile logo banner (shown only on narrow screens) ── */
+
+.summaryLogoBanner {
+  display: none;
+}
+
+.summaryLogoBannerImg {
+  max-height: 100px;
+  max-width: 200%;
+  object-fit: contain;
+}
+
+/* ── Tournament summary card ── */
+
+.tournamentSummary {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  background-color: rgba(184, 255, 0, 0.04);
+  border: 1px solid rgba(184, 255, 0, 0.15);
+  border-radius: 10px;
+  padding: 0.5px 16px;
+  overflow: hidden;
+  min-width: 0;
+}
+
+.summaryLogo {
+  width: 100px;
+  height: 100px;
+  object-fit: contain;
+  border-radius: 6px;
+  flex-shrink: 0;
+}
+
+.summaryInfo {
+  flex: 1;
+  min-width: 0;
+}
+
+.summaryName {
+  display: block;
+  font-family: var(--font-epilogue);
+  font-weight: 900;
+  font-style: italic;
+  font-size: 1rem;
+  color: #ffffff;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.summaryMeta {
+  font-family: var(--font-space-grotesk);
+  font-size: 0.72rem;
+  color: #adaaaa;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  min-width: 0;
+}
+
 .inputLabel {
   font-family: var(--font-space-grotesk);
   font-size: 0.75rem;
@@ -53,6 +114,55 @@
   border: 1px solid rgba(184, 255, 0, 0.2);
   border-radius: 6px;
   padding: 8px 12px;
+}
+
+/* ── Gender toggle buttons ───────────────────────────────── */
+
+.genderBtn {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 0.55rem 1.1rem;
+  border-radius: 8px;
+  border: 1.5px solid rgba(255, 255, 255, 0.12);
+  background: transparent;
+  color: #adaaaa;
+  font-family: var(--font-space-grotesk);
+  font-size: 0.85rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: border-color 0.15s, color 0.15s, background 0.15s;
+  -webkit-user-select: none;
+  user-select: none;
+}
+
+.genderBtn:hover {
+  border-color: rgba(184, 255, 0, 0.4);
+  color: #ffffff;
+}
+
+.genderBtnActive {
+  border-color: rgba(184, 255, 0, 0.6);
+  background: rgba(184, 255, 0, 0.08);
+  color: #ffffff;
+}
+
+.genderDot {
+  width: 10px;
+  height: 10px;
+  border-radius: 50%;
+  border: 1.5px solid rgba(255, 255, 255, 0.25);
+  flex-shrink: 0;
+  transition: border-color 0.15s, background 0.15s;
+}
+
+.genderDotActive {
+  border-color: #b8ff00;
+  background: #b8ff00;
+}
+
+.requiredStar {
+  color: var(--mantine-color-red-6);
 }
 
 /* ── Category DataTable ──────────────────────────────────── */
@@ -270,4 +380,59 @@
 
 .divider {
   border-color: rgba(72, 72, 71, 0.4) !important;
+}
+
+/* ── Mobile overrides ─────────────────────────────────────── */
+
+@media (max-width: 600px) {
+  /* Full-width logo banner */
+  .summaryLogoBanner {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    width: 100%;
+    min-height: 100px;
+    padding: 0.25rem;
+  }
+
+  .summaryLogoBannerImg {
+    max-height: 120px;
+    max-width: 100%;
+    object-fit: contain;
+    filter: drop-shadow(0 2px 12px rgba(0, 0, 0, 0.7));
+  }
+
+  /* Hide the inline logo inside the summary card */
+  .summaryLogo {
+    display: none;
+  }
+
+  .summaryName {
+    font-size: 0.88rem;
+    white-space: normal;
+  }
+
+  .summaryMeta {
+    font-size: 0.68rem;
+    white-space: normal;
+    overflow: visible;
+    text-overflow: unset;
+  }
+
+  /* Allow the category table to scroll horizontally instead of clipping
+     (important when the partner-name input column is visible) */
+  .categoryDataTableWrapper {
+    overflow-x: auto;
+    overflow-y: hidden;
+    -webkit-overflow-scrolling: touch;
+    border-radius: 8px;
+  }
+
+  .categoryName {
+    font-size: 0.78rem;
+  }
+
+  .inputLabel {
+    font-size: 0.7rem;
+  }
 }

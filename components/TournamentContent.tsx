@@ -83,8 +83,8 @@ export default function TournamentContent({ tournaments }: { tournaments: Tourna
 
       {showDetails && (
         <div ref={detailsRef}>
-          <PrizesSection prizes={activeTournament.prizes} />
-          <RegistrationSection tournamentId={activeTournament.id} registration={activeTournament.registration} onBack={handleBack} />
+          <PrizesSection key={activeTournament.id} prizes={activeTournament.prizes} />
+          <RegistrationSection key={`reg-${activeTournament.id}`} tournamentId={activeTournament.id} tournament={{ name: activeTournament.name, venue: activeTournament.venue, schedule: { displayDate: activeTournament.schedule.displayDate } }} registration={activeTournament.registration} onBack={handleBack} />
         </div>
       )}
     </>

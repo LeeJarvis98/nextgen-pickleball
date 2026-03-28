@@ -53,27 +53,81 @@
 }
 
 .podium {
-  border-radius: 12px;
+  border-radius: 16px;
   text-align: center;
   position: relative;
+  /* No overflow:hidden here — lets the floating icon escape the top edge */
+  cursor: default;
+  transition: transform 0.35s cubic-bezier(0.34, 1.56, 0.64, 1),
+              box-shadow 0.35s ease;
+}
+
+.podium:hover {
+  transform: translateY(-10px);
+}
+
+/* Inner body — clips shine sweep and watermark, never clips the icon */
+.podiumBody {
+  border-radius: 16px;
+  overflow: hidden;
+  position: relative;
+  text-align: center;
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-start;
+}
+
+/* Shine sweep lives here */
+.podiumBody::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: -100%;
+  width: 55%;
+  height: 100%;
+  background: linear-gradient(
+    90deg,
+    transparent,
+    rgba(255, 255, 255, 0.05),
+    transparent
+  );
+  pointer-events: none;
+  z-index: 2;
+  transition: left 0s;
+}
+
+.podium:hover .podiumBody::before {
+  left: 180%;
+  transition: left 0.7s ease;
+}
+
+.podiumBodyHighlight {
+  background-color: #201f1f;
+  padding: 2.5rem;
+}
+
+.podiumBodyDefault {
+  background-color: #1a1919;
+  padding: 2rem;
 }
 
 .podiumHighlight {
-  background-color: #201f1f;
-  padding: 2.5rem;
-  margin-top: 0;
-  transform: scale(1.05);
-  z-index: 20;
   box-shadow: 0 10px 50px rgba(0, 0, 0, 0.5);
+  animation: glowPulse 3s ease-in-out infinite;
+}
+
+.podiumHighlight:hover {
+  box-shadow: 0 24px 80px rgba(184, 255, 0, 0.2), 0 10px 40px rgba(0, 0, 0, 0.7) !important;
+  animation: none;
 }
 
 .podiumDefault {
-  background-color: #1a1919;
-  padding: 2rem;
-  margin-top: 32px;
-  transform: scale(1);
-  z-index: 1;
-  box-shadow: none;
+  background-color: transparent;
+}
+
+.podiumDefault:hover {
+  box-shadow: 0 20px 60px rgba(0, 0, 0, 0.5);
 }
 
 .podiumIconCenter {
@@ -81,27 +135,33 @@
   left: 50%;
   transform: translateX(-50%);
   border-radius: 50%;
+  z-index: 3;
+  transition: box-shadow 0.35s ease;
 }
 
 .podiumIconCenterHighlight {
   top: -32px;
   background-color: #201f1f;
   padding: 1rem;
+  animation: floatIconHighlight 2.5s ease-in-out infinite;
 }
 
 .podiumIconCenterDefault {
   top: -24px;
   background-color: #1a1919;
   padding: 0.75rem;
+  animation: floatIcon 3s ease-in-out infinite;
 }
 
 .podiumTitle {
   font-family: var(--font-epilogue);
   font-weight: 900;
   color: #ffffff;
-  margin-top: 1.5rem;
+  margin-top: 0.25rem;
   margin-bottom: 0.5rem;
   font-style: italic;
+  position: relative;
+  z-index: 1;
 }
 
 .podiumTitleHighlight {
@@ -116,6 +176,9 @@
   font-family: var(--font-epilogue);
   font-weight: 900;
   font-style: italic;
+  display: block;
+  position: relative;
+  z-index: 1;
 }
 
 .podiumAmountHighlight {
@@ -135,4 +198,121 @@
   margin-top: 0.75rem;
   letter-spacing: 0.2em;
   text-transform: uppercase;
+  position: relative;
+  z-index: 1;
+}
+
+.carouselSlide {
+  /* Force all slides to the same height so cards stay vertically aligned */
+  display: flex !important;
+  align-items: stretch !important;
+}
+
+.slideWrapper {
+  padding-top: 40px;
+  /* Stretch to the full slide height so the card fills it */
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+}
+
+.slideWrapper > .podium {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+}
+
+/* ── Rank watermark ── */
+
+.rankWatermark {
+  position: absolute;
+  bottom: -0.15em;
+  right: 0.1em;
+  font-family: var(--font-epilogue);
+  font-size: 8rem;
+  font-weight: 900;
+  font-style: italic;
+  color: rgba(255, 255, 255, 0.04);
+  pointer-events: none;
+  line-height: 1;
+  -webkit-user-select: none;
+  user-select: none;
+  z-index: 0;
+}
+
+/* ── Rank badge ── */
+
+.rankBadge {
+  display: inline-block;
+  font-family: var(--font-space-grotesk);
+  font-size: 0.65rem;
+  font-weight: 700;
+  letter-spacing: 0.2em;
+  padding: 0.25rem 0.65rem;
+  border-radius: 4px;
+  margin-top: 2.5rem;
+  margin-bottom: 0.25rem;
+  position: relative;
+  z-index: 1;
+}
+
+.rankBadgeHighlight {
+  background-color: rgba(184, 255, 0, 0.12);
+  color: #b8ff00;
+  border: 1px solid rgba(184, 255, 0, 0.3);
+}
+
+.rankBadgeDefault {
+  background-color: rgba(255, 255, 255, 0.05);
+  color: #adaaaa;
+  border: 1px solid rgba(255, 255, 255, 0.08);
+}
+
+/* ── Divider ── */
+
+.divider {
+  height: 1px;
+  width: 50%;
+  margin: 0.75rem auto;
+  position: relative;
+  z-index: 1;
+}
+
+.dividerHighlight {
+  background: linear-gradient(90deg, transparent, rgba(184, 255, 0, 0.5), transparent);
+}
+
+.dividerDefault {
+  background: linear-gradient(90deg, transparent, rgba(173, 170, 170, 0.3), transparent);
+}
+
+/* ── Keyframes ── */
+
+@keyframes glowPulse {
+  0%, 100% {
+    box-shadow: 0 10px 50px rgba(0, 0, 0, 0.5);
+  }
+  50% {
+    box-shadow: 0 10px 50px rgba(0, 0, 0, 0.5), 0 0 50px rgba(184, 255, 0, 0.15);
+  }
+}
+
+@keyframes floatIconHighlight {
+  0%, 100% {
+    top: -32px;
+    box-shadow: 0 0 0 rgba(184, 255, 0, 0);
+  }
+  50% {
+    top: -38px;
+    box-shadow: 0 8px 25px rgba(184, 255, 0, 0.3);
+  }
+}
+
+@keyframes floatIcon {
+  0%, 100% {
+    top: -24px;
+  }
+  50% {
+    top: -30px;
+  }
 }

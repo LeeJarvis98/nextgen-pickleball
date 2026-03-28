@@ -23,9 +23,9 @@
 }
 
 .statusBadge {
-  background-color: rgba(184, 255, 0, 0.1) !important;
+  background-color: rgba(184, 255, 0, 1) !important;
   border-color: rgba(184, 255, 0, 0.2) !important;
-  color: #b8ff00 !important;
+  color: #131313 !important;
   font-family: var(--font-space-grotesk) !important;
   letter-spacing: 0.1em !important;
   font-size: 0.6rem !important;
@@ -51,7 +51,6 @@
 
 .selectBtn {
   position: absolute;
-  top: 2.5rem;
   right: 1.25rem;
   z-index: 2;
   padding: 0.45rem 1rem;
@@ -126,7 +125,7 @@
   bottom: 0;
   left: 0;
   right: 0;
-  padding: 2.5rem;
+  padding: 8rem 2.5rem;
 }
 
 .venueIconBox {
@@ -398,4 +397,69 @@
 .compactSelectBtn:hover {
   background: #d0ff5a;
   border-color: rgba(184, 255, 0, 0.8);
+}
+
+/* ── Slot status ── */
+
+.slotStatusBox {
+  margin-top: 1rem;
+  padding: 0.9rem 1.1rem;
+  background: rgba(255, 255, 255, 0.03);
+  border: 1px solid rgba(72, 72, 71, 0.35);
+  border-radius: 10px;
+}
+
+.slotStatusLabel {
+  font-family: var(--font-space-grotesk);
+  font-size: 0.6rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.18em;
+  color: #adaaaa;
+}
+
+.slotBar {
+  height: 5px;
+  background: rgba(255, 255, 255, 0.08);
+  border-radius: 3px;
+  overflow: hidden;
+}
+
+.slotBarFill {
+  height: 100%;
+  background: #b8ff00;
+  border-radius: 3px;
+  transition: width 0.4s ease;
+}
+
+.slotBarFillFull {
+  height: 100%;
+  background: rgba(255, 100, 80, 0.8);
+  border-radius: 3px;
+}
+
+.slotOpen {
+  font-weight: 700;
+  font-size: 0.875rem;
+  color: #b8ff00;
+}
+
+.slotLow {
+  font-weight: 700;
+  font-size: 0.875rem;
+  color: #ff9500;
+}
+
+.slotFull {
+  font-weight: 700;
+  font-size: 0.875rem;
+  color: #ff6450;
+}
+
+.slotCatLabel {
+  font-family: var(--font-space-grotesk);
+  font-size: 0.68rem;
+  color: #adaaaa;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
 }
