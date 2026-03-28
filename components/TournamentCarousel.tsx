@@ -7,14 +7,14 @@ import type { Tournament, TournamentStatus } from '@/types';
 import styles from './TournamentCarousel.module.css';
 
 const STATUS_LABELS: Record<TournamentStatus, string> = {
-  UPCOMING:  'Sắp diễn ra',
-  ONGOING:   'Đang diễn ra',
+  UPCOMING: 'Sắp diễn ra',
+  ONGOING: 'Đang diễn ra',
   COMPLETED: 'Đã kết thúc',
 };
 
 const STATUS_COLORS: Record<TournamentStatus, { border: string; color: string; bg: string }> = {
-  UPCOMING:  { border: 'rgba(184, 255, 0, 0.5)',   color: '#b8ff00', bg: 'rgba(184, 255, 0, 0.1)' },
-  ONGOING:   { border: 'rgba(0, 212, 255, 0.5)',   color: '#00d4ff', bg: 'rgba(0, 212, 255, 0.1)' },
+  UPCOMING: { border: 'rgba(184, 255, 0, 0.5)', color: '#b8ff00', bg: 'rgba(184, 255, 0, 0.1)' },
+  ONGOING: { border: 'rgba(0, 212, 255, 0.5)', color: '#00d4ff', bg: 'rgba(0, 212, 255, 0.1)' },
   COMPLETED: { border: 'rgba(173, 170, 170, 0.5)', color: '#adaaaa', bg: 'rgba(173, 170, 170, 0.1)' },
 };
 
@@ -126,15 +126,15 @@ function TournamentSlide({ tournament, onSelectTournament }: TournamentSlideProp
                 className={styles.venueImage}
               />
               <Box className={styles.venueGradient} />
-              <button className={styles.selectBtn} onClick={onSelectTournament}>
-                Chọn giải đấu
-              </button>
               <Box className={styles.venueContent}>
-                <Group gap="md" mb={24}>
+                <Group gap="md" mb={24}> 
                   <Box className={styles.venueIconBox}>
                     <MapPin size={22} color="#486700" />
                   </Box>
                   <span className={styles.venueLabel}>Tournament Venue</span>
+                  <button className={styles.selectBtn} onClick={onSelectTournament}>
+                    Chọn giải đấu
+                  </button>
                 </Group>
                 {tournament.venue.logoUrl && (
                   <Box className={styles.venueLogoWrapper}>

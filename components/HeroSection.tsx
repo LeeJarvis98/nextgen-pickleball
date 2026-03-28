@@ -18,7 +18,7 @@ export default function HeroSection() {
           <GridCol span={{ base: 12, lg: 8 }}>
             <Stack gap="xl">
               <Box className={styles.seasonBadge}>
-                <span className={styles.seasonLabel}>SEASON 1 · 2026</span>
+                <span className={styles.seasonLabel}>SEASON 1</span>
               </Box>
 
               <Box>

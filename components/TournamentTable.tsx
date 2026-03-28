@@ -327,6 +327,7 @@ export default function TournamentTable({
             {
               accessor: 'name',
               title: 'Tên giải đấu',
+              width: 250,
               sortable: true,
               render: (t) => <span className={styles.nameCell}>{t.name}</span>,
             },

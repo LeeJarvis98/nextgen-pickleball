@@ -84,7 +84,7 @@ export default function CheckoutPage() {
                   </p>
                   <p className={styles.noteItem}>
                     <span className={styles.noteBullet}>✦</span>
-                    <span>Kiểm tra trạng thái bằng nút <strong>Theo Dõi Đăng Ký</strong> trên trang chủ.</span>
+                    <span>Kiểm tra trạng thái bằng nút <strong>Xem Thông Tin Đăng Ký</strong> trên trang chủ.</span>
                   </p>
                 </div>
               </div>

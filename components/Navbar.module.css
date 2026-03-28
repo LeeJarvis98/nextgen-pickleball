@@ -23,8 +23,45 @@
   font-weight: 900;
   font-style: italic;
   letter-spacing: -0.03em;
-  color: #b8ff00;
   cursor: pointer;
+  display: inline-block;
+  color: transparent;
+  background: linear-gradient(
+    90deg,
+    #b8ff00 0%,
+    #b8ff00 33%,
+    rgba(255, 255, 255, 1) 50%,
+    rgba(255, 255, 255, 1) 57%,
+    rgba(210, 255, 255, 1) 61%,
+    #b8ff00 67%,
+    #b8ff00 100%
+  );
+  background-size: 300% 100%;
+  -webkit-background-clip: text;
+  background-clip: text;
+  animation: glowBreathe 3s ease-in-out infinite, lightStreak 4s ease-in-out infinite;
+}
+
+@keyframes glowBreathe {
+  0%, 100% {
+    text-shadow:
+      0 0 4px rgba(184, 255, 0, 0.0),
+      0 0 10px rgba(184, 255, 0, 0.0);
+  }
+  50% {
+    text-shadow:
+      0 0 8px rgba(184, 255, 0, 1),
+      0 0 20px rgba(184, 255, 0, 0.7),
+      0 0 45px rgba(184, 255, 0, 0.4),
+      0 0 90px rgba(184, 255, 0, 0.15);
+  }
+}
+
+@keyframes lightStreak {
+  /* background-position sweeps the gradient window left→right through the letterforms */
+  0%, 8%  { background-position: 100% center; }
+  32%     { background-position: 0% center; }
+  100%    { background-position: 0% center; }
 }
 
 .navLink {

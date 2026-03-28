@@ -43,7 +43,7 @@ export default function TournamentContent({ tournaments }: { tournaments: Tourna
               <Box className={styles.accentBar} />
               <Text className={styles.sectionLabel}>THÔNG TIN GIẢI ĐẤU</Text>
               <Text component="h2" className={styles.sectionTitle}>
-                Thời Gian &amp; Địa Điểm
+                Danh Sách Giải Đấu
               </Text>
             </Box>
             <Group gap={0} className={styles.viewToggle}>
