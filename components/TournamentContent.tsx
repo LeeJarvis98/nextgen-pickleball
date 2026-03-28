@@ -1,9 +1,9 @@
 ﻿'use client';
 
-import { useRef, useState } from 'react';
+import { useEffect, useRef, useState } from 'react';
 import { Box, Container, Group, Text, UnstyledButton } from '@mantine/core';
 import { GalleryHorizontalEnd, Table2 } from 'lucide-react';
-import type { Tournament } from '@/types';
+import type { RegistrationCategory, Tournament } from '@/types';
 import TournamentCarousel from './TournamentCarousel';
 import TournamentTable from './TournamentTable';
 import PrizesSection from './PrizesSection';
@@ -12,12 +12,66 @@ import styles from './TournamentInfoSection.module.css';
 
 type ViewMode = 'carousel' | 'table';
 
-export default function TournamentContent({ tournaments }: { tournaments: Tournament[] }) {
+const POLL_INTERVAL_MS = 30_000;
+
+function mergeSlotCounts(
+  tournaments: Tournament[],
+  usedCounts: Record<string, Record<RegistrationCategory, number>>,
+): Tournament[] {
+  return tournaments.map((t) => {
+    // Use an empty object when the tournament has zero confirmed registrations so
+    // the zero-out loop below can reset all category counts to 0.
+    const counts = usedCounts[t.id] ?? ({} as Record<RegistrationCategory, number>);
+    const updatedSlots = { ...t.registration.categorySlots };
+    for (const [cat, used] of Object.entries(counts) as [RegistrationCategory, number][]) {
+      const existing = updatedSlots[cat];
+      if (existing) {
+        updatedSlots[cat] = { ...existing, used };
+      }
+    }
+    // Zero out any category not present in the new counts
+    for (const cat of Object.keys(updatedSlots) as RegistrationCategory[]) {
+      if (!(cat in counts) && updatedSlots[cat]) {
+        updatedSlots[cat] = { ...updatedSlots[cat]!, used: 0 };
+      }
+    }
+    return {
+      ...t,
+      registration: { ...t.registration, categorySlots: updatedSlots },
+    };
+  });
+}
+
+export default function TournamentContent({ tournaments: initialTournaments }: { tournaments: Tournament[] }) {
+  const [tournaments, setTournaments] = useState<Tournament[]>(initialTournaments);
   const [activeIndex, setActiveIndex] = useState(0);
   const [viewMode, setViewMode] = useState<ViewMode>('carousel');
   const [showDetails, setShowDetails] = useState(false);
   const detailsRef = useRef<HTMLDivElement>(null);
   const activeTournament = tournaments[activeIndex] ?? tournaments[0];
+
+  useEffect(() => {
+    let cancelled = false;
+
+    const poll = async () => {
+      try {
+        const res = await fetch('/api/tournaments/slots', { cache: 'no-store' });
+        if (!res.ok) return;
+        const usedCounts: Record<string, Record<RegistrationCategory, number>> = await res.json();
+        if (!cancelled) {
+          setTournaments((prev) => mergeSlotCounts(prev, usedCounts));
+        }
+      } catch {
+        // silently ignore network errors during polling
+      }
+    };
+
+    const id = setInterval(poll, POLL_INTERVAL_MS);
+    return () => {
+      cancelled = true;
+      clearInterval(id);
+    };
+  }, []);
 
   const handleSelectTournament = (index?: number) => {
     if (index !== undefined) setActiveIndex(index);
