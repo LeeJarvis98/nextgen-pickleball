@@ -1,13 +1,11 @@
 'use client';
 
+import Link from 'next/link';
 import { Box, Container, Grid, GridCol, Button, Group, Stack, Image } from '@mantine/core';
-import { useDisclosure } from '@mantine/hooks';
-import { ArrowRight, Info, Search } from 'lucide-react';
+import { ArrowRight, Search } from 'lucide-react';
 import styles from './HeroSection.module.css';
-import TrackStatusModal from './TrackStatusModal';
 
 export default function HeroSection() {
-  const [trackOpened, { open: openTrack, close: closeTrack }] = useDisclosure(false);
   return (
     <>
     <Box component="section" className={`diagonal-texture ${styles.section}`}>
@@ -49,13 +47,14 @@ export default function HeroSection() {
                   ĐĂNG KÝ NGAY
                 </Button>
                 <Button
-                  onClick={openTrack}
+                  component={Link}
+                  href="/status"
                   size="lg"
                   variant="outline"
                   className={`ghost-border ${styles.ctaSecondary}`}
                   leftSection={<Search size={18} />}
                 >
-                  XEM THÔNG TIN ĐĂNG KÝ
+                  TRA CỨU ĐĂNG KÝ
                 </Button>
               </Group>
             </Stack>
@@ -75,7 +74,6 @@ export default function HeroSection() {
         </Grid>
       </Container>
     </Box>
-    <TrackStatusModal opened={trackOpened} onClose={closeTrack} />
     </>
   );
 }

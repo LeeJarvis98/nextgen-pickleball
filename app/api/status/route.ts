@@ -11,7 +11,16 @@ async function lookupRegistrations(query: string) {
   const field = looksLikeEmail(query) ? 'email' : 'phone';
   const { data, error } = await supabase
     .from('registrations')
-    .select('id, full_name, category, status, created_at, tournament_id')
+    .select(`
+      id, full_name, category, status, created_at, tournament_id,
+      tournaments(
+        name, status,
+        tournament_venues(logo_url, image_url, name, city, country, courts, court_type),
+        tournament_schedule(display_date, check_in_time, opening_time, closing_time, schedule_status),
+        tournament_prizes(total_prize),
+        tournament_registration_info(deadline, total_slots, entry_fee_mode, entry_fee, category_fees, category_slots)
+      )
+    `)
     .eq(field, query)
     .order('created_at', { ascending: false });
   if (error) throw error;

@@ -37,7 +37,7 @@ export default function TrackStatusModal({ opened, onClose }: TrackStatusModalPr
     <Modal
       opened={opened}
       onClose={handleClose}
-      title={<span className={styles.modalTitle}>XEM THÔNG TIN ĐĂNG KÝ</span>}
+      title={<span className={styles.modalTitle}>TRA CỨU ĐĂNG KÝ</span>}
       size="md"
       classNames={{
         content: styles.modalContent,

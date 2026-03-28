@@ -138,7 +138,7 @@ export default function CheckoutPage({ paymentSettings = DEFAULT_PAYMENT_SETTING
                   </p>
                   <p className={styles.noteItem}>
                     <span className={styles.noteBullet}>✦</span>
-                    <span>Kiểm tra trạng thái bằng nút <strong>Xem Thông Tin Đăng Ký</strong> tại trang chủ.</span>
+                    <span>Kiểm tra trạng thái bằng nút <strong>Tra Cứu Đăng Ký</strong> tại trang chủ.</span>
                   </p>
                 </div>
               </div>

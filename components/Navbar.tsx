@@ -1,15 +1,14 @@
 'use client';
 
 import { useState, useEffect } from 'react';
-import { Box, Container, Group, Button, Burger, Drawer, Stack, Anchor } from '@mantine/core';
+import Link from 'next/link';
+import { Box, Container, Group, Button, Burger, Drawer, Stack } from '@mantine/core';
 import { useDisclosure } from '@mantine/hooks';
-import TrackStatusModal from './TrackStatusModal';
 import styles from './Navbar.module.css';
 
 export default function Navbar() {
   const [scrolled, setScrolled] = useState(false);
   const [opened, { toggle, close }] = useDisclosure(false);
-  const [trackOpened, { open: openTrack, close: closeTrack }] = useDisclosure(false);
 
   useEffect(() => {
     const onScroll = () => setScrolled(window.scrollY > 10);
@@ -43,12 +42,13 @@ export default function Navbar() {
 
             <Group gap="sm">
               <Button
+                component={Link}
+                href="/status"
                 visibleFrom="md"
                 variant="outline"
                 className={styles.trackButton}
-                onClick={openTrack}
               >
-                XEM ĐĂNG KÝ
+                TRA CỨU ĐĂNG KÝ
               </Button>
               <Button
                 visibleFrom="md"
@@ -77,12 +77,14 @@ export default function Navbar() {
       >
         <Stack gap="lg" mt="md">
           <Button
+            component={Link}
+            href="/status"
             variant="outline"
             className={styles.drawerTrackButton}
-            onClick={() => { close(); openTrack(); }}
+            onClick={close}
             fullWidth
           >
-            XEM THÔNG TIN ĐĂNG KÝ
+            TRA CỨU ĐĂNG KÝ
           </Button>
           <Button
             className={styles.drawerCtaButton}
@@ -94,7 +96,6 @@ export default function Navbar() {
         </Stack>
       </Drawer>
 
-      <TrackStatusModal opened={trackOpened} onClose={closeTrack} />
     </>
   );
 }
