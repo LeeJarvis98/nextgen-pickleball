@@ -10,7 +10,7 @@ export async function GET(req: NextRequest) {
 
     const supabase = createServerSupabaseClient();
 
-    const [{ data: participants, error }, { data: tournament }] = await Promise.all([
+    const [{ data: participants, error }, { data: tournament }, { data: regInfo }] = await Promise.all([
       supabase
         .from('registrations')
         .select('full_name, category')
@@ -22,6 +22,11 @@ export async function GET(req: NextRequest) {
         .select('name')
         .eq('id', tournamentId)
         .single(),
+      supabase
+        .from('tournament_registration_info')
+        .select('group_url')
+        .eq('tournament_id', tournamentId)
+        .single(),
     ]);
 
     if (error) throw error;
@@ -29,6 +34,7 @@ export async function GET(req: NextRequest) {
     return NextResponse.json({
       tournament_name: tournament?.name ?? 'Giải đấu',
       participants: participants ?? [],
+      group_url: (regInfo?.group_url as string | null) ?? null,
     });
   } catch {
     return NextResponse.json({ error: 'Lỗi máy chủ. Vui lòng thử lại.' }, { status: 500 });

@@ -3,8 +3,8 @@
 import { useState, useEffect } from "react";
 import { useSearchParams } from "next/navigation";
 import Link from "next/link";
-import { Container, Box, Stack, Group, Badge, Text, Loader } from "@mantine/core";
-import { ArrowLeft, Clock, CheckCircle, XCircle, Users } from "lucide-react";
+import { Container, Box, Stack, Group, Badge, Text, Loader, Button } from "@mantine/core";
+import { ArrowLeft, Clock, CheckCircle, XCircle, Users, ExternalLink } from "lucide-react";
 import Navbar from "@/components/Navbar";
 import Footer from "@/components/Footer";
 import styles from "./StatusResultsPage.module.css";
@@ -26,6 +26,7 @@ interface Participant {
 interface ParticipantData {
   tournament_name: string;
   participants: Participant[];
+  group_url: string | null;
 }
 
 const CATEGORY_LABELS: Record<string, string> = {
@@ -195,13 +196,28 @@ export default function StatusResultsPage() {
                 )}
 
                 {Object.entries(participantsMap).map(
-                  ([tournamentId, { tournament_name, participants }]) => (
+                  ([tournamentId, { tournament_name, participants, group_url }]) => (
                     <Stack key={tournamentId} gap="md" mt={8}>
-                      <Group gap={10} align="center">
-                        <Users size={18} color="#b8ff00" />
-                        <h2 className={styles.participantsTitle}>
-                          DANH SÁCH THI ĐẤU — {tournament_name.toUpperCase()}
-                        </h2>
+                      <Group justify="space-between" align="center" wrap="wrap" gap="sm">
+                        <Group gap={10} align="center">
+                          <Users size={18} color="#b8ff00" />
+                          <h2 className={styles.participantsTitle}>
+                            DANH SÁCH THI ĐẤU — {tournament_name.toUpperCase()}
+                          </h2>
+                        </Group>
+                        {group_url && (
+                          <Button
+                            component={Link}
+                            href={group_url}
+                            target="_blank"
+                            rel="noopener noreferrer"
+                            size="xs"
+                            rightSection={<ExternalLink size={12} />}
+                            className={styles.groupButton}
+                          >
+                            THAM GIA NHÓM
+                          </Button>
+                        )}
                       </Group>
                       <p className={styles.participantsSubtitle}>
                         {participants.length} vận động viên đã xác nhận tham gia

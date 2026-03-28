@@ -188,3 +188,19 @@
   padding: 11px 16px;
   border-bottom: 1px solid rgba(255, 255, 255, 0.04);
 }
+
+/* Group button */
+.groupButton {
+  background: #b8ff00 !important;
+  color: #0e0e0e !important;
+  font-family: var(--font-space-grotesk) !important;
+  font-size: 0.7rem !important;
+  font-weight: 800 !important;
+  letter-spacing: 0.08em !important;
+  border: none !important;
+  flex-shrink: 0;
+}
+
+.groupButton:hover {
+  background: #ceff3d !important;
+}

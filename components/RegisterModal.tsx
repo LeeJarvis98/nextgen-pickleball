@@ -73,6 +73,7 @@ interface RegisterModalProps {
   entryFeeMode: 'per_category' | 'flat';
   entryFee?: string;
   categoryFees?: Partial<Record<RegistrationCategory, string>>;
+  groupUrl?: string;
 }
 
 export default function RegisterModal({
@@ -86,6 +87,7 @@ export default function RegisterModal({
   entryFeeMode,
   entryFee,
   categoryFees,
+  groupUrl,
 }: RegisterModalProps) {
   const router = useRouter();
   const [loading, setLoading] = useState(false);
@@ -310,6 +312,7 @@ export default function RegisterModal({
         cats: values.category.join(','),
         ...(entryFeeMode === 'flat' && entryFee ? { fee: entryFee } : {}),
         ...(Object.keys(catFeesObj).length > 0 ? { cf: JSON.stringify(catFeesObj) } : {}),
+        ...(groupUrl ? { gu: groupUrl } : {}),
       });
       form.reset();
       onClose();

@@ -14,7 +14,7 @@ import { DataTable } from 'mantine-datatable';
 import {
   LogOut, Trophy, Users, RefreshCw, Edit, Trash2, Save, X,
   Calendar, MapPin, Award, ClipboardList, AlertCircle, Plus,
-  ChevronUp, ChevronDown, Shuffle,
+  ChevronUp, ChevronDown, Shuffle, Landmark,
 } from 'lucide-react';
 import styles from './AdminDashboard.module.css';
 
@@ -461,6 +461,14 @@ export default function AdminDashboard() {
   const [createForm, setCreateForm] = useState({ id: '', name: '', status: 'UPCOMING', sort_order: 0 });
   const [createErrors, setCreateErrors] = useState<Record<string, string>>({});
 
+  // Payment settings state
+  const [paymentSettings, setPaymentSettings] = useState({
+    bank_name: '', bank_account: '', account_holder: '', qr_url: '',
+  });
+  const [settingsDirty, setSettingsDirty] = useState(false);
+  const [settingsSaving, setSettingsSaving] = useState(false);
+  const [settingsLoading, setSettingsLoading] = useState(false);
+
   // Edit registration modal
   const [editReg, setEditReg] = useState<RegistrationRow | null>(null);
   const [editRegOpened, { open: openEditReg, close: closeEditReg }] = useDisclosure(false);
@@ -495,8 +503,47 @@ export default function AdminDashboard() {
     }
   }, []);
 
+  const loadSettings = useCallback(async () => {
+    setSettingsLoading(true);
+    try {
+      const res = await fetch('/api/admin/settings');
+      if (!res.ok) throw new Error('Failed to load');
+      const data = await res.json();
+      setPaymentSettings({
+        bank_name: data.bank_name ?? '',
+        bank_account: data.bank_account ?? '',
+        account_holder: data.account_holder ?? '',
+        qr_url: data.qr_url ?? '',
+      });
+      setSettingsDirty(false);
+    } catch {
+      notifications.show({ title: 'Error', message: 'Could not load settings.', color: 'red' });
+    } finally {
+      setSettingsLoading(false);
+    }
+  }, []);
+
+  const handleSaveSettings = async () => {
+    setSettingsSaving(true);
+    try {
+      const res = await fetch('/api/admin/settings', {
+        method: 'PATCH',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(paymentSettings),
+      });
+      if (!res.ok) throw new Error('Save failed');
+      notifications.show({ title: 'Saved', message: 'Settings saved successfully.', color: 'teal' });
+      setSettingsDirty(false);
+    } catch (err) {
+      notifications.show({ title: 'Error', message: err instanceof Error ? err.message : 'Save failed.', color: 'red' });
+    } finally {
+      setSettingsSaving(false);
+    }
+  };
+
   useEffect(() => { loadTournaments(); }, [loadTournaments]);
   useEffect(() => { if (activeTab === 'registrations') loadRegistrations(filterTournament); }, [activeTab, filterTournament, loadRegistrations]);
+  useEffect(() => { if (activeTab === 'settings') loadSettings(); }, [activeTab, loadSettings]);
 
   // ── Logout ─────────────────────────────────────────────────────────────────
 
@@ -863,6 +910,9 @@ export default function AdminDashboard() {
             <Tabs.Tab value="registrations" leftSection={<Users size={16} />}>
               Registrations
             </Tabs.Tab>
+            <Tabs.Tab value="settings" leftSection={<Landmark size={16} />}>
+              Payment Settings
+            </Tabs.Tab>
           </Tabs.List>
 
           {/* ── Tournaments tab ── */}
@@ -992,6 +1042,74 @@ export default function AdminDashboard() {
                   },
                 ]}
               />
+            </Box>
+          </Tabs.Panel>
+
+          {/* ── Settings tab ── */}
+          <Tabs.Panel value="settings">
+            <Box pos="relative" maw={520}>
+              <LoadingOverlay visible={settingsLoading} />
+              <Stack gap="md">
+                <SectionTag label="Payment Settings" dirty={settingsDirty} />
+                <TextInput
+                  label="Bank Name"
+                  placeholder="e.g. TP Bank"
+                  value={paymentSettings.bank_name}
+                  onChange={(e) => { setPaymentSettings((p) => ({ ...p, bank_name: e.currentTarget.value })); setSettingsDirty(true); }}
+                  classNames={{ label: styles.inputLabel }}
+                />
+                <TextInput
+                  label="Account Number"
+                  placeholder="e.g. 6598 8393 979"
+                  value={paymentSettings.bank_account}
+                  onChange={(e) => { setPaymentSettings((p) => ({ ...p, bank_account: e.currentTarget.value })); setSettingsDirty(true); }}
+                  classNames={{ label: styles.inputLabel }}
+                />
+                <TextInput
+                  label="Account Holder"
+                  placeholder="e.g. LE GIA VY"
+                  value={paymentSettings.account_holder}
+                  onChange={(e) => { setPaymentSettings((p) => ({ ...p, account_holder: e.currentTarget.value })); setSettingsDirty(true); }}
+                  classNames={{ label: styles.inputLabel }}
+                />
+                <TextInput
+                  label="QR Code URL"
+                  description="Path (e.g. /QR.png) or external URL to the QR code image"
+                  placeholder="/QR.png"
+                  value={paymentSettings.qr_url}
+                  onChange={(e) => { setPaymentSettings((p) => ({ ...p, qr_url: e.currentTarget.value })); setSettingsDirty(true); }}
+                  classNames={{ label: styles.inputLabel }}
+                />
+                {paymentSettings.qr_url && (
+                  <Box className={styles.logoPreviewBox}>
+                    <img
+                      src={paymentSettings.qr_url}
+                      alt="QR preview"
+                      className={styles.qrPreviewImg}
+                    />
+                  </Box>
+                )}
+                <Group>
+                  <Button
+                    leftSection={<Save size={15} />}
+                    onClick={handleSaveSettings}
+                    loading={settingsSaving}
+                    disabled={!settingsDirty}
+                    className={styles.saveButton}
+                  >
+                    Save Settings
+                  </Button>
+                  <Button
+                    variant="subtle"
+                    leftSection={<RefreshCw size={15} />}
+                    onClick={loadSettings}
+                    disabled={settingsLoading}
+                    className={styles.cancelButton}
+                  >
+                    Reload
+                  </Button>
+                </Group>
+              </Stack>
             </Box>
           </Tabs.Panel>
         </Tabs>
@@ -1276,6 +1394,15 @@ export default function AdminDashboard() {
                           value={String(regInfo.cta_description ?? '')}
                           onChange={(e) => setSubField('tournament_registration_info', 'cta_description', e.currentTarget.value, 'registration')}
                           minRows={2}
+                          classNames={{ label: styles.inputLabel }}
+                        />
+                        <TextInput
+                          label="Group URL"
+                          description="Link to the tournament chat group (Zalo, Facebook, etc.) — shown as a CTA button on checkout &amp; status pages"
+                          type="url"
+                          placeholder="https://zalo.me/g/..."
+                          value={String(regInfo.group_url ?? '')}
+                          onChange={(e) => setSubField('tournament_registration_info', 'group_url', e.currentTarget.value, 'registration')}
                           classNames={{ label: styles.inputLabel }}
                         />
                         <MultiSelect

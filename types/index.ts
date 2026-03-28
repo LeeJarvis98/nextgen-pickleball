@@ -62,6 +62,7 @@ export interface TournamentRegistration {
   entryFeeMode: EntryFeeMode;
   entryFee?: string;
   categoryFees?: Partial<Record<RegistrationCategory, string>>;
+  groupUrl?: string;
 }
 
 export interface Tournament {

@@ -39,8 +39,9 @@
   font-size: 0.72rem !important;
   font-weight: 700 !important;
   letter-spacing: 0.04em !important;
-  border-color: rgba(184, 255, 0, 0.35) !important;
-  color: #b8ff00 !important;
+  color: #0f0f0f !important;
+  background: #b8ff00;
+  border: 1px solid rgba(184, 255, 0, 0.8);
 }
 
 /* ── Payment card ── */
@@ -178,6 +179,93 @@
   border-radius: 10px;
   padding: 14px;
   background: #ffffff;
+}
+
+/* Bank info */
+.bankInfoBox {
+  border: 1px solid rgba(184, 255, 0, 0.15);
+  border-radius: 8px;
+  padding: 14px 16px;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  background: rgba(184, 255, 0, 0.03);
+}
+
+.bankSectionLabel {
+  font-family: var(--font-space-grotesk);
+  font-size: 0.6rem;
+  font-weight: 700;
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+  color: #adaaaa;
+  margin-bottom: 2px;
+}
+
+.bankRow {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 12px;
+}
+
+.bankLabel {
+  font-family: var(--font-space-grotesk);
+  font-size: 0.82rem;
+  color: #adaaaa;
+  flex-shrink: 0;
+}
+
+.bankValueGroup {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+
+.bankValue {
+  font-family: var(--font-space-grotesk);
+  font-size: 0.92rem;
+  font-weight: 700;
+  color: #ffffff;
+  letter-spacing: 0.02em;
+}
+
+.bankAccountValue {
+  font-family: var(--font-epilogue);
+  font-size: 0.9rem;
+  font-weight: 900;
+  font-style: italic;
+  color: #b8ff00;
+  letter-spacing: 0.04em;
+}
+
+.copyButton {
+  color: #adaaaa !important;
+  transition: color 0.15s ease !important;
+}
+
+.copyButton:hover {
+  color: #b8ff00 !important;
+}
+
+.copiedButton {
+  color: #b8ff00 !important;
+}
+
+/* Group CTA button */
+.groupButton {
+  background: #b8ff00 !important;
+  color: #0e0e0e !important;
+  font-family: var(--font-space-grotesk) !important;
+  font-size: 0.85rem !important;
+  font-weight: 800 !important;
+  letter-spacing: 0.08em !important;
+  border: none !important;
+  min-width: 240px;
+}
+
+.groupButton:hover {
+  background: #ceff3d !important;
 }
 
 /* Back button */

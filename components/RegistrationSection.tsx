@@ -131,6 +131,7 @@ export default function RegistrationSection({
         entryFeeMode={registration.entryFeeMode}
         entryFee={registration.entryFee}
         categoryFees={registration.categoryFees}
+        groupUrl={registration.groupUrl}
       />
     </>
   );

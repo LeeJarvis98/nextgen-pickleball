@@ -11,7 +11,7 @@ export async function GET() {
       tournament_venues ( name, image_url, logo_url, courts, court_type, city, country ),
       tournament_prizes ( total_prize ),
       tournament_prize_entries ( id, rank, title, amount, bonus ),
-      tournament_registration_info ( deadline, deadline_date_time, total_slots, registration_link, cta_title, cta_description, features, available_categories, doubles_partner_mode, category_slots, category_fees, entry_fee_mode, entry_fee )`
+      tournament_registration_info ( deadline, deadline_date_time, total_slots, registration_link, cta_title, cta_description, features, available_categories, doubles_partner_mode, category_slots, category_fees, entry_fee_mode, entry_fee, group_url )`
     )
     .order('sort_order');
 
