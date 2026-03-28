@@ -57,3 +57,349 @@
   color: #b8ff00;
   font-size: 0.95rem;
 }
+
+.selectBtn {
+  padding: 0.4rem 0.9rem;
+  background: rgba(184, 255, 0, 0.08);
+  border: 1px solid rgba(184, 255, 0, 0.5);
+  border-radius: 6px;
+  color: #b8ff00;
+  font-family: var(--font-space-grotesk);
+  font-size: 0.75rem;
+  font-weight: 700;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  cursor: pointer;
+  white-space: nowrap;
+  transition: background 0.2s, border-color 0.2s;
+}
+
+.selectBtn:hover {
+  background: rgba(184, 255, 0, 0.15);
+  border-color: rgba(184, 255, 0, 0.8);
+}
+
+/* ===== Detail Card (modal) ===== */
+
+.modalBackdrop {
+  position: fixed;
+  inset: 0;
+  z-index: 1000;
+  background: rgba(0, 0, 0, 0.75);
+  backdrop-filter: blur(4px);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 1.5rem;
+  animation: backdropFadeIn 0.2s ease;
+}
+
+@keyframes backdropFadeIn {
+  from {
+    opacity: 0;
+  }
+
+  to {
+    opacity: 1;
+  }
+}
+
+.detailCard {
+  position: relative;
+  width: 100%;
+  max-width: 860px;
+  max-height: 90vh;
+  overflow-y: auto;
+  border-radius: 16px;
+  border: 1px solid rgba(184, 255, 0, 0.2);
+  background: #111;
+  animation: modalSlideUp 0.25s ease;
+  scrollbar-width: thin;
+  scrollbar-color: rgba(184, 255, 0, 0.2) transparent;
+}
+
+@keyframes modalSlideUp {
+  from {
+    opacity: 0;
+    transform: translateY(20px);
+  }
+
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+/* Venue image section — mirrors carousel's venueCard */
+.detailVenueSection {
+  position: relative;
+  height: 300px;
+  overflow: hidden;
+}
+
+.detailVenueImage {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+.detailVenueGradient {
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(to top, #0e0e0e 10%, rgba(14, 14, 14, 0.6) 55%, transparent);
+}
+
+.detailCloseBtn {
+  position: absolute;
+  top: 1rem;
+  right: 1rem;
+  z-index: 2;
+  width: 32px;
+  height: 32px;
+  border-radius: 50%;
+  border: 1px solid rgba(255, 255, 255, 0.2);
+  background: rgba(14, 14, 14, 0.65);
+  backdrop-filter: blur(6px);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  color: #ffffff;
+  transition: border-color 0.2s, background 0.2s;
+}
+
+.detailCloseBtn:hover {
+  border-color: rgba(184, 255, 0, 0.5);
+  background: rgba(14, 14, 14, 0.9);
+}
+
+.detailVenueContent {
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  padding: 2rem;
+  z-index: 1;
+}
+
+.detailVenueIconBox {
+  padding: 0.6rem;
+  background-color: #b8ff00;
+  border-radius: 6px;
+  box-shadow: 0 0 16px rgba(184, 255, 0, 0.4);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.detailVenueLabel {
+  font-family: var(--font-space-grotesk);
+  font-size: 0.6rem;
+  font-weight: 700;
+  letter-spacing: 0.3em;
+  color: #b8ff00;
+  text-transform: uppercase;
+}
+
+.detailVenueLogo {
+  max-width: 200px;
+  height: auto;
+  object-fit: contain;
+  display: block;
+  margin-bottom: 0.75rem;
+  filter: drop-shadow(0 2px 12px rgba(0, 0, 0, 0.8));
+}
+
+.detailVenueName {
+  font-family: var(--font-epilogue);
+  font-size: clamp(1.2rem, 2.5vw, 1.8rem);
+  font-weight: 900;
+  font-style: italic;
+  color: #ffffff;
+  margin: 0 0 0.75rem;
+}
+
+.detailVenueStatBox {
+  background-color: rgba(14, 14, 14, 0.8);
+  backdrop-filter: blur(10px);
+  padding: 0.75rem;
+  border-radius: 8px;
+  border: 1px solid rgba(72, 72, 71, 0.3);
+}
+
+.detailVenueStatLabel {
+  font-family: var(--font-space-grotesk);
+  font-size: 0.6rem;
+  color: rgba(184, 255, 0, 0.7);
+  text-transform: uppercase;
+  letter-spacing: 0.1em;
+  margin: 0 0 4px;
+}
+
+.detailVenueStatValue {
+  font-weight: 700;
+  color: #ffffff;
+  font-size: 0.85rem;
+}
+
+.detailVenueLocation {
+  font-size: 0.8rem;
+  color: #adaaaa;
+}
+
+/* Body below the venue image */
+.detailBody {
+  padding: 1.75rem 2rem 2rem;
+}
+
+.detailTournamentName {
+  font-family: var(--font-epilogue);
+  font-size: clamp(1.3rem, 2.5vw, 1.8rem);
+  font-weight: 900;
+  font-style: italic;
+  color: #ffffff;
+  margin: 0 0 1.5rem;
+}
+
+/* Info cards in the grid */
+.detailInfoCard {
+  background: rgba(255, 255, 255, 0.03);
+  border: 1px solid rgba(72, 72, 71, 0.25);
+  border-radius: 12px;
+  padding: 1.5rem;
+  height: 100%;
+  display: flex;
+  flex-direction: column;
+}
+
+.detailCalendarIconBox {
+  padding: 0.6rem;
+  background-color: rgba(184, 255, 0, 0.1);
+  border-radius: 6px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.detailInfoCardTitle {
+  font-family: var(--font-epilogue);
+  font-size: 1.05rem;
+  font-weight: 900;
+  font-style: italic;
+  color: #ffffff;
+  margin: 0;
+}
+
+.detailInfoRow {
+  border-bottom: 1px solid rgba(72, 72, 71, 0.3);
+}
+
+.detailInfoLabel {
+  font-family: var(--font-space-grotesk);
+  font-size: 0.72rem;
+  text-transform: uppercase;
+  letter-spacing: 0.1em;
+  color: #adaaaa;
+}
+
+.detailInfoValue {
+  font-weight: 700;
+  color: #ffffff;
+  font-size: 0.9rem;
+}
+
+.detailSchedBadge {
+  display: inline-block;
+  padding: 2px 6px;
+  border-radius: 4px;
+  border: 1px solid rgba(0, 212, 255, 0.45);
+  background: rgba(0, 212, 255, 0.08);
+  color: #00d4ff;
+  font-family: var(--font-space-grotesk);
+  font-size: 0.55rem;
+  font-weight: 700;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+}
+
+.detailFeeBox {
+  margin-top: 1.25rem;
+  padding: 1rem 1.25rem;
+  background: linear-gradient(135deg, rgba(184, 255, 0, 0.08), rgba(184, 255, 0, 0.04));
+  border: 1px solid rgba(184, 255, 0, 0.25);
+  border-radius: 10px;
+  display: flex;
+  flex-direction: column;
+  gap: 0.3rem;
+}
+
+.detailFeeLabel {
+  font-family: var(--font-space-grotesk);
+  font-size: 0.6rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.2em;
+  color: rgba(184, 255, 0, 0.7);
+}
+
+.detailFeeValue {
+  font-family: var(--font-epilogue);
+  font-size: clamp(1.4rem, 2.5vw, 2rem);
+  font-weight: 900;
+  font-style: italic;
+  color: #b8ff00;
+  text-shadow: 0 0 20px rgba(184, 255, 0, 0.45);
+  line-height: 1.1;
+}
+
+.detailFeeHint {
+  font-family: var(--font-space-grotesk);
+  font-size: 0.6rem;
+  text-transform: uppercase;
+  letter-spacing: 0.12em;
+  color: rgba(173, 170, 170, 0.6);
+}
+
+.detailRegCard {
+  justify-content: space-between;
+}
+
+.detailCatLabel {
+  font-family: var(--font-space-grotesk);
+  font-size: 0.72rem;
+  color: #adaaaa;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+}
+
+.detailCatFee {
+  font-family: var(--font-epilogue);
+  font-weight: 700;
+  font-style: italic;
+  color: #b8ff00;
+  font-size: 0.85rem;
+}
+
+.detailSelectBtn {
+  margin-top: 1.5rem;
+  width: 100%;
+  padding: 0.75rem 1rem;
+  background: #b8ff00;
+  border: 1px solid rgba(184, 255, 0, 0.8);
+  border-radius: 8px;
+  color: #0a0a0a;
+  font-family: var(--font-space-grotesk);
+  font-size: 0.8rem;
+  font-weight: 700;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  cursor: pointer;
+  transition: background 0.2s, border-color 0.2s;
+}
+
+.detailSelectBtn:hover {
+  background: #d0ff5a;
+  border-color: rgba(184, 255, 0, 0.8);
+}

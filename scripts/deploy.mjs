@@ -25,9 +25,28 @@ if (!token) {
   process.exit(1);
 }
 
+const vercelProjectJson = resolve(process.cwd(), '.vercel', 'project.json');
+if (!existsSync(vercelProjectJson)) {
+  console.error('ERROR: Project not linked. Run the following command first:');
+  console.error(`  npx vercel link --token <your-token> --yes`);
+  console.error('This creates .vercel/project.json which identifies your project for deployments.');
+  process.exit(1);
+}
+
 const isPreview = process.argv.includes('--preview');
 const prodFlag = isPreview ? '' : '--prod';
-const cmd = `npx vercel deploy --token ${token} ${prodFlag}`.trim();
+const cmd = `npx vercel deploy ${prodFlag} --yes`.trim();
+
+// Pass the token via environment variable — never interpolate secrets into command strings
+const deployEnv = {
+  ...process.env,
+  VERCEL_TOKEN: token,
+};
 
 console.log(`Deploying to ${isPreview ? 'preview' : 'production'}...`);
-execSync(cmd, { stdio: 'inherit' });
+try {
+  execSync(cmd, { stdio: 'inherit', env: deployEnv });
+} catch {
+  console.error('\nDeployment failed. Check the Vercel output above for details.');
+  process.exit(1);
+}

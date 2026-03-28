@@ -3,8 +3,20 @@
 import { Carousel } from '@mantine/carousel';
 import { Box, Grid, GridCol, Paper, Stack, Group, Badge } from '@mantine/core';
 import { CalendarDays, MapPin, ChevronLeft, ChevronRight } from 'lucide-react';
-import type { Tournament } from '@/types';
+import type { Tournament, TournamentStatus } from '@/types';
 import styles from './TournamentCarousel.module.css';
+
+const STATUS_LABELS: Record<TournamentStatus, string> = {
+  UPCOMING:  'Sắp diễn ra',
+  ONGOING:   'Đang diễn ra',
+  COMPLETED: 'Đã kết thúc',
+};
+
+const STATUS_COLORS: Record<TournamentStatus, { border: string; color: string; bg: string }> = {
+  UPCOMING:  { border: 'rgba(184, 255, 0, 0.5)',   color: '#b8ff00', bg: 'rgba(184, 255, 0, 0.1)' },
+  ONGOING:   { border: 'rgba(0, 212, 255, 0.5)',   color: '#00d4ff', bg: 'rgba(0, 212, 255, 0.1)' },
+  COMPLETED: { border: 'rgba(173, 170, 170, 0.5)', color: '#adaaaa', bg: 'rgba(173, 170, 170, 0.1)' },
+};
 
 function parseFeeVND(fee: string): number {
   return parseInt(fee.replace(/[^\d]/g, ''), 10) || 0;
@@ -36,7 +48,12 @@ function InfoRow({ label, value }: InfoRowProps) {
   );
 }
 
-function TournamentSlide({ tournament }: { tournament: Tournament }) {
+interface TournamentSlideProps {
+  tournament: Tournament;
+  onSelectTournament?: () => void;
+}
+
+function TournamentSlide({ tournament, onSelectTournament }: TournamentSlideProps) {
   return (
     <Carousel.Slide>
       <Box pb={8}>
@@ -52,12 +69,28 @@ function TournamentSlide({ tournament }: { tournament: Tournament }) {
                   </Box>
                   <h4 className={styles.timeCardTitle}>Thời Gian Thi Đấu</h4>
                 </Group>
-                <Badge variant="outline" className={styles.statusBadge}>
-                  {tournament.status}
+                <Badge
+                  variant="outline"
+                  className={styles.statusBadge}
+                  style={{
+                    borderColor: STATUS_COLORS[tournament.status].border,
+                    color: STATUS_COLORS[tournament.status].color,
+                    backgroundColor: STATUS_COLORS[tournament.status].bg,
+                  }}
+                >
+                  {STATUS_LABELS[tournament.status]}
                 </Badge>
               </Group>
               <Stack gap={0}>
-                <InfoRow label="Ngày thi đấu" value={tournament.schedule.displayDate} />
+                <Group justify="space-between" py="sm" className={styles.infoRow}>
+                  <Group gap="xs" align="center">
+                    <span className={styles.infoRowLabel}>Ngày thi đấu</span>
+                    {tournament.schedule.scheduleStatus && (
+                      <span className={styles.scheduleStatusBadge}>{tournament.schedule.scheduleStatus}</span>
+                    )}
+                  </Group>
+                  <span className={styles.infoRowValue}>{tournament.schedule.displayDate}</span>
+                </Group>
                 <InfoRow label="Check-in" value={tournament.schedule.checkInTime} />
                 <InfoRow label="Khai mạc" value={tournament.schedule.openingTime} />
                 <Group justify="space-between" py="sm" className={styles.infoRow}>
@@ -65,7 +98,7 @@ function TournamentSlide({ tournament }: { tournament: Tournament }) {
                   <span className={styles.infoRowValue}>{tournament.schedule.closingTime}</span>
                 </Group>
                 <Box className={styles.entryFeeBox}>
-                  <span className={styles.entryFeeLabel}>Phí Tham Dự</span>
+                  <span className={styles.entryFeeLabel}>Phí Tham Gia</span>
                   {tournament.registration.entryFeeMode === 'flat' ? (
                     <span className={styles.entryFeeValue}>
                       {tournament.registration.entryFee
@@ -93,6 +126,9 @@ function TournamentSlide({ tournament }: { tournament: Tournament }) {
                 className={styles.venueImage}
               />
               <Box className={styles.venueGradient} />
+              <button className={styles.selectBtn} onClick={onSelectTournament}>
+                Chọn giải đấu
+              </button>
               <Box className={styles.venueContent}>
                 <Group gap="md" mb={24}>
                   <Box className={styles.venueIconBox}>
@@ -144,11 +180,12 @@ function TournamentSlide({ tournament }: { tournament: Tournament }) {
 interface TournamentCarouselProps {
   tournaments: Tournament[];
   onSlideChange?: (index: number) => void;
+  onSelectTournament?: () => void;
 }
 
-export default function TournamentCarousel({ tournaments, onSlideChange }: TournamentCarouselProps) {
+export default function TournamentCarousel({ tournaments, onSlideChange, onSelectTournament }: TournamentCarouselProps) {
   if (tournaments.length === 1) {
-    return <TournamentSlide tournament={tournaments[0]} />;
+    return <TournamentSlide tournament={tournaments[0]} onSelectTournament={onSelectTournament} />;
   }
 
   return (
@@ -164,7 +201,7 @@ export default function TournamentCarousel({ tournaments, onSlideChange }: Tourn
       }}
     >
       {tournaments.map((tournament) => (
-        <TournamentSlide key={tournament.id} tournament={tournament} />
+        <TournamentSlide key={tournament.id} tournament={tournament} onSelectTournament={onSelectTournament} />
       ))}
     </Carousel>
   );

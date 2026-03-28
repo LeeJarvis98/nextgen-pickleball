@@ -5,13 +5,6 @@ import { Box, Container, Group, Button, Burger, Drawer, Stack, Anchor } from '@m
 import { useDisclosure } from '@mantine/hooks';
 import styles from './Navbar.module.css';
 
-const navLinks = [
-  { label: 'GIẢI ĐẤU', href: '#tournament-info' },
-  { label: 'GIẢI THƯỞNG', href: '#prizes' },
-  { label: 'ĐĂNG KÝ', href: '#registration' },
-  { label: 'LỊCH TRÌNH', href: '#tournament-info' },
-];
-
 export default function Navbar() {
   const [scrolled, setScrolled] = useState(false);
   const [opened, { toggle, close }] = useDisclosure(false);
@@ -46,23 +39,11 @@ export default function Navbar() {
               NEXTGEN PICKLEBALL SERIES
             </span>
 
-            <Group gap="xl" visibleFrom="md">
-              {navLinks.map((link) => (
-                <Anchor
-                  key={link.label}
-                  className={styles.navLink}
-                  onClick={() => handleNavClick(link.href)}
-                >
-                  {link.label}
-                </Anchor>
-              ))}
-            </Group>
-
             <Group gap="sm">
               <Button
                 visibleFrom="md"
                 className={styles.ctaButton}
-                onClick={() => handleNavClick('#registration')}
+                onClick={() => handleNavClick('#tournament-info')}
               >
                 ĐĂNG KÝ NGAY
               </Button>
@@ -85,21 +66,12 @@ export default function Navbar() {
         title="NEXTGEN"
       >
         <Stack gap="lg" mt="md">
-          {navLinks.map((link) => (
-            <Anchor
-              key={link.label}
-              className={styles.drawerNavLink}
-              onClick={() => handleNavClick(link.href)}
-            >
-              {link.label}
-            </Anchor>
-          ))}
           <Button
             className={styles.drawerCtaButton}
             onClick={() => handleNavClick('#registration')}
             fullWidth
           >
-            REGISTER NOW
+            ĐĂNG KÝ NGAY
           </Button>
         </Stack>
       </Drawer>

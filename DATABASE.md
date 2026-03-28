@@ -62,9 +62,10 @@ One row per tournament. Holds all date/time information.
 | `start_date`    | date | NO       | —       | ISO 8601, e.g. `2026-03-15`        |
 | `end_date`      | date | NO       | —       | ISO 8601                           |
 | `display_date`  | text | NO       | —       | Human-readable, e.g. `15 - 16 / 03 / 2026` |
-| `check_in_time` | text | NO       | —       | e.g. `07:00 AM`                    |
-| `opening_time`  | text | NO       | —       | e.g. `08:00 AM`                    |
-| `closing_time`  | text | NO       | —       | e.g. `06:00 PM`                    |
+| `check_in_time`   | text | NO       | —    | e.g. `07:00 AM`                                              |
+| `opening_time`    | text | NO       | —    | e.g. `08:00 AM`                                              |
+| `closing_time`    | text | NO       | —    | e.g. `06:00 PM`                                              |
+| `schedule_status` | text | YES      | NULL | Confirmation state: `Dự kiến` (tentative) or `Chính thức` (official) |
 
 ---
 

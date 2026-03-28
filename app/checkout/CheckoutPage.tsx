@@ -54,9 +54,9 @@ export default function CheckoutPage() {
 
             <div className={styles.paymentCard}>
               <div className={styles.instructions}>
-                <h2 className={styles.sectionTitle}>CHUYỂN KHOẢN PHÍ THAM DỰ</h2>
+                <h2 className={styles.sectionTitle}>CHUYỂN KHOẢN PHÍ THAM GIA</h2>
                 <p className={styles.instrText}>
-                  Vui lòng chuyển khoản phí tham dự theo mã QR để hoàn tất đăng ký.
+                  Vui lòng chuyển khoản phí tham gia theo mã QR để hoàn tất đăng ký.
                   Ban tổ chức sẽ xác nhận sau khi nhận được thanh toán.
                 </p>
                 {showFees && (
@@ -64,7 +64,7 @@ export default function CheckoutPage() {
                     <span className={styles.feeSectionLabel}>SỐ TIỀN CẦN CHUYỂN</span>
                     {fee ? (
                       <div className={styles.feeLine}>
-                        <span className={styles.feeLineLabel}>Phí tham dự</span>
+                        <span className={styles.feeLineLabel}>Phí tham gia</span>
                         <span className={styles.feeLineAmt}>{fee}</span>
                       </div>
                     ) : (

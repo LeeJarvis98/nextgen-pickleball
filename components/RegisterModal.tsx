@@ -20,6 +20,15 @@ import { User, Phone, Mail, Check, VenusAndMars } from 'lucide-react';
 import type { RegistrationCategory, RegistrationFormValues, CategorySlotInfo } from '@/types';
 import styles from './RegisterModal.module.css';
 
+function parseFeeVND(fee: string): number {
+  return parseInt(fee.replace(/[^\d]/g, ''), 10) || 0;
+}
+
+function formatVND(fee: string): string {
+  const amount = parseFeeVND(fee);
+  return amount.toString().replace(/\B(?=(\d{3})+(?!\d))/g, '.') + ' VNĐ';
+}
+
 const DOUBLES_CATEGORIES: RegistrationCategory[] = [
   'doubles_male',
   'doubles_female',
@@ -143,7 +152,7 @@ export default function RegisterModal({
     textAlign: 'right' as const,
     render: (row: CategoryRow) =>
       row.fee ? (
-        <span className={styles.categoryFee}>{row.fee}</span>
+        <span className={styles.categoryFee}>{formatVND(row.fee)}</span>
       ) : (
         <span className={styles.categorySlots}>—</span>
       ),
@@ -401,8 +410,8 @@ export default function RegisterModal({
               )}
               {entryFeeMode === 'flat' && entryFee && (
                 <Group justify="space-between" className={styles.flatFeeRow}>
-                  <span className={styles.flatFeeLabel}>Phí tham dự</span>
-                  <span className={styles.flatFeeAmount}>{entryFee}</span>
+                  <span className={styles.flatFeeLabel}>Phí tham gia</span>
+                  <span className={styles.flatFeeAmount}>{formatVND(entryFee)}</span>
                 </Group>
               )}
             </Box>

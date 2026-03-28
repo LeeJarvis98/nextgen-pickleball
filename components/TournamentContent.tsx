@@ -1,6 +1,6 @@
 ﻿'use client';
 
-import { useState } from 'react';
+import { useRef, useState } from 'react';
 import { Box, Container, Group, Text, UnstyledButton } from '@mantine/core';
 import { GalleryHorizontalEnd, Table2 } from 'lucide-react';
 import type { Tournament } from '@/types';
@@ -15,7 +15,24 @@ type ViewMode = 'carousel' | 'table';
 export default function TournamentContent({ tournaments }: { tournaments: Tournament[] }) {
   const [activeIndex, setActiveIndex] = useState(0);
   const [viewMode, setViewMode] = useState<ViewMode>('carousel');
+  const [showDetails, setShowDetails] = useState(false);
+  const detailsRef = useRef<HTMLDivElement>(null);
   const activeTournament = tournaments[activeIndex] ?? tournaments[0];
+
+  const handleSelectTournament = (index?: number) => {
+    if (index !== undefined) setActiveIndex(index);
+    setShowDetails(true);
+    setTimeout(() => {
+      detailsRef.current?.scrollIntoView({ behavior: 'smooth' });
+    }, 50);
+  };
+
+  const handleBack = () => {
+    setShowDetails(false);
+    setTimeout(() => {
+      document.getElementById('tournament-info')?.scrollIntoView({ behavior: 'smooth' });
+    }, 50);
+  };
 
   return (
     <>
@@ -51,19 +68,25 @@ export default function TournamentContent({ tournaments }: { tournaments: Tourna
             <TournamentCarousel
               tournaments={tournaments}
               onSlideChange={setActiveIndex}
+              onSelectTournament={handleSelectTournament}
             />
           ) : (
             <TournamentTable
               tournaments={tournaments}
               activeTournamentId={activeTournament.id}
               onSelect={setActiveIndex}
+              onSelectTournament={handleSelectTournament}
             />
           )}
         </Container>
       </Box>
 
-      <PrizesSection prizes={activeTournament.prizes} />
-      <RegistrationSection tournamentId={activeTournament.id} registration={activeTournament.registration} />
+      {showDetails && (
+        <div ref={detailsRef}>
+          <PrizesSection prizes={activeTournament.prizes} />
+          <RegistrationSection tournamentId={activeTournament.id} registration={activeTournament.registration} onBack={handleBack} />
+        </div>
+      )}
     </>
   );
 }

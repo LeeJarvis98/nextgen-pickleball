@@ -77,7 +77,7 @@
   font-weight: 700 !important;
   letter-spacing: 0.1em !important;
   text-transform: uppercase !important;
-  color: #555 !important;
+  color: #dfdfdf !important;
   padding: 8px 12px !important;
 }
 
@@ -157,7 +157,7 @@
 .categorySlots {
   font-family: var(--font-space-grotesk);
   font-size: 0.75rem;
-  color: #666;
+  color: #dfdfdf ;
   font-variant-numeric: tabular-nums;
   white-space: nowrap;
 }

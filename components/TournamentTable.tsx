@@ -1,9 +1,10 @@
 'use client';
 
-import { useMemo, useState } from 'react';
+import { useEffect, useMemo, useState } from 'react';
+import { createPortal } from 'react-dom';
 import { DataTable } from 'mantine-datatable';
-import { Badge, Box, Group, Select, Stack, TextInput } from '@mantine/core';
-import { Search } from 'lucide-react';
+import { Badge, Box, Grid, GridCol, Group, Select, Stack, TextInput } from '@mantine/core';
+import { CalendarDays, MapPin, Search, X } from 'lucide-react';
 import type { Tournament, TournamentStatus } from '@/types';
 import styles from './TournamentTable.module.css';
 
@@ -47,16 +48,179 @@ interface SortStatus {
   direction: 'asc' | 'desc';
 }
 
+interface TournamentDetailCardProps {
+  tournament: Tournament;
+  onClose: () => void;
+  onSelectTournament: () => void;
+}
+
+function TournamentDetailCard({ tournament: t, onClose, onSelectTournament }: TournamentDetailCardProps) {
+  useEffect(() => {
+    const handleKey = (e: KeyboardEvent) => { if (e.key === 'Escape') onClose(); };
+    document.addEventListener('keydown', handleKey);
+    document.body.style.overflow = 'hidden';
+    return () => {
+      document.removeEventListener('keydown', handleKey);
+      document.body.style.overflow = '';
+    };
+  }, [onClose]);
+
+  return createPortal(
+    <div className={styles.modalBackdrop} onClick={onClose} role="dialog" aria-modal="true">
+      <Box className={styles.detailCard} onClick={(e) => e.stopPropagation()}>
+      {/* Venue image section — mirrors the carousel's venue card */}
+      <Box className={styles.detailVenueSection}>
+        <img src={t.venue.imageUrl} alt={t.venue.name} className={styles.detailVenueImage} />
+        <Box className={styles.detailVenueGradient} />
+        <button className={styles.detailCloseBtn} onClick={onClose} aria-label="Đóng">
+          <X size={16} />
+        </button>
+        <Box className={styles.detailVenueContent}>
+          {/* <Group gap="md" mb={12}>
+            <Box className={styles.detailVenueIconBox}>
+              <MapPin size={18} color="#486700" />
+            </Box>
+            <span className={styles.detailVenueLabel}>Tournament Venue</span>
+          </Group> */}
+          {t.venue.logoUrl && (
+            <img src={t.venue.logoUrl} alt="Tournament logo" className={styles.detailVenueLogo} />
+          )}
+          <h4 className={`neon-glow ${styles.detailVenueName}`}>{t.venue.name}</h4>
+          <Grid gutter="sm" mb={12}>
+            <GridCol span={6}>
+              <Box className={styles.detailVenueStatBox}>
+                <p className={styles.detailVenueStatLabel}>Quy mô</p>
+                <span className={styles.detailVenueStatValue}>{t.venue.courts} Sân thi đấu</span>
+              </Box>
+            </GridCol>
+            <GridCol span={6}>
+              <Box className={styles.detailVenueStatBox}>
+                <p className={styles.detailVenueStatLabel}>Loại sân</p>
+                <span className={styles.detailVenueStatValue}>{t.venue.courtType}</span>
+              </Box>
+            </GridCol>
+          </Grid>
+          <Group gap="xs">
+            <MapPin size={13} color="#ADAAAA" />
+            <span className={styles.detailVenueLocation}>{t.venue.city}, {t.venue.country}</span>
+          </Group>
+        </Box>
+      </Box>
+
+      {/* Full tournament info */}
+      <Box className={styles.detailBody}>
+        <h3 className={styles.detailTournamentName}>{t.name}</h3>
+        <Grid gutter="lg">
+          {/* Schedule column */}
+          <GridCol span={{ base: 12, md: 6 }}>
+            <Box className={styles.detailInfoCard}>
+              <Group gap="md" align="center" mb="md">
+                <Box className={styles.detailCalendarIconBox}>
+                  <CalendarDays size={20} color="#B8FF00" />
+                </Box>
+                <h4 className={styles.detailInfoCardTitle}>Thời Gian Thi Đấu</h4>
+                <Badge
+                  variant="outline"
+                  size="sm"
+                  ml="auto"
+                  style={{ borderColor: STATUS_COLORS[t.status].border, color: STATUS_COLORS[t.status].color }}
+                >
+                  {STATUS_LABELS[t.status]}
+                </Badge>
+              </Group>
+              <Stack gap={0}>
+                <Group justify="space-between" py="xs" className={styles.detailInfoRow}>
+                  <Group gap="xs">
+                    <span className={styles.detailInfoLabel}>Ngày thi đấu</span>
+                    {t.schedule.scheduleStatus && (
+                      <span className={styles.detailSchedBadge}>{t.schedule.scheduleStatus}</span>
+                    )}
+                  </Group>
+                  <span className={styles.detailInfoValue}>{t.schedule.displayDate}</span>
+                </Group>
+                <Group justify="space-between" py="xs" className={styles.detailInfoRow}>
+                  <span className={styles.detailInfoLabel}>Check-in</span>
+                  <span className={styles.detailInfoValue}>{t.schedule.checkInTime}</span>
+                </Group>
+                <Group justify="space-between" py="xs" className={styles.detailInfoRow}>
+                  <span className={styles.detailInfoLabel}>Khai mạc</span>
+                  <span className={styles.detailInfoValue}>{t.schedule.openingTime}</span>
+                </Group>
+                <Group justify="space-between" py="xs" className={styles.detailInfoRow}>
+                  <span className={styles.detailInfoLabel}>Kết thúc</span>
+                  <span className={styles.detailInfoValue}>{t.schedule.closingTime}</span>
+                </Group>
+              </Stack>
+              <Box className={styles.detailFeeBox}>
+                <span className={styles.detailFeeLabel}>Phí Tham Gia</span>
+                {t.registration.entryFeeMode === 'flat' ? (
+                  <span className={styles.detailFeeValue}>
+                    {t.registration.entryFee ? formatVND(parseFeeVND(t.registration.entryFee)) : '—'}
+                  </span>
+                ) : (
+                  <>
+                    <span className={styles.detailFeeValue}>{getEntryFeeDisplay(t)}</span>
+                    <span className={styles.detailFeeHint}>tuỳ nội dung thi đấu</span>
+                  </>
+                )}
+              </Box>
+            </Box>
+          </GridCol>
+
+          {/* Registration column */}
+          <GridCol span={{ base: 12, md: 6 }}>
+            <Box className={`${styles.detailInfoCard} ${styles.detailRegCard}`}>
+              <Stack gap={0}>
+                <Group justify="space-between" py="xs" className={styles.detailInfoRow}>
+                  <span className={styles.detailInfoLabel}>Hạn đăng ký</span>
+                  <span className={styles.detailInfoValue}>{t.registration.deadline}</span>
+                </Group>
+                <Group justify="space-between" py="xs" className={styles.detailInfoRow}>
+                  <span className={styles.detailInfoLabel}>Tổng số slots</span>
+                  <span className={styles.detailInfoValue}>{t.registration.totalSlots}</span>
+                </Group>
+                {t.registration.entryFeeMode === 'per_category' &&
+                  Object.keys(t.registration.categoryFees ?? {}).length > 0 && (
+                    <Box pt="sm">
+                      <span className={styles.detailInfoLabel}>Phí theo nội dung</span>
+                      <Stack gap={4} mt={8}>
+                        {Object.entries(t.registration.categoryFees ?? {}).map(([cat, fee]) => (
+                          <Group key={cat} justify="space-between">
+                            <span className={styles.detailCatLabel}>{cat}</span>
+                            <span className={styles.detailCatFee}>
+                              {fee ? formatVND(parseFeeVND(fee)) : '—'}
+                            </span>
+                          </Group>
+                        ))}
+                      </Stack>
+                    </Box>
+                  )}
+              </Stack>
+              <button className={styles.detailSelectBtn} onClick={onSelectTournament}>
+                Chọn Giải Đấu
+              </button>
+            </Box>
+          </GridCol>
+        </Grid>
+      </Box>
+      </Box>
+    </div>,
+    document.body,
+  );
+}
+
 interface TournamentTableProps {
   tournaments: Tournament[];
   activeTournamentId?: string;
   onSelect?: (index: number) => void;
+  onSelectTournament?: (index: number) => void;
 }
 
 export default function TournamentTable({
   tournaments,
   activeTournamentId,
   onSelect,
+  onSelectTournament,
 }: TournamentTableProps) {
   const [search, setSearch] = useState('');
   const [statusFilter, setStatusFilter] = useState<string | null>(null);
@@ -64,6 +228,12 @@ export default function TournamentTable({
     columnAccessor: 'name',
     direction: 'asc',
   });
+  const [expandedId, setExpandedId] = useState<string | null>(null);
+
+  const expandedTournament = useMemo(
+    () => tournaments.find((t) => t.id === expandedId) ?? null,
+    [expandedId, tournaments],
+  );
 
   const records = useMemo(() => {
     let data = [...tournaments];
@@ -87,13 +257,9 @@ export default function TournamentTable({
       let aVal: string | number = '';
       let bVal: string | number = '';
       switch (sortStatus.columnAccessor) {
-        case 'name':      aVal = a.name;               bVal = b.name;               break;
-        case 'status':    aVal = a.status;             bVal = b.status;             break;
-        case 'date':      aVal = a.schedule.startDate; bVal = b.schedule.startDate; break;
-        case 'venue':     aVal = a.venue.name;         bVal = b.venue.name;         break;
-        case 'city':      aVal = a.venue.city;         bVal = b.venue.city;         break;
-        case 'courts':    aVal = a.venue.courts;       bVal = b.venue.courts;       break;
-        case 'courtType': aVal = a.venue.courtType;    bVal = b.venue.courtType;    break;
+        case 'name':   aVal = a.name;               bVal = b.name;               break;
+        case 'status': aVal = a.status;             bVal = b.status;             break;
+        case 'date':   aVal = a.schedule.startDate; bVal = b.schedule.startDate; break;
       }
       if (aVal < bVal) return -1 * dir;
       if (aVal > bVal) return 1 * dir;
@@ -137,9 +303,10 @@ export default function TournamentTable({
           onRowClick={({ record }) => {
             const idx = tournaments.findIndex((t) => t.id === record.id);
             if (idx !== -1) onSelect?.(idx);
+            setExpandedId(record.id);
           }}
           rowClassName={(record: Tournament) =>
-            record.id === activeTournamentId ? styles.activeRow : ''
+            record.id === expandedId || record.id === activeTournamentId ? styles.activeRow : ''
           }
           noRecordsText="Không tìm thấy giải đấu nào"
           minHeight={160}
@@ -147,15 +314,11 @@ export default function TournamentTable({
             {
               accessor: 'logo',
               title: '',
-              width: 90,
+              width: 110,
               render: (t) =>
                 t.venue.logoUrl ? (
                   <Box className={styles.logoCell}>
-                    <img
-                      src={t.venue.logoUrl}
-                      alt={t.name}
-                      className={styles.logoImg}
-                    />
+                    <img src={t.venue.logoUrl} alt={t.name} className={styles.logoImg} />
                   </Box>
                 ) : (
                   <Box className={styles.logoPlaceholder} />
@@ -175,11 +338,7 @@ export default function TournamentTable({
               render: (t) => {
                 const c = STATUS_COLORS[t.status];
                 return (
-                  <Badge
-                    variant="outline"
-                    size="sm"
-                    style={{ borderColor: c.border, color: c.color }}
-                  >
+                  <Badge variant="outline" size="sm" style={{ borderColor: c.border, color: c.color }}>
                     {STATUS_LABELS[t.status]}
                   </Badge>
                 );
@@ -193,47 +352,44 @@ export default function TournamentTable({
               render: (t) => <span className={styles.cell}>{t.schedule.displayDate}</span>,
             },
             {
-              accessor: 'checkIn',
-              title: 'Check-in',
-              width: 110,
-              render: (t) => <span className={styles.cell}>{t.schedule.checkInTime}</span>,
-            },
-            {
-              accessor: 'venue',
-              title: 'Địa điểm',
-              sortable: true,
-              render: (t) => <span className={styles.cell}>{t.venue.name}</span>,
-            },
-            {
-              accessor: 'city',
-              title: 'Thành phố',
-              sortable: true,
-              width: 130,
-              render: (t) => <span className={styles.cell}>{t.venue.city}</span>,
-            },
-            {
-              accessor: 'courts',
-              title: 'Số sân',
-              sortable: true,
-              width: 85,
-              textAlign: 'center',
-              render: (t) => <span className={styles.cell}>{t.venue.courts}</span>,
-            },
-            {
-              accessor: 'courtType',
-              title: 'Loại sân',
-              width: 120,
-              render: (t) => <span className={styles.cell}>{t.venue.courtType}</span>,
-            },
-            {
               accessor: 'entryFee',
-              title: 'Phí dự thi',
-              width: 190,
+              title: 'Phí tham gia',
+              width: 240,
               render: (t) => <span className={styles.feeCell}>{getEntryFeeDisplay(t)}</span>,
+            },
+            {
+              accessor: 'actions',
+              title: '',
+              width: 160,
+              render: (t) => {
+                const idx = tournaments.findIndex((ti) => ti.id === t.id);
+                return (
+                  <button
+                    className={styles.selectBtn}
+                    onClick={(e) => {
+                      e.stopPropagation();
+                      onSelectTournament?.(idx);
+                    }}
+                  >
+                    Chọn giải đấu
+                  </button>
+                );
+              },
             },
           ]}
         />
       </Box>
+
+      {expandedTournament && (
+        <TournamentDetailCard
+          tournament={expandedTournament}
+          onClose={() => setExpandedId(null)}
+          onSelectTournament={() => {
+            const idx = tournaments.findIndex((t) => t.id === expandedTournament.id);
+            onSelectTournament?.(idx);
+          }}
+        />
+      )}
     </Stack>
   );
 }

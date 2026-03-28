@@ -3,6 +3,29 @@
   padding: 6rem 0;
 }
 
+.backButton {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  color: #adaaaa;
+  font-family: var(--font-space-grotesk);
+  font-size: 0.8rem;
+  font-weight: 600;
+  letter-spacing: 0.05em;
+  text-transform: uppercase;
+  background: transparent;
+  border: 1px solid rgba(173, 170, 170, 0.35);
+  border-radius: 8px;
+  padding: 0.5rem 1rem;
+  cursor: pointer;
+  transition: color 0.2s, border-color 0.2s;
+}
+
+.backButton:hover {
+  color: #ffffff;
+  border-color: rgba(255, 255, 255, 0.5);
+}
+
 .accentBar {
   width: 48px;
   height: 4px;
@@ -113,9 +136,9 @@
   font-weight: 900 !important;
   font-style: italic !important;
   font-size: 1.5rem !important;
-  padding: 1.5rem 3rem !important;
+  padding: 1.5rem rem !important;
   box-shadow: 0 15px 40px rgba(184, 255, 0, 0.2) !important;
-  height: auto !important;
+  height: 70px !important;
 }
 
 .featureItem {

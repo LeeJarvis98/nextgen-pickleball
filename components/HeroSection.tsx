@@ -38,10 +38,10 @@ export default function HeroSection() {
               <Group gap="md" wrap="wrap">
                 <Button
                   component="a"
-                  href="#registration"
+                  href="#tournament-info"
                   onClick={(e) => {
                     e.preventDefault();
-                    document.querySelector('#registration')?.scrollIntoView({ behavior: 'smooth' });
+                    document.querySelector('#tournament-info')?.scrollIntoView({ behavior: 'smooth' });
                   }}
                   size="lg"
                   rightSection={<ArrowRight size={18} />}
@@ -50,27 +50,13 @@ export default function HeroSection() {
                   ĐĂNG KÝ NGAY
                 </Button>
                 <Button
-                  component="a"
-                  href="#tournament-info"
-                  onClick={(e) => {
-                    e.preventDefault();
-                    document.querySelector('#tournament-info')?.scrollIntoView({ behavior: 'smooth' });
-                  }}
-                  size="lg"
-                  variant="outline"
-                  className={`ghost-border ${styles.ctaSecondary}`}
-                  leftSection={<Info size={18} />}
-                >
-                  XEM THÔNG TIN
-                </Button>
-                <Button
                   onClick={openTrack}
                   size="lg"
                   variant="outline"
                   className={`ghost-border ${styles.ctaSecondary}`}
                   leftSection={<Search size={18} />}
                 >
-                  THEO DÕI ĐĂNG KÝ
+                  XEM THÔNG TIN ĐĂNG KÝ
                 </Button>
               </Group>
             </Stack>

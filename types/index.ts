@@ -7,6 +7,7 @@ export interface TournamentSchedule {
   checkInTime: string;
   openingTime: string;
   closingTime: string;
+  scheduleStatus?: string;
 }
 
 export interface TournamentVenue {

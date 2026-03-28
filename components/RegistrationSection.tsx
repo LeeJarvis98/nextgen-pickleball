@@ -2,12 +2,20 @@
 
 import { useDisclosure } from '@mantine/hooks';
 import { Box, Container, Grid, GridCol, Button, Group, Stack, Paper } from '@mantine/core';
-import { Timer, CheckCircle, RocketIcon } from 'lucide-react';
+import { Timer, CheckCircle, RocketIcon, ChevronLeft } from 'lucide-react';
 import type { TournamentRegistration } from '@/types';
 import RegisterModal from './RegisterModal';
 import styles from './RegistrationSection.module.css';
 
-export default function RegistrationSection({ tournamentId, registration }: { tournamentId: string; registration: TournamentRegistration }) {
+export default function RegistrationSection({
+  tournamentId,
+  registration,
+  onBack,
+}: {
+  tournamentId: string;
+  registration: TournamentRegistration;
+  onBack?: () => void;
+}) {
   const [opened, { open, close }] = useDisclosure(false);
 
   return (
@@ -20,10 +28,10 @@ export default function RegistrationSection({ tournamentId, registration }: { to
               <span className={styles.sectionLabel}>ĐĂNG KÝ THAM DỰ</span>
               <h2 className={styles.sectionTitle}>Sẵn Sàng Chinh Phục?</h2>
             </Box>
-            <Group gap="xs" align="center">
+            {/* <Group gap="xs" align="center">
               <Timer size={16} color="#FF7351" />
               <span className={styles.deadline}>HẠN CHÓT: {registration.deadline}</span>
-            </Group>
+            </Group> */}
           </Group>
 
           <Paper className={`ghost-border ${styles.ctaCard}`}>
@@ -47,6 +55,13 @@ export default function RegistrationSection({ tournamentId, registration }: { to
                   >
                     ĐĂNG KÝ NGAY
                   </Button>
+
+                  {onBack && (
+                    <button onClick={onBack} className={styles.backButton}>
+                      <ChevronLeft size={15} />
+                      <span>Chọn giải đấu khác</span>
+                    </button>
+                  )}
 
                   <Group gap="xl" wrap="wrap" justify="center">
                     {registration.features.map((item) => (

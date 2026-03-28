@@ -9,7 +9,7 @@ export async function getTournaments(): Promise<Tournament[]> {
       .from('tournaments')
       .select(`
         id, name, status,
-        tournament_schedule ( start_date, end_date, display_date, check_in_time, opening_time, closing_time ),
+        tournament_schedule ( start_date, end_date, display_date, check_in_time, opening_time, closing_time, schedule_status ),
         tournament_venues ( name, image_url, logo_url, courts, court_type, city, country ),
         tournament_prizes ( total_prize ),
         tournament_prize_entries ( rank, title, amount, bonus ),
@@ -59,6 +59,7 @@ export async function getTournaments(): Promise<Tournament[]> {
         checkInTime: sched.check_in_time,
         openingTime: sched.opening_time,
         closingTime: sched.closing_time,
+        scheduleStatus: (sched.schedule_status as string | null) ?? undefined,
       },
       venue: {
         name: venue.name,

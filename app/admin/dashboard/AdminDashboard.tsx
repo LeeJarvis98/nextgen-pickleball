@@ -4,7 +4,7 @@ import { useState, useEffect, useCallback, useRef } from 'react';
 import { useRouter } from 'next/navigation';
 import {
   Box, Button, Container, Group, Stack, Tabs, Badge,
-  TextInput, Textarea, Select, NumberInput, ActionIcon,
+  TextInput, Textarea, Select, MultiSelect, NumberInput, ActionIcon,
   Modal, LoadingOverlay, Title, Tooltip, Divider, Text,
   ScrollArea,
 } from '@mantine/core';
@@ -87,8 +87,10 @@ const CATEGORY_OPTIONS = [
   { value: 'doubles_mixed',   label: 'Doubles — Mixed' },
 ];
 
-// Date-type field keys
-const DATE_FIELDS = new Set(['start_date', 'end_date', 'deadline_date_time']);
+// Date-type field keys (datetime-local; start/end dates handled separately; deadline fields are auto-computed)
+const DATE_FIELDS = new Set<string>();
+// Date-only field keys (no time component)
+const DATE_ONLY_FIELDS = new Set(['start_date', 'end_date']);
 // URL-type field keys
 const URL_FIELDS = new Set(['registration_link', 'image_url']);
 // Time-type field keys
@@ -102,6 +104,56 @@ const LOGO_OPTIONS = [
   { value: '/logos/School_League.webp',    label: 'School League' },
   { value: '/logos/University_League.webp', label: 'University League' },
 ];
+
+const SCHEDULE_STATUS_OPTIONS = [
+  { value: 'Dự kiến',   label: 'Dự kiến' },
+  { value: 'Chính thức', label: 'Chính thức' },
+];
+
+/** Format ISO datetime (YYYY-MM-DDTHH:MM) → short display "DD/MM/YYYY". */
+function formatDeadlineDisplay(iso: string): string {
+  const [datePart] = iso.split('T');
+  if (!datePart) return '';
+  const [y, m, d] = datePart.split('-');
+  if (!y || !m || !d) return '';
+  return `${d}/${m}/${y}`;
+}
+
+/** Format ISO datetime (YYYY-MM-DDTHH:MM) → full display "HH:MM · DD.MM.YYYY". */
+function formatDeadlineDatetime(iso: string): string {
+  const [datePart, timePart] = iso.split('T');
+  if (!datePart || !timePart) return '';
+  const [y, m, d] = datePart.split('-');
+  if (!y || !m || !d) return '';
+  const time = timePart.slice(0, 5); // HH:MM
+  return `${time} · ${d}.${m}.${y}`;
+}
+
+/** Parse stored display strings back to ISO datetime for the picker (best-effort). */
+function parseDeadlineToISO(deadlineDatetime: string): string {
+  // Expected format: "HH:MM · DD.MM.YYYY"
+  const parts = deadlineDatetime.split(' · ');
+  if (parts.length !== 2) return '';
+  const [time, datePart] = parts;
+  const dateSplit = datePart.split('.');
+  if (dateSplit.length !== 3) return '';
+  const [dd, mm, yyyy] = dateSplit;
+  if (!dd || !mm || !yyyy || !time) return '';
+  return `${yyyy}-${mm}-${dd}T${time}`;
+}
+
+/** Auto-format display_date from two ISO date strings (YYYY-MM-DD). */
+function computeDisplayDate(startDate: string, endDate: string): string {
+  if (!startDate) return '';
+  const [sy, sm, sd] = startDate.split('-');
+  if (!sy || !sm || !sd) return '';
+  if (!endDate || startDate === endDate) return `${sd} / ${sm} / ${sy}`;
+  const [ey, em, ed] = endDate.split('-');
+  if (!ey || !em || !ed) return `${sd} / ${sm} / ${sy}`;
+  if (sy === ey && sm === em) return `${sd} - ${ed} / ${sm} / ${sy}`;
+  if (sy === ey) return `${sd} / ${sm} - ${ed} / ${em} / ${sy}`;
+  return `${sd} / ${sm} / ${sy} - ${ed} / ${em} / ${ey}`;
+}
 
 /** Section heading with optional dirty indicator */
 function SectionTag({ label, dirty }: { label: string; dirty?: boolean }) {
@@ -272,6 +324,8 @@ export default function AdminDashboard() {
   const [categoryFees, setCategoryFees] = useState<KVPair[]>([]);
   const [categoryFeesJson, setCategoryFeesJson] = useState('');
   const [categoryFeesJsonError, setCategoryFeesJsonError] = useState('');
+  // ISO datetime string driving the deadline display auto-compute (not stored directly)
+  const [deadlinePicker, setDeadlinePicker] = useState('');
 
   // Create tournament modal
   const [createOpened, { open: openCreate, close: closeCreate }] = useDisclosure(false);
@@ -355,6 +409,20 @@ export default function AdminDashboard() {
     markDirty(section);
   };
 
+  /** Updates start_date or end_date and auto-computes display_date in one state update. */
+  const setScheduleDateField = (dateKey: 'start_date' | 'end_date', value: string) => {
+    setEditTournament((prev) => {
+      if (!prev) return prev;
+      const sched = { ...(prev.tournament_schedule ?? {}) } as Record<string, string>;
+      sched[dateKey] = value;
+      const s = String(sched.start_date ?? '');
+      const e = String(sched.end_date ?? '');
+      sched.display_date = computeDisplayDate(s, e);
+      return { ...prev, tournament_schedule: sched };
+    });
+    markDirty('schedule');
+  };
+
   // ── Tournament actions ─────────────────────────────────────────────────────
 
   const handleEditTournamentOpen = (row: TournamentRow) => {
@@ -384,6 +452,11 @@ export default function AdminDashboard() {
       setCategoryFeesJson('');
     }
     setCategoryFeesJsonError('');
+
+    // Init deadline picker from stored display string
+    const regInfoRow = row.tournament_registration_info as Record<string, unknown> | null;
+    const storedDdt = String(regInfoRow?.deadline_date_time ?? '');
+    setDeadlinePicker(parseDeadlineToISO(storedDdt));
 
     openEdit();
   };
@@ -423,7 +496,7 @@ export default function AdminDashboard() {
         });
       }
 
-      const results = await Promise.allSettled(
+      const results: PromiseSettledResult<void>[] = await Promise.allSettled(
         updates.map((u) =>
           fetch(`/api/admin/tournaments/${id}`, {
             method: 'PATCH',
@@ -433,20 +506,24 @@ export default function AdminDashboard() {
         ),
       );
 
-      // Save prize entries (delete all then re-insert is handled server-side as PATCH)
+      // Save prize entries: single request, server does delete-then-re-insert
       if (dirtySections.has('prizes')) {
-        await Promise.allSettled(
-          prizeEntries.map((entry, i) =>
-            fetch(`/api/admin/tournaments/${id}`, {
-              method: 'PATCH',
-              headers: { 'Content-Type': 'application/json' },
-              body: JSON.stringify({
-                table: 'tournament_prize_entries',
-                data: { rank: i + 1, title: entry.title, amount: entry.amount, bonus: entry.bonus },
-              }),
+        const prizeResult = await Promise.allSettled([
+          fetch(`/api/admin/tournaments/${id}`, {
+            method: 'PATCH',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({
+              table: 'tournament_prize_entries',
+              data: { entries: prizeEntries },
             }),
-          ),
-        );
+          }).then(async (r) => {
+            if (!r.ok) {
+              const body = await r.json().catch(() => ({}));
+              throw new Error(body.error ?? 'Failed to update tournament_prize_entries');
+            }
+          }),
+        ]);
+        results.push(...prizeResult);
       }
 
       const failed = results.filter((r) => r.status === 'rejected');
@@ -569,6 +646,9 @@ export default function AdminDashboard() {
 
     if (DATE_FIELDS.has(key)) {
       return <TextInput {...commonProps} type="datetime-local" value={strVal} />;
+    }
+    if (DATE_ONLY_FIELDS.has(key)) {
+      return <TextInput {...commonProps} type="date" value={strVal} />;
     }
     if (TIME_FIELDS.has(key)) {
       return <TextInput {...commonProps} type="time" value={strVal} />;
@@ -866,12 +946,52 @@ export default function AdminDashboard() {
                 <ScrollArea h={380} offsetScrollbars>
                   <Stack gap="sm" px={2} pb={8}>
                     <SectionTag label="Tournament Dates & Times" dirty={dirtySections.has('schedule')} />
-                    {editTournament.tournament_schedule
-                      ? Object.entries(editTournament.tournament_schedule)
-                          .filter(([k]) => k !== 'tournament_id')
+                    {editTournament.tournament_schedule ? (
+                      <>
+                        {/* Schedule status */}
+                        <Select
+                          label="Trạng thái lịch"
+                          placeholder="Chọn trạng thái"
+                          data={SCHEDULE_STATUS_OPTIONS}
+                          value={editTournament.tournament_schedule.schedule_status ?? null}
+                          onChange={(v) => setSubField('tournament_schedule', 'schedule_status', v ?? null, 'schedule')}
+                          classNames={{ label: styles.inputLabel }}
+                          clearable
+                        />
+                        {/* Date pickers — grouped side by side */}
+                        <Group grow>
+                          <TextInput
+                            label="Start Date"
+                            type="date"
+                            value={String(editTournament.tournament_schedule.start_date ?? '')}
+                            onChange={(e) => setScheduleDateField('start_date', e.currentTarget.value)}
+                            classNames={{ label: styles.inputLabel }}
+                          />
+                          <TextInput
+                            label="End Date"
+                            type="date"
+                            value={String(editTournament.tournament_schedule.end_date ?? '')}
+                            onChange={(e) => setScheduleDateField('end_date', e.currentTarget.value)}
+                            classNames={{ label: styles.inputLabel }}
+                          />
+                        </Group>
+                        {/* Display date — auto-computed, read-only */}
+                        <TextInput
+                          label="Display Date"
+                          value={String(editTournament.tournament_schedule.display_date ?? '')}
+                          readOnly
+                          description="Auto-computed from start / end dates"
+                          classNames={{ label: styles.inputLabel }}
+                        />
+                        {/* Remaining schedule fields (times, etc.) */}
+                        {Object.entries(editTournament.tournament_schedule)
+                          .filter(([k]) => !['tournament_id', 'start_date', 'end_date', 'display_date', 'schedule_status'].includes(k))
                           .map(([key, value]) => renderField(key, value, 'tournament_schedule', 'schedule'))
-                      : <Text size="sm" c="dimmed">No schedule data available.</Text>
-                    }
+                        }
+                      </>
+                    ) : (
+                      <Text size="sm" c="dimmed">No schedule data available.</Text>
+                    )}
                   </Stack>
                 </ScrollArea>
               </Tabs.Panel>
@@ -933,19 +1053,37 @@ export default function AdminDashboard() {
                     <SectionTag label="Registration Settings" dirty={dirtySections.has('registration')} />
                     {regInfo && (
                       <>
+                        <TextInput
+                          label="Deadline"
+                          type="datetime-local"
+                          value={deadlinePicker}
+                          onChange={(e) => {
+                            const iso = e.currentTarget.value;
+                            setDeadlinePicker(iso);
+                            setEditTournament((prev) => {
+                              if (!prev) return prev;
+                              const ri = { ...(prev.tournament_registration_info as Record<string, unknown>) };
+                              ri.deadline = formatDeadlineDisplay(iso);
+                              ri.deadline_date_time = formatDeadlineDatetime(iso);
+                              return { ...prev, tournament_registration_info: ri };
+                            });
+                            markDirty('registration');
+                          }}
+                          classNames={{ label: styles.inputLabel }}
+                        />
                         <Group grow>
                           <TextInput
-                            label="Deadline (display)"
-                            placeholder="e.g. 20/03/2025"
+                            label="Deadline (short display)"
                             value={String(regInfo.deadline ?? '')}
-                            onChange={(e) => setSubField('tournament_registration_info', 'deadline', e.currentTarget.value, 'registration')}
+                            readOnly
+                            description="Auto-computed · e.g. 10/03/2026"
                             classNames={{ label: styles.inputLabel }}
                           />
                           <TextInput
-                            label="Deadline (date-time)"
-                            type="datetime-local"
+                            label="Deadline (full display)"
                             value={String(regInfo.deadline_date_time ?? '')}
-                            onChange={(e) => setSubField('tournament_registration_info', 'deadline_date_time', e.currentTarget.value, 'registration')}
+                            readOnly
+                            description="Auto-computed · e.g. 23:59 · 10.03.2026"
                             classNames={{ label: styles.inputLabel }}
                           />
                         </Group>
@@ -975,6 +1113,26 @@ export default function AdminDashboard() {
                           value={String(regInfo.cta_description ?? '')}
                           onChange={(e) => setSubField('tournament_registration_info', 'cta_description', e.currentTarget.value, 'registration')}
                           minRows={2}
+                          classNames={{ label: styles.inputLabel }}
+                        />
+                        <MultiSelect
+                          label="Available Categories"
+                          description="Which categories players can register for"
+                          data={CATEGORY_OPTIONS}
+                          value={Array.isArray(regInfo.available_categories) ? (regInfo.available_categories as string[]) : []}
+                          onChange={(v) => setSubField('tournament_registration_info', 'available_categories', v, 'registration')}
+                          classNames={{ label: styles.inputLabel }}
+                        />
+                        <Textarea
+                          label="Features"
+                          description="One feature per line — shown as bullet points below the register button"
+                          placeholder={"Thi đấu 1vs1 & 2vs2\nTrọng tài chuyên nghiệp\nGiải thưởng hấp dẫn"}
+                          value={(Array.isArray(regInfo.features) ? (regInfo.features as string[]) : []).join('\n')}
+                          onChange={(e) => {
+                            const lines = e.currentTarget.value.split('\n');
+                            setSubField('tournament_registration_info', 'features', lines, 'registration');
+                          }}
+                          minRows={3}
                           classNames={{ label: styles.inputLabel }}
                         />
                         <Group grow>
