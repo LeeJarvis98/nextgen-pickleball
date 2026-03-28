@@ -76,12 +76,6 @@ function TournamentDetailCard({ tournament: t, onClose, onSelectTournament }: To
           <X size={16} />
         </button>
         <Box className={styles.detailVenueContent}>
-          {/* <Group gap="md" mb={12}>
-            <Box className={styles.detailVenueIconBox}>
-              <MapPin size={18} color="#486700" />
-            </Box>
-            <span className={styles.detailVenueLabel}>Tournament Venue</span>
-          </Group> */}
           {t.venue.logoUrl && (
             <img src={t.venue.logoUrl} alt="Tournament logo" className={styles.detailVenueLogo} />
           )}

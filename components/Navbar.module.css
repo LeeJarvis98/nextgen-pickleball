@@ -79,6 +79,21 @@
   color: #b8ff00;
 }
 
+.trackButton {
+  color: #b8ff00 !important;
+  border-color: rgba(184, 255, 0, 0.35) !important;
+  font-family: var(--font-space-grotesk) !important;
+  font-weight: 700 !important;
+  font-size: 0.8rem !important;
+  letter-spacing: 0.05em !important;
+  background-color: transparent !important;
+}
+
+.trackButton:hover {
+  background-color: rgba(184, 255, 0, 0.08) !important;
+  border-color: rgba(184, 255, 0, 0.6) !important;
+}
+
 .ctaButton {
   background-color: #b8ff00 !important;
   color: #486700 !important;
@@ -111,6 +126,14 @@
   color: #adaaaa;
   text-decoration: none;
   cursor: pointer;
+}
+
+.drawerTrackButton {
+  color: #b8ff00 !important;
+  border-color: rgba(184, 255, 0, 0.35) !important;
+  font-family: var(--font-space-grotesk) !important;
+  font-weight: 700 !important;
+  background-color: transparent !important;
 }
 
 .drawerCtaButton {

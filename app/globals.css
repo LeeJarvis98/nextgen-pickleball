@@ -65,7 +65,6 @@ body {
 .carousel-indicator {
   background-color: rgba(184, 255, 0, 0.3) !important;
   transition: background-color 0.2s;
-  margin-bottom: 620px !important;
 }
 
 .carousel-indicator[data-active] {

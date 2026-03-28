@@ -26,12 +26,24 @@ function formatVND(amount: number): string {
   return amount.toString().replace(/\B(?=(\d{3})+(?!\d))/g, '.') + ' VNĐ';
 }
 
+function formatNumber(amount: number): string {
+  return amount.toString().replace(/\B(?=(\d{3})+(?!\d))/g, '.');
+}
+
 function getCategoryFeeRange(categoryFees: Partial<Record<string, string>>): string {
   const values = Object.values(categoryFees).filter(Boolean).map((f) => parseFeeVND(f!));
   if (values.length === 0) return '';
   const min = Math.min(...values);
   const max = Math.max(...values);
   return min === max ? formatVND(min) : `${formatVND(min)} – ${formatVND(max)}`;
+}
+
+function getCategoryFeeNumbers(categoryFees: Partial<Record<string, string>>): string {
+  const values = Object.values(categoryFees).filter(Boolean).map((f) => parseFeeVND(f!));
+  if (values.length === 0) return '—';
+  const min = Math.min(...values);
+  const max = Math.max(...values);
+  return min === max ? formatNumber(min) : `${formatNumber(min)} – ${formatNumber(max)}`;
 }
 
 interface InfoRowProps {
@@ -59,7 +71,110 @@ function TournamentSlide({ tournament, onSelectTournament }: TournamentSlideProp
       <Box pb={8}>
         <h3 className={styles.slideName}>{tournament.name}</h3>
 
-        <Grid gutter="xl">
+        {/* ── Mobile / tablet: single compact combined card ── */}
+        <Box hiddenFrom="md" className={styles.compactCard}>
+          <Box className={styles.compactVenueBanner}>
+            <img
+              src={tournament.venue.imageUrl}
+              alt={tournament.venue.name}
+              className={styles.compactVenueImage}
+            />
+            <Box className={styles.compactVenueBannerGradient} />
+            <Box className={styles.compactStatusOverlay}>
+              <Badge
+                variant="outline"
+                className={styles.statusBadge}
+                style={{
+                  borderColor: STATUS_COLORS[tournament.status].border,
+                  color: STATUS_COLORS[tournament.status].color,
+                  backgroundColor: STATUS_COLORS[tournament.status].bg,
+                }}
+              >
+                {STATUS_LABELS[tournament.status]}
+              </Badge>
+            </Box>
+            {tournament.venue.logoUrl && (
+              <Box className={styles.compactLogoOverlay}>
+                <img
+                  src={tournament.venue.logoUrl}
+                  alt="Tournament logo"
+                  className={styles.compactVenueLogo}
+                />
+              </Box>
+            )}
+          </Box>
+
+          <Box className={styles.compactBody}>
+            <Group justify="flex-start" align="flex-start" mb={10}>
+              <Group gap="xs" align="center">
+                <Box className={styles.compactVenueIconBox}>
+                  <MapPin size={15} color="#486700" />
+                </Box>
+                <div>
+                  <p className={styles.venueLabel}>Địa Điểm Tổ Chức</p>
+                  <h4 className={`neon-glow ${styles.compactVenueName}`}>{tournament.venue.name}</h4>
+                </div>
+              </Group>
+            </Group>
+
+            <Group gap="xs" mb={14}>
+              <span className={styles.venueLocation}>
+                <MapPin size={12} color="#ADAAAA" /> {tournament.venue.city}, {tournament.venue.country}
+              </span>
+            </Group>
+
+            <Stack gap={0} mb={12}>
+              <Group justify="space-between" py="xs" className={styles.infoRow}>
+                <Group gap="xs" align="center">
+                  <span className={styles.infoRowLabel}>Ngày thi đấu</span>
+                  {tournament.schedule.scheduleStatus && (
+                    <span className={styles.scheduleStatusBadge}>{tournament.schedule.scheduleStatus}</span>
+                  )}
+                </Group>
+                <span className={styles.infoRowValue}>{tournament.schedule.displayDate}</span>
+              </Group>
+              <InfoRow label="Check-in" value={tournament.schedule.checkInTime} />
+              <InfoRow label="Khai mạc" value={tournament.schedule.openingTime} />
+              <InfoRow label="Kết thúc" value={tournament.schedule.closingTime} />
+            </Stack>
+
+            <Grid gutter="sm" mb={14} className={styles.compactStatsGrid}>
+              <GridCol span={6}>
+                <Box className={styles.compactStatBox}>
+                  <p className={styles.venueStatLabel}>Phí Tham Gia</p>
+                  <Box className={styles.compactFeeWrapper}>
+                    <span className={styles.compactFeeNumber}>
+                      {tournament.registration.entryFeeMode === 'flat'
+                        ? (tournament.registration.entryFee
+                            ? formatNumber(parseFeeVND(tournament.registration.entryFee))
+                            : '—')
+                        : getCategoryFeeNumbers(tournament.registration.categoryFees ?? {})}
+                    </span>
+                    <span className={styles.compactFeeCurrency}>VNĐ</span>
+                  </Box>
+                  {tournament.registration.entryFeeMode !== 'flat' && (
+                    <span className={styles.compactFeeHint}>tuỳ nội dung</span>
+                  )}
+                </Box>
+              </GridCol>
+              <GridCol span={6}>
+                <Box className={styles.compactStatBox}>
+                  <p className={styles.venueStatLabel}>Quy mô</p>
+                  <span className={styles.venueStatValue}>{tournament.venue.courts} Sân</span>
+                  <span className={styles.compactCourtType}>{tournament.venue.courtType}</span>
+                </Box>
+              </GridCol>
+            </Grid>
+
+            <button className={styles.compactSelectBtn} onClick={onSelectTournament}>
+              Chọn giải đấu
+            </button>
+          </Box>
+        </Box>
+
+        {/* ── Desktop: original two-column layout ── */}
+        <Box visibleFrom="md">
+          <Grid gutter="xl">
           <GridCol span={{ base: 12, md: 6 }}>
             <Paper className={`ghost-border tournament-time-card ${styles.timeCard}`}>
               <Group justify="space-between" align="flex-start" mb={40}>
@@ -98,7 +213,12 @@ function TournamentSlide({ tournament, onSelectTournament }: TournamentSlideProp
                   <span className={styles.infoRowValue}>{tournament.schedule.closingTime}</span>
                 </Group>
                 <Box className={styles.entryFeeBox}>
-                  <span className={styles.entryFeeLabel}>Phí Tham Gia</span>
+                  <div className={styles.entryFeeHeader}>
+                    <span className={styles.entryFeeLabel}>Phí Tham Gia</span>
+                    {tournament.registration.entryFeeMode !== 'flat' && (
+                      <span className={styles.entryFeeRangeHint}>tuỳ nội dung thi đấu</span>
+                    )}
+                  </div>
                   {tournament.registration.entryFeeMode === 'flat' ? (
                     <span className={styles.entryFeeValue}>
                       {tournament.registration.entryFee
@@ -106,12 +226,9 @@ function TournamentSlide({ tournament, onSelectTournament }: TournamentSlideProp
                         : '—'}
                     </span>
                   ) : (
-                    <>
-                      <span className={styles.entryFeeValue}>
-                        {getCategoryFeeRange(tournament.registration.categoryFees ?? {})}
-                      </span>
-                      <span className={styles.entryFeeRangeHint}>tuỳ nội dung thi đấu</span>
-                    </>
+                    <span className={styles.entryFeeValue}>
+                      {getCategoryFeeRange(tournament.registration.categoryFees ?? {})}
+                    </span>
                   )}
                 </Box>
               </Stack>
@@ -129,9 +246,9 @@ function TournamentSlide({ tournament, onSelectTournament }: TournamentSlideProp
               <Box className={styles.venueContent}>
                 <Group gap="md" mb={24}> 
                   <Box className={styles.venueIconBox}>
-                    <MapPin size={22} color="#486700" />
+                    <MapPin size={28} color="#B8FF00" />
                   </Box>
-                  <span className={styles.venueLabel}>Tournament Venue</span>
+                  <span className={styles.venueLabel}>Địa Điểm Tổ Chức</span>
                   <button className={styles.selectBtn} onClick={onSelectTournament}>
                     Chọn giải đấu
                   </button>
@@ -172,6 +289,7 @@ function TournamentSlide({ tournament, onSelectTournament }: TournamentSlideProp
             </Box>
           </GridCol>
         </Grid>
+        </Box>
       </Box>
     </Carousel.Slide>
   );
