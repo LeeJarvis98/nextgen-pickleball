@@ -2,9 +2,16 @@
 
 import { useState, useEffect } from 'react';
 import Link from 'next/link';
-import { Box, Container, Group, Button, Burger, Drawer, Stack } from '@mantine/core';
+import { Box, Container, Group, Button, Burger, Drawer, Stack, Divider, Anchor } from '@mantine/core';
 import { useDisclosure } from '@mantine/hooks';
+import { Globe, Share2, Mail } from 'lucide-react';
 import styles from './Navbar.module.css';
+
+const socialIcons = [
+  { icon: Globe, href: '#', label: 'Website' },
+  { icon: Share2, href: '#', label: 'Share' },
+  { icon: Mail, href: '#', label: 'Email' },
+];
 
 export default function Navbar() {
   const [scrolled, setScrolled] = useState(false);
@@ -93,6 +100,28 @@ export default function Navbar() {
           >
             ĐĂNG KÝ NGAY
           </Button>
+
+          <Divider color="rgba(184,255,0,0.1)" />
+
+          <Stack gap="xs">
+            <Link href="/payment-info" className={styles.drawerFooterLink} onClick={close}>
+              THÔNG TIN CHUYỂN KHOẢN
+            </Link>
+            <Link href="#" className={styles.drawerFooterLink} onClick={close}>
+              ĐIỀU KHOẢN
+            </Link>
+            <Link href="#" className={styles.drawerFooterLink} onClick={close}>
+              LIÊN HỆ
+            </Link>
+          </Stack>
+
+          <Group gap="md">
+            {socialIcons.map(({ icon: Icon, href, label }) => (
+              <Anchor key={label} href={href} aria-label={label} className={styles.drawerSocialIcon} onClick={close}>
+                <Icon size={18} />
+              </Anchor>
+            ))}
+          </Group>
         </Stack>
       </Drawer>
 

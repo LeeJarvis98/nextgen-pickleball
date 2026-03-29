@@ -6,9 +6,9 @@ import { Globe, Share2, Mail } from 'lucide-react';
 import styles from './Footer.module.css';
 
 const footerLinks = [
-  { label: 'PRIVACY POLICY', href: '#' },
-  { label: 'TERMS OF SERVICE', href: '#' },
-  { label: 'CONTACT', href: '#' },
+  { label: 'THÔNG TIN CHUYỂN KHOẢN', href: '/payment-info' },
+  { label: 'ĐIỀU KHOẢN', href: '#' },
+  { label: 'LIÊN HỆ', href: '#' },
 ];
 
 const socialIcons = [
@@ -31,7 +31,7 @@ export default function Footer() {
             </p>
           </Stack>
 
-          <Group gap="xl" wrap="wrap">
+          <Group gap="xl" wrap="wrap" visibleFrom="md">
             {footerLinks.map((link) => (
               <Anchor key={link.label} href={link.href} className={styles.footerLink}>
                 {link.label}
@@ -41,7 +41,7 @@ export default function Footer() {
 
           <Group gap="md" align="center">
             {socialIcons.map(({ icon: Icon, href, label }) => (
-              <Anchor key={label} href={href} aria-label={label} className={styles.socialIcon}>
+              <Anchor key={label} href={href} aria-label={label} className={styles.socialIcon} visibleFrom="md">
                 <Icon size={20} />
               </Anchor>
             ))}

@@ -47,11 +47,11 @@ function getCategoryFeeNumbers(categoryFees: Partial<Record<string, string>>): s
 }
 
 const CATEGORY_LABELS: Record<string, string> = {
-  singles_male:   'Đơn Nam',
+  singles_male: 'Đơn Nam',
   singles_female: 'Đơn Nữ',
-  doubles_male:   'Đôi Nam',
+  doubles_male: 'Đôi Nam',
   doubles_female: 'Đôi Nữ',
-  doubles_mixed:  'Đôi Hỗn Hợp',
+  doubles_mixed: 'Đôi Hỗn Hợp',
 };
 
 function getSlotSummary(reg: Tournament['registration']): {
@@ -186,8 +186,8 @@ function TournamentSlide({ tournament, onSelectTournament }: TournamentSlideProp
                     <span className={styles.compactFeeNumber}>
                       {tournament.registration.entryFeeMode === 'flat'
                         ? (tournament.registration.entryFee
-                            ? formatNumber(parseFeeVND(tournament.registration.entryFee))
-                            : '—')
+                          ? formatNumber(parseFeeVND(tournament.registration.entryFee))
+                          : '—')
                         : getCategoryFeeNumbers(tournament.registration.categoryFees ?? {})}
                     </span>
                     <span className={styles.compactFeeCurrency}>VNĐ</span>
@@ -240,179 +240,179 @@ function TournamentSlide({ tournament, onSelectTournament }: TournamentSlideProp
         {/* ── Desktop: original two-column layout ── */}
         <Box visibleFrom="md">
           <Grid gutter="xl">
-          <GridCol span={{ base: 12, md: 6 }}>
-            <Paper className={`ghost-border tournament-time-card ${styles.timeCard}`}>
-              <Group justify="space-between" align="flex-start" mb={40}>
-                <Group gap="md" align="center">
-                  <Box className={styles.calendarIconBox}>
-                    <CalendarDays size={28} color="#B8FF00" />
-                  </Box>
-                  <h4 className={styles.timeCardTitle}>Thời Gian Thi Đấu</h4>
-                </Group>
-                <Badge
-                  variant="outline"
-                  className={styles.statusBadge}
-                  style={{
-                    borderColor: STATUS_COLORS[tournament.status].border,
-                    color: STATUS_COLORS[tournament.status].color,
-                    backgroundColor: STATUS_COLORS[tournament.status].bg,
-                  }}
-                >
-                  {STATUS_LABELS[tournament.status]}
-                </Badge>
-              </Group>
-              <Stack gap={0}>
-                <Group justify="space-between" py="sm" className={styles.infoRow}>
-                  <Group gap="xs" align="center">
-                    <span className={styles.infoRowLabel}>Ngày thi đấu</span>
-                    {tournament.schedule.scheduleStatus && (
-                      <span className={styles.scheduleStatusBadge}>{tournament.schedule.scheduleStatus}</span>
-                    )}
+            <GridCol span={{ base: 12, md: 6 }}>
+              <Paper className={`ghost-border tournament-time-card ${styles.timeCard}`}>
+                <Group justify="space-between" align="center" mb={40}>
+                  <Group gap="md" align="center">
+                    <Box className={styles.calendarIconBox}>
+                      <CalendarDays size={28} color="#B8FF00" />
+                    </Box>
+                    <h4 className={styles.timeCardTitle}>Thời Gian Thi Đấu</h4>
                   </Group>
-                  <span className={styles.infoRowValue}>{tournament.schedule.displayDate}</span>
-                </Group>
-                <InfoRow label="Check-in" value={tournament.schedule.checkInTime} />
-                <InfoRow label="Khai mạc" value={tournament.schedule.openingTime} />
-                <Group justify="space-between" py="sm" className={styles.infoRow}>
-                  <span className={styles.infoRowLabel}>Kết thúc</span>
-                  <span className={styles.infoRowValue}>{tournament.schedule.closingTime}</span>
-                </Group>
-                {tournament.registration.rulesUrl && (
-                  <a
-                    href={tournament.registration.rulesUrl}
-                    target="_blank"
-                    rel="noopener noreferrer"
-                    className={styles.rulesLink}
+                  <Badge
+                    variant="outline"
+                    className={styles.statusBadge}
+                    style={{
+                      borderColor: STATUS_COLORS[tournament.status].border,
+                      color: STATUS_COLORS[tournament.status].color,
+                      backgroundColor: STATUS_COLORS[tournament.status].bg,
+                    }}
                   >
-                    Điều lệ giải
-                  </a>
-                )}
-                {(() => {
-                  const slot = getSlotSummary(tournament.registration);
-                  if (!slot) return null;
-                  const catEntries = Object.entries(tournament.registration.categorySlots);
-                  return (
-                    <Box className={styles.slotStatusBox}>
-                      <Group justify="space-between" align="center" mb={6}>
-                        <span className={styles.slotStatusLabel}>Slots còn lại</span>
-                        <span className={slot.isFull ? styles.slotFull : slot.isLow ? styles.slotLow : styles.slotOpen}>
-                          {slot.isFull ? 'Hết chỗ' : `${slot.remaining} / ${slot.totalCap}`}
-                        </span>
-                      </Group>
-                      <Box className={styles.slotBar}>
-                        <Box
-                          className={slot.isFull ? styles.slotBarFillFull : styles.slotBarFill}
-                          style={{ width: `${slot.pct}%` }}
-                        />
-                      </Box>
-                      {catEntries.length > 1 && (
-                        <Stack gap={4} mt={10}>
-                          {catEntries.map(([cat, s]) => {
-                            if (!s) return null;
-                            const avail = s.capacity - s.used;
-                            const catFull = avail <= 0;
-                            const catLow = avail > 0 && avail <= 5;
-                            return (
-                              <Group key={cat} justify="space-between">
-                                <span className={styles.slotCatLabel}>{CATEGORY_LABELS[cat] ?? cat}</span>
-                                <span className={catFull ? styles.slotFull : catLow ? styles.slotLow : styles.slotOpen}>
-                                  {catFull ? 'Hết chỗ' : `${avail} / ${s.capacity}`}
-                                </span>
-                              </Group>
-                            );
-                          })}
-                        </Stack>
+                    {STATUS_LABELS[tournament.status]}
+                  </Badge>
+                </Group>
+                <Stack gap={0}>
+                  <Group justify="space-between" py="sm" className={styles.infoRow}>
+                    <Group gap="xs" align="center">
+                      <span className={styles.infoRowLabel}>Ngày thi đấu</span>
+                      {tournament.schedule.scheduleStatus && (
+                        <span className={styles.scheduleStatusBadge}>{tournament.schedule.scheduleStatus}</span>
                       )}
-                    </Box>
-                  );
-                })()}
-                <Box className={styles.entryFeeBox}>
-                  <div className={styles.entryFeeHeader}>
-                    <span className={styles.entryFeeLabel}>Phí Tham Gia</span>
-                    {tournament.registration.entryFeeMode !== 'flat' && (
-                      <span className={styles.entryFeeRangeHint}>tuỳ nội dung thi đấu</span>
-                    )}
-                  </div>
-                  {tournament.registration.entryFeeMode === 'flat' ? (
-                    <span className={styles.entryFeeValue}>
-                      {tournament.registration.entryFee
-                        ? formatVND(parseFeeVND(tournament.registration.entryFee))
-                        : '—'}
-                    </span>
-                  ) : (
-                    <span className={styles.entryFeeValue}>
-                      {getCategoryFeeRange(tournament.registration.categoryFees ?? {})}
-                    </span>
+                    </Group>
+                    <span className={styles.infoRowValue}>{tournament.schedule.displayDate}</span>
+                  </Group>
+                  <InfoRow label="Check-in" value={tournament.schedule.checkInTime} />
+                  <InfoRow label="Khai mạc" value={tournament.schedule.openingTime} />
+                  <Group justify="space-between" py="sm" className={styles.infoRow}>
+                    <span className={styles.infoRowLabel}>Kết thúc</span>
+                    <span className={styles.infoRowValue}>{tournament.schedule.closingTime}</span>
+                  </Group>
+                  {tournament.registration.rulesUrl && (
+                    <a
+                      href={tournament.registration.rulesUrl}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      className={styles.rulesLink}
+                    >
+                      Điều lệ giải
+                    </a>
                   )}
-                </Box>
-              </Stack>
-            </Paper>
-          </GridCol>
-
-          <GridCol span={{ base: 12, md: 6 }}>
-            <Box className={`ghost-border ${styles.venueCard}`}>
-              <img
-                src={tournament.venue.imageUrl}
-                alt={tournament.venue.name}
-                className={styles.venueImage}
-              />
-              <Box className={styles.venueGradient} />
-              <Box className={styles.venueContent}>
-                <Group gap="md" mb={24}> 
-                  <Box className={styles.venueIconBox}>
-                    <MapPin size={28} color="#B8FF00" />
-                  </Box>
-                  <span className={styles.venueLabel}>Địa Điểm Tổ Chức</span>
-                  <button
-                    className={styles.selectBtn}
-                    onClick={onSelectTournament}
-                    disabled={getSlotSummary(tournament.registration)?.isFull ?? false}
-                  >
-                    {getSlotSummary(tournament.registration)?.isFull ? 'Hết chỗ' : 'Chọn giải đấu'}
-                  </button>
-                </Group>
-                {tournament.venue.logoUrl && (
-                  <Box className={styles.venueLogoWrapper}>
-                    <img
-                      src={tournament.venue.logoUrl}
-                      alt="Tournament logo"
-                      className={styles.venueLogo}
-                    />
-                  </Box>
-                )}
-                <h4 className={`neon-glow ${styles.venueName}`}>{tournament.venue.name}</h4>
-                <Grid gutter="sm">
-                  <GridCol span={6}>
-                    <Box className={styles.venueStatBox}>
-                      <p className={styles.venueStatLabel}>Quy mô</p>
-                      <span className={styles.venueStatValue}>
-                        {tournament.venue.courts} Sân thi đấu
+                  {(() => {
+                    const slot = getSlotSummary(tournament.registration);
+                    if (!slot) return null;
+                    const catEntries = Object.entries(tournament.registration.categorySlots);
+                    return (
+                      <Box className={styles.slotStatusBox}>
+                        <Group justify="space-between" align="center" mb={6}>
+                          <span className={styles.slotStatusLabel}>Slots còn lại</span>
+                          <span className={slot.isFull ? styles.slotFull : slot.isLow ? styles.slotLow : styles.slotOpen}>
+                            {slot.isFull ? 'Hết chỗ' : `${slot.remaining} / ${slot.totalCap}`}
+                          </span>
+                        </Group>
+                        <Box className={styles.slotBar}>
+                          <Box
+                            className={slot.isFull ? styles.slotBarFillFull : styles.slotBarFill}
+                            style={{ width: `${slot.pct}%` }}
+                          />
+                        </Box>
+                        {catEntries.length > 1 && (
+                          <Stack gap={4} mt={10}>
+                            {catEntries.map(([cat, s]) => {
+                              if (!s) return null;
+                              const avail = s.capacity - s.used;
+                              const catFull = avail <= 0;
+                              const catLow = avail > 0 && avail <= 5;
+                              return (
+                                <Group key={cat} justify="space-between">
+                                  <span className={styles.slotCatLabel}>{CATEGORY_LABELS[cat] ?? cat}</span>
+                                  <span className={catFull ? styles.slotFull : catLow ? styles.slotLow : styles.slotOpen}>
+                                    {catFull ? 'Hết chỗ' : `${avail} / ${s.capacity}`}
+                                  </span>
+                                </Group>
+                              );
+                            })}
+                          </Stack>
+                        )}
+                      </Box>
+                    );
+                  })()}
+                  <Box className={styles.entryFeeBox}>
+                    <div className={styles.entryFeeHeader}>
+                      <span className={styles.entryFeeLabel}>Phí Tham Gia</span>
+                      {tournament.registration.entryFeeMode !== 'flat' && (
+                        <span className={styles.entryFeeRangeHint}>tuỳ nội dung thi đấu</span>
+                      )}
+                    </div>
+                    {tournament.registration.entryFeeMode === 'flat' ? (
+                      <span className={styles.entryFeeValue}>
+                        {tournament.registration.entryFee
+                          ? formatVND(parseFeeVND(tournament.registration.entryFee))
+                          : '—'}
                       </span>
-                    </Box>
-                  </GridCol>
-                  <GridCol span={6}>
-                    <Box className={styles.venueStatBox}>
-                      <p className={styles.venueStatLabel}>Loại sân</p>
-                      <span className={styles.venueStatValue}>{tournament.venue.courtType}</span>
-                    </Box>
-                  </GridCol>
-                </Grid>
-                <Group gap="xs" mt={16}>
-                  <MapPin size={14} color="#ADAAAA" />
-                  <span className={styles.venueLocation}>
-                    {tournament.venue.locationUrl ? (
-                      <a href={tournament.venue.locationUrl} target="_blank" rel="noopener noreferrer" className={styles.venueLocationLink}>
-                        {tournament.venue.city}, {tournament.venue.country}
-                      </a>
                     ) : (
-                      <>{tournament.venue.city}, {tournament.venue.country}</>
+                      <span className={styles.entryFeeValue}>
+                        {getCategoryFeeRange(tournament.registration.categoryFees ?? {})}
+                      </span>
                     )}
-                  </span>
-                </Group>
+                  </Box>
+                </Stack>
+              </Paper>
+            </GridCol>
+
+            <GridCol span={{ base: 12, md: 6 }}>
+              <Box className={`ghost-border ${styles.venueCard}`}>
+                <img
+                  src={tournament.venue.imageUrl}
+                  alt={tournament.venue.name}
+                  className={styles.venueImage}
+                />
+                <Box className={styles.venueGradient} />
+                <Box className={styles.venueContent}>
+                  <Group gap="md" mb={24}>
+                    <Box className={styles.venueIconBox}>
+                      <MapPin size={28} color="#B8FF00" />
+                    </Box>
+                    <span className={styles.venueLabel}>Địa Điểm Tổ Chức</span>
+                    <button
+                      className={styles.selectBtn}
+                      onClick={onSelectTournament}
+                      disabled={getSlotSummary(tournament.registration)?.isFull ?? false}
+                    >
+                      {getSlotSummary(tournament.registration)?.isFull ? 'Hết chỗ' : 'Chọn giải đấu'}
+                    </button>
+                  </Group>
+                  {tournament.venue.logoUrl && (
+                    <Box className={styles.venueLogoWrapper}>
+                      <img
+                        src={tournament.venue.logoUrl}
+                        alt="Tournament logo"
+                        className={styles.venueLogo}
+                      />
+                    </Box>
+                  )}
+                  <h4 className={`neon-glow ${styles.venueName}`}>{tournament.venue.name}</h4>
+                  <Grid gutter="sm">
+                    <GridCol span={6}>
+                      <Box className={styles.venueStatBox}>
+                        <p className={styles.venueStatLabel}>Quy mô</p>
+                        <span className={styles.venueStatValue}>
+                          {tournament.venue.courts} Sân thi đấu
+                        </span>
+                      </Box>
+                    </GridCol>
+                    <GridCol span={6}>
+                      <Box className={styles.venueStatBox}>
+                        <p className={styles.venueStatLabel}>Loại sân</p>
+                        <span className={styles.venueStatValue}>{tournament.venue.courtType}</span>
+                      </Box>
+                    </GridCol>
+                  </Grid>
+                  <Group gap="xs" mt={16}>
+                    <MapPin size={14} color="#ADAAAA" />
+                    <span className={styles.venueLocation}>
+                      {tournament.venue.locationUrl ? (
+                        <a href={tournament.venue.locationUrl} target="_blank" rel="noopener noreferrer" className={styles.venueLocationLink}>
+                          {tournament.venue.city}, {tournament.venue.country}
+                        </a>
+                      ) : (
+                        <>{tournament.venue.city}, {tournament.venue.country}</>
+                      )}
+                    </span>
+                  </Group>
+                </Box>
               </Box>
-            </Box>
-          </GridCol>
-        </Grid>
+            </GridCol>
+          </Grid>
         </Box>
       </Box>
     </Carousel.Slide>
