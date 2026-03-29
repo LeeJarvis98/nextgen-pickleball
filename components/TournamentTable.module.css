@@ -264,6 +264,18 @@
   color: #adaaaa;
 }
 
+.detailVenueLocationLink {
+  font-size: 0.8rem;
+  color: #adaaaa;
+  text-decoration: underline;
+  text-underline-offset: 3px;
+  transition: color 0.15s;
+}
+
+.detailVenueLocationLink:hover {
+  color: #b8ff00;
+}
+
 /* Body below the venue image */
 .detailBody {
   padding: 1.75rem 2rem 2rem;

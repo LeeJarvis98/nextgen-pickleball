@@ -192,6 +192,17 @@
   color: #adaaaa;
 }
 
+.venueLocationLink {
+  color: #adaaaa;
+  text-decoration: underline;
+  text-underline-offset: 3px;
+  transition: color 0.15s;
+}
+
+.venueLocationLink:hover {
+  color: #b8ff00;
+}
+
 .timeCard {
   border-radius: 12px;
   padding: 2.5rem;

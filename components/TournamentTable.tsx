@@ -120,7 +120,13 @@ function TournamentDetailCard({ tournament: t, onClose, onSelectTournament }: To
           </Grid>
           <Group gap="xs">
             <MapPin size={13} color="#ADAAAA" />
-            <span className={styles.detailVenueLocation}>{t.venue.city}, {t.venue.country}</span>
+            {t.venue.locationUrl ? (
+              <a href={t.venue.locationUrl} target="_blank" rel="noopener noreferrer" className={styles.detailVenueLocationLink}>
+                {t.venue.city}, {t.venue.country}
+              </a>
+            ) : (
+              <span className={styles.detailVenueLocation}>{t.venue.city}, {t.venue.country}</span>
+            )}
           </Group>
         </Box>
       </Box>

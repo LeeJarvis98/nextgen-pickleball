@@ -142,7 +142,14 @@ function TournamentSlide({ tournament, onSelectTournament }: TournamentSlideProp
 
             <Group gap="xs" mb={14}>
               <span className={styles.venueLocation}>
-                <MapPin size={12} color="#ADAAAA" /> {tournament.venue.city}, {tournament.venue.country}
+                <MapPin size={12} color="#ADAAAA" />{' '}
+                {tournament.venue.locationUrl ? (
+                  <a href={tournament.venue.locationUrl} target="_blank" rel="noopener noreferrer" className={styles.venueLocationLink}>
+                    {tournament.venue.city}, {tournament.venue.country}
+                  </a>
+                ) : (
+                  <>{tournament.venue.city}, {tournament.venue.country}</>
+                )}
               </span>
             </Group>
 
@@ -393,7 +400,13 @@ function TournamentSlide({ tournament, onSelectTournament }: TournamentSlideProp
                 <Group gap="xs" mt={16}>
                   <MapPin size={14} color="#ADAAAA" />
                   <span className={styles.venueLocation}>
-                    {tournament.venue.city}, {tournament.venue.country}
+                    {tournament.venue.locationUrl ? (
+                      <a href={tournament.venue.locationUrl} target="_blank" rel="noopener noreferrer" className={styles.venueLocationLink}>
+                        {tournament.venue.city}, {tournament.venue.country}
+                      </a>
+                    ) : (
+                      <>{tournament.venue.city}, {tournament.venue.country}</>
+                    )}
                   </span>
                 </Group>
               </Box>

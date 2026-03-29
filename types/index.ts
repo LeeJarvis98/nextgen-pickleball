@@ -18,6 +18,7 @@ export interface TournamentVenue {
   courtType: string;
   city: string;
   country: string;
+  locationUrl?: string;
 }
 
 export interface TournamentPrizeEntry {

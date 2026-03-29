@@ -98,7 +98,7 @@ const DATE_FIELDS = new Set<string>();
 // Date-only field keys (no time component)
 const DATE_ONLY_FIELDS = new Set(['start_date', 'end_date']);
 // URL-type field keys
-const URL_FIELDS = new Set(['registration_link', 'image_url']);
+const URL_FIELDS = new Set(['registration_link', 'image_url', 'location_url']);
 // Time-type field keys
 const TIME_FIELDS = new Set(['check_in_time', 'opening_time', 'closing_time']);
 // Logo field keys

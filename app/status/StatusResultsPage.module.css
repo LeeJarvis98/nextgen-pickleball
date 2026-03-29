@@ -523,6 +523,23 @@
   max-width: 60%;
 }
 
+.infoValueAddressLink {
+  font-family: var(--font-space-grotesk);
+  font-size: 0.78rem;
+  font-weight: 600;
+  color: #e0e0e0;
+  text-align: right;
+  word-break: break-word;
+  max-width: 60%;
+  text-decoration: underline;
+  text-underline-offset: 3px;
+  transition: color 0.15s;
+}
+
+.infoValueAddressLink:hover {
+  color: #b8ff00;
+}
+
 .prizeValue {
   color: #b8ff00 !important;
 }

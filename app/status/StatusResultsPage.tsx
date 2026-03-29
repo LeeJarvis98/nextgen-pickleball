@@ -17,6 +17,7 @@ interface TournamentVenueMeta {
   country: string;
   courts: number;
   court_type: string;
+  location_url: string | null;
 }
 
 interface TournamentScheduleMeta {
@@ -845,7 +846,13 @@ export default function StatusResultsPage() {
                               </Group>
                               <Group justify="space-between" align="flex-start" className={styles.infoRow}>
                                 <span className={styles.infoLabel}>Địa chỉ</span>
-                                <span className={styles.infoValueAddress}>{venue.city}, {venue.country}</span>
+                                {venue.location_url ? (
+                                  <a href={venue.location_url} target="_blank" rel="noopener noreferrer" className={styles.infoValueAddressLink}>
+                                    {venue.city}, {venue.country}
+                                  </a>
+                                ) : (
+                                  <span className={styles.infoValueAddress}>{venue.city}, {venue.country}</span>
+                                )}
                               </Group>
                               <Group justify="space-between" className={styles.infoRow}>
                                 <span className={styles.infoLabel}>Quy mô</span>
