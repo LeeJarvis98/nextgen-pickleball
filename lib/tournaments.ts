@@ -13,7 +13,7 @@ export async function getTournaments(): Promise<Tournament[]> {
         tournament_venues ( name, image_url, logo_url, courts, court_type, city, country ),
         tournament_prizes ( total_prize ),
         tournament_prize_entries ( rank, title, amount, bonus ),
-        tournament_registration_info ( deadline, deadline_date_time, total_slots, registration_link, cta_title, cta_description, features, available_categories, doubles_partner_mode, category_slots, category_fees, entry_fee_mode, entry_fee, group_url )
+        tournament_registration_info ( deadline, deadline_date_time, total_slots, registration_link, cta_title, cta_description, features, available_categories, doubles_partner_mode, category_slots, category_fees, entry_fee_mode, entry_fee, group_url, rules_url )
       `)
       .order('sort_order'),
     // Count registrations per tournament+category (confirmed only)
@@ -97,6 +97,7 @@ export async function getTournaments(): Promise<Tournament[]> {
         entryFee: (regInfo.entry_fee as string | null) ?? undefined,
         categoryFees: (regInfo.category_fees as Partial<Record<RegistrationCategory, string>> | null) ?? undefined,
         groupUrl: (regInfo.group_url as string | null) ?? undefined,
+        rulesUrl: (regInfo.rules_url as string | null) ?? undefined,
       },
     } satisfies Tournament;
   });

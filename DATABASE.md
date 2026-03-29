@@ -153,6 +153,7 @@ Player sign-ups. Extended with `tournament_id`, `gender`, and expanded `category
 | `notes`         | text                     | YES      | `NULL`               |                                                     |
 | `status`        | text                     | NO       | `pending`            | Enum: `pending` \| `confirmed` \| `cancelled`       |
 | `tournament_id` | text                     | YES      | `NULL`               | FK → `tournaments.id` (SET NULL on tournament delete) |
+| `cancelled_at_stage` | text                | YES      | `NULL`               | Set when a **confirmed** registration is cancelled. Indicates the refund tier at the time of cancellation: `A` (100%), `B` (70%), `C` (40%), `D` (0%). `NULL` for pending cancellations or registrations cancelled before this feature. |
 
 #### Category values
 

@@ -382,6 +382,76 @@
   border-color: rgba(72, 72, 71, 0.4) !important;
 }
 
+/* ── Terms checkbox row ───────────────────────────────────── */
+
+.termsRow {
+  display: flex;
+  align-items: flex-start;
+  gap: 10px;
+  cursor: pointer;
+  padding: 10px 14px;
+  border-radius: 8px;
+  border: 1.5px solid rgba(255, 255, 255, 0.08);
+  background: rgba(255, 255, 255, 0.02);
+  transition: border-color 0.15s, background 0.15s;
+  -webkit-user-select: none;
+  user-select: none;
+}
+
+.termsRow:hover {
+  border-color: rgba(184, 255, 0, 0.3);
+  background: rgba(184, 255, 0, 0.04);
+}
+
+.termsRowError {
+  border-color: rgba(250, 82, 82, 0.5) !important;
+  background: rgba(250, 82, 82, 0.04) !important;
+}
+
+.termsCheckOff {
+  width: 16px;
+  height: 16px;
+  border-radius: 3px;
+  border: 1.5px solid rgba(255, 255, 255, 0.25);
+  flex-shrink: 0;
+  margin-top: 1px;
+}
+
+.termsCheckOn {
+  width: 16px;
+  height: 16px;
+  border-radius: 3px;
+  background: #b8ff00;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+  margin-top: 1px;
+}
+
+.termsLabel {
+  font-family: var(--font-space-grotesk);
+  font-size: 0.8rem;
+  color: #adaaaa;
+  line-height: 1.5;
+}
+
+.termsLink {
+  color: #b8ff00;
+  text-decoration: underline;
+  text-underline-offset: 2px;
+  transition: opacity 0.15s;
+}
+
+.termsLink:hover {
+  opacity: 0.8;
+}
+
+.termsLinkDisabled {
+  color: #adaaaa;
+  text-decoration: none;
+}
+
 /* ── Mobile overrides ─────────────────────────────────────── */
 
 @media (max-width: 600px) {

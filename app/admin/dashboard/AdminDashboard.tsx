@@ -43,6 +43,7 @@ interface RegistrationRow {
   status: string;
   tournament_id: string | null;
   notes: string | null;
+  cancelled_at_stage: string | null;
 }
 
 interface PrizeEntry {
@@ -463,7 +464,7 @@ export default function AdminDashboard() {
 
   // Payment settings state
   const [paymentSettings, setPaymentSettings] = useState({
-    bank_name: '', bank_account: '', account_holder: '', qr_url: '',
+    bank_name: '', bank_account: '', account_holder: '', qr_url: '', terms_url: '',
   });
   const [settingsDirty, setSettingsDirty] = useState(false);
   const [settingsSaving, setSettingsSaving] = useState(false);
@@ -514,6 +515,7 @@ export default function AdminDashboard() {
         bank_account: data.bank_account ?? '',
         account_holder: data.account_holder ?? '',
         qr_url: data.qr_url ?? '',
+        terms_url: data.terms_url ?? '',
       });
       setSettingsDirty(false);
     } catch {
@@ -1026,6 +1028,16 @@ export default function AdminDashboard() {
                     render: (row) => <StatusBadge value={row.status} />,
                   },
                   {
+                    accessor: 'cancelled_at_stage',
+                    title: 'Refund Stage',
+                    width: 110,
+                    render: (row) => row.cancelled_at_stage ? (
+                      <Badge size="xs" variant="outline" color="orange">
+                        Stage {row.cancelled_at_stage}
+                      </Badge>
+                    ) : null,
+                  },
+                  {
                     accessor: 'actions',
                     title: '',
                     width: 80,
@@ -1089,6 +1101,16 @@ export default function AdminDashboard() {
                     />
                   </Box>
                 )}
+                <Divider label={<span className={styles.dividerLabel}>Global Links</span>} labelPosition="left" my={4} />
+                <TextInput
+                  label="Terms & Policy URL"
+                  description="Global URL for &lsquo;Điều khoản - Chính sách NextGen&rsquo; — shown in the registration modal for all tournaments"
+                  type="url"
+                  placeholder="https://"
+                  value={paymentSettings.terms_url}
+                  onChange={(e) => { const v = e.currentTarget.value; setPaymentSettings((p) => ({ ...p, terms_url: v })); setSettingsDirty(true); }}
+                  classNames={{ label: styles.inputLabel }}
+                />
                 <Group>
                   <Button
                     leftSection={<Save size={15} />}
@@ -1403,6 +1425,15 @@ export default function AdminDashboard() {
                           placeholder="https://zalo.me/g/..."
                           value={String(regInfo.group_url ?? '')}
                           onChange={(e) => setSubField('tournament_registration_info', 'group_url', e.currentTarget.value, 'registration')}
+                          classNames={{ label: styles.inputLabel }}
+                        />
+                        <TextInput
+                          label="Rules URL"
+                          description="Link to the tournament rules document — shown as &lsquo;Điều lệ giải&rsquo; in the registration modal terms checkbox"
+                          type="url"
+                          placeholder="https://"
+                          value={String(regInfo.rules_url ?? '')}
+                          onChange={(e) => setSubField('tournament_registration_info', 'rules_url', e.currentTarget.value, 'registration')}
                           classNames={{ label: styles.inputLabel }}
                         />
                         <MultiSelect

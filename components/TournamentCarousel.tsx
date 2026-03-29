@@ -159,6 +159,16 @@ function TournamentSlide({ tournament, onSelectTournament }: TournamentSlideProp
               <InfoRow label="Check-in" value={tournament.schedule.checkInTime} />
               <InfoRow label="Khai mạc" value={tournament.schedule.openingTime} />
               <InfoRow label="Kết thúc" value={tournament.schedule.closingTime} />
+              {tournament.registration.rulesUrl && (
+                <a
+                  href={tournament.registration.rulesUrl}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className={styles.rulesLink}
+                >
+                  Điều lệ giải
+                </a>
+              )}
             </Stack>
 
             <Grid gutter="sm" mb={14} className={styles.compactStatsGrid}>
@@ -260,6 +270,16 @@ function TournamentSlide({ tournament, onSelectTournament }: TournamentSlideProp
                   <span className={styles.infoRowLabel}>Kết thúc</span>
                   <span className={styles.infoRowValue}>{tournament.schedule.closingTime}</span>
                 </Group>
+                {tournament.registration.rulesUrl && (
+                  <a
+                    href={tournament.registration.rulesUrl}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className={styles.rulesLink}
+                  >
+                    Điều lệ giải
+                  </a>
+                )}
                 {(() => {
                   const slot = getSlotSummary(tournament.registration);
                   if (!slot) return null;

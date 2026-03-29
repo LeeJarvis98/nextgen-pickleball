@@ -74,6 +74,8 @@ interface RegisterModalProps {
   entryFee?: string;
   categoryFees?: Partial<Record<RegistrationCategory, string>>;
   groupUrl?: string;
+  rulesUrl?: string;
+  termsUrl?: string;
 }
 
 export default function RegisterModal({
@@ -88,9 +90,13 @@ export default function RegisterModal({
   entryFee,
   categoryFees,
   groupUrl,
+  rulesUrl,
+  termsUrl,
 }: RegisterModalProps) {
   const router = useRouter();
   const [loading, setLoading] = useState(false);
+  const [termsAccepted, setTermsAccepted] = useState(false);
+  const [termsError, setTermsError] = useState(false);
 
   const form = useForm<RegistrationFormValues>({
     initialValues: {
@@ -290,6 +296,10 @@ export default function RegisterModal({
 
   // ── Form submit ───────────────────────────────────────────
   const handleSubmit = async (values: RegistrationFormValues) => {
+    if (!termsAccepted) {
+      setTermsError(true);
+      return;
+    }
     setLoading(true);
     try {
       const res = await fetch('/api/register', {
@@ -330,6 +340,8 @@ export default function RegisterModal({
 
   const handleClose = () => {
     form.reset();
+    setTermsAccepted(false);
+    setTermsError(false);
     onClose();
   };
 
@@ -487,6 +499,56 @@ export default function RegisterModal({
             />
 
             <Divider className={styles.divider} mt="xs" />
+
+            {/* ── Terms checkbox ── */}
+            <Box
+              className={`${styles.termsRow} ${termsError ? styles.termsRowError : ''}`}
+              onClick={() => {
+                const next = !termsAccepted;
+                setTermsAccepted(next);
+                if (next) setTermsError(false);
+              }}
+            >
+              <Box className={termsAccepted ? styles.termsCheckOn : styles.termsCheckOff}>
+                {termsAccepted && <Check size={10} strokeWidth={3} color="#1a1919" />}
+              </Box>
+              <span className={styles.termsLabel}>
+                Tôi đã đọc và đồng ý với{' '}
+                {rulesUrl ? (
+                  <a
+                    href={rulesUrl}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className={styles.termsLink}
+                    onClick={(e) => e.stopPropagation()}
+                  >
+                    Điều lệ giải
+                  </a>
+                ) : (
+                  <span className={styles.termsLinkDisabled}>Điều lệ giải</span>
+                )}
+                {' '}và{' '}
+                {termsUrl ? (
+                  <a
+                    href={termsUrl}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className={styles.termsLink}
+                    onClick={(e) => e.stopPropagation()}
+                  >
+                    Điều khoản - Chính sách NextGen
+                  </a>
+                ) : (
+                  <span className={styles.termsLinkDisabled}>Điều khoản - Chính sách NextGen</span>
+                )}
+                <span className={styles.requiredStar}> *</span>
+              </span>
+            </Box>
+            {termsError && (
+              <Box className={styles.categoryError}>
+                Vui lòng đồng ý với điều khoản trước khi đăng ký
+              </Box>
+            )}
 
             <Button
               type="submit"

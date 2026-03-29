@@ -1,4 +1,4 @@
-.page {
+﻿.page {
   min-height: 100vh;
   background-color: #0e0e0e;
 }
@@ -425,8 +425,8 @@
 }
 
 .tournamentInfoLogo {
-  width: 80px;
-  height: 56px;
+  width: 300px;
+  height: 150px;
   object-fit: contain;
   flex-shrink: 0;
 }
@@ -471,6 +471,23 @@
   font-weight: 800;
   letter-spacing: 0.12em;
   color: #ffffff;
+}
+
+.rulesLink {
+  display: inline-block;
+  margin-top: 12px;
+  font-family: var(--font-space-grotesk);
+  font-size: 0.8rem;
+  font-weight: 600;
+  color: #b8ff00;
+  text-decoration: underline;
+  text-underline-offset: 2px;
+  letter-spacing: 0.03em;
+  transition: opacity 0.15s;
+}
+
+.rulesLink:hover {
+  opacity: 0.75;
 }
 
 .infoRow {
@@ -580,4 +597,481 @@
 
 .accordionPanel {
   padding: 0 14px 10px !important;
+}
+
+/* ── Policy button ── */
+
+.policyButton {
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+  font-family: var(--font-space-grotesk);
+  font-size: 0.75rem;
+  font-weight: 600;
+  letter-spacing: 0.04em;
+  background: transparent;
+  border: 1px solid rgba(231, 231, 231, 0.25);
+  color: #c9c9c9;
+  border-radius: 6px;
+  padding: 4px 12px;
+  cursor: pointer;
+  transition: background 0.15s, border-color 0.15s;
+  height: 28px;
+}
+
+.policyButton:hover {
+  background: rgba(184, 255, 0, 0.08);
+  border-color: rgba(184, 255, 0, 0.5);
+}
+
+/* ─────────────────────────────────────────────
+   Modal shell
+───────────────────────────────────────────── */
+
+.modalOverlay {
+  position: fixed;
+  inset: 0;
+  z-index: 1000;
+  background: rgba(0, 0, 0, 0.78);
+  -webkit-backdrop-filter: blur(4px);
+  backdrop-filter: blur(4px);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 16px;
+  overflow-y: auto;
+}
+
+.modalContent {
+  background: #141414;
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  border-radius: 16px;
+  width: 100%;
+  max-width: 900px;
+  padding: 32px;
+  max-height: calc(100dvh - 32px);
+  overflow-y: auto;
+  box-shadow: 0 24px 80px rgba(0, 0, 0, 0.7);
+}
+
+.modalHeader {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 18px;
+}
+
+.modalTitle {
+  font-family: var(--font-epilogue);
+  font-size: 1rem;
+  font-weight: 900;
+  font-style: italic;
+  color: #ffffff;
+  letter-spacing: 0.08em;
+}
+
+.modalClose {
+  background: transparent;
+  border: none;
+  color: #5a5959;
+  cursor: pointer;
+  padding: 4px;
+  border-radius: 6px;
+  display: flex;
+  align-items: center;
+  transition: color 0.15s, background 0.15s;
+  flex-shrink: 0;
+}
+
+.modalClose:hover {
+  color: #ffffff;
+  background: rgba(255, 255, 255, 0.08);
+}
+
+/* Zone banner — dynamic colors via CSS custom props */
+.modalZoneBanner {
+  border-radius: 8px;
+  border: 1px solid color-mix(in srgb, var(--banner-color, #b8ff00) 22%, transparent);
+  background: color-mix(in srgb, var(--banner-color, #b8ff00) 6%, transparent);
+  padding: 12px 18px;
+  margin-bottom: 32px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 10px;
+  flex-wrap: wrap;
+}
+
+.bannerLabel {
+  color: var(--banner-color, #b8ff00) !important;
+  letter-spacing: 0.04em;
+  font-family: var(--font-space-grotesk) !important;
+  font-size: 0.875rem !important;
+  font-weight: 700 !important;
+}
+
+/* ─────────────────────────────────────────────
+   Shared node/dot styles  (used by both layouts)
+───────────────────────────────────────────── */
+
+/*
+  The dot's visual properties are driven by CSS custom props so
+  we avoid inline style attributes while keeping dynamic colours.
+*/
+.nodeDot {
+  width: 16px;
+  height: 16px;
+  border-radius: 50%;
+  border: 2px solid var(--dot-border, #3a3a3a);
+  background: var(--dot-bg, #1a1a1a);
+  box-shadow: var(--dot-shadow, none);
+  flex-shrink: 0;
+  transition: border-color 0.3s, background 0.3s, box-shadow 0.3s, width 0.2s, height 0.2s;
+}
+
+.nodeDotActive {
+  width: 22px;
+  height: 22px;
+}
+
+.nodeKey {
+  font-family: var(--font-epilogue);
+  font-size: 1.05rem;
+  font-weight: 900;
+  font-style: italic;
+  color: var(--node-color, #3a3a3a);
+  transition: color 0.3s;
+}
+
+.nodeLabel {
+  font-family: var(--font-space-grotesk);
+  font-size: 0.75rem;
+  font-weight: 600;
+  color: #adaaaa;
+  line-height: 1.3;
+}
+
+.nodeDate {
+  font-family: var(--font-space-grotesk);
+  font-size: 0.7rem;
+  color: #5a5959;
+}
+
+.nodeCountdown {
+  font-family: var(--font-space-grotesk);
+  font-size: 0.72rem;
+  font-weight: 700;
+  letter-spacing: 0.02em;
+  color: var(--countdown-color, #5a5959);
+  transition: color 0.3s;
+}
+
+/* ─────────────────────────────────────────────
+   VERTICAL timeline  (mobile — always visible)
+───────────────────────────────────────────── */
+
+.timelineVertical {
+  display: flex;
+  flex-direction: column;
+}
+
+.verticalItem {
+  display: flex;
+  gap: 10px;
+}
+
+/* Key letter column — left of dot */
+.verticalKeyCol {
+  flex-shrink: 0;
+  width: 20px;
+  display: flex;
+  justify-content: center;
+  padding-top: 1px;
+}
+
+/* Dot + connector column */
+.verticalLeft {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  flex-shrink: 0;
+  width: 22px;
+  padding-top: 1px;
+}
+
+/* Vertical progress bar — track + fill via ::before */
+.verticalConnector {
+  flex: 1;
+  width: 4px;
+  min-height: 24px;
+  margin-top: 4px;
+  border-radius: 2px;
+  position: relative;
+  background: rgba(255, 255, 255, 0.07);
+}
+
+.verticalConnector::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: var(--seg-progress, 0%);
+  background: var(--seg-color, #b8ff00);
+  border-radius: 2px;
+  transition: height 0.4s ease;
+}
+
+/* Right column: text content */
+.verticalRight {
+  flex: 1;
+  padding-bottom: 20px;
+}
+
+.verticalZoneLabel {
+  font-family: var(--font-space-grotesk);
+  font-size: 0.65rem;
+  font-weight: 700;
+  margin-top: 5px;
+  color: var(--zone-color, #5a5959);
+  opacity: var(--zone-opacity, 0.55);
+  transition: color 0.3s;
+}
+
+/* ─────────────────────────────────────────────
+   HORIZONTAL timeline  (desktop, >=600px)
+   Structure: [Node] [Seg] [Node] [Seg] ... [Node]
+   All columns in a single flex row.
+   The "dot row" stays perfectly aligned because
+   horizNodeAbove === horizSegTop === 28px.
+───────────────────────────────────────────── */
+
+/* Hidden on mobile */
+.horizTimeline {
+  display: none;
+}
+
+@media (min-width: 600px) {
+  /* Show horizontal, hide vertical */
+  .horizTimeline {
+    display: flex;
+    align-items: stretch;
+    width: 100%;
+  }
+
+  .timelineVertical {
+    display: none;
+  }
+
+  /* ── Node column ── */
+  .horizNode {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    flex-shrink: 0;
+    width: 96px;
+  }
+
+  /* Area above dot — key letter sits here, bottom-aligned */
+  .horizNodeAbove {
+    height: 32px;
+    display: flex;
+    align-items: flex-end;
+    justify-content: center;
+    padding-bottom: 5px;
+    flex-shrink: 0;
+  }
+
+  /* Area below dot — label / date / countdown */
+  .horizNodeBelow {
+    padding-top: 9px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    text-align: center;
+    gap: 3px;
+  }
+
+  /* ── Segment column (fills space between nodes) ── */
+  .horizSeg {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    min-width: 0;
+  }
+
+  /* Matches horizNodeAbove height — keeps dot row aligned */
+  .horizSegTop {
+    height: 32px;
+    flex-shrink: 0;
+  }
+
+  /* Matches nodeDot height — the bar is centered inside */
+  .horizSegMid {
+    height: 22px;
+    flex-shrink: 0;
+    display: flex;
+    align-items: center;
+  }
+
+  /* Mantine Progress replacing the old custom bar */
+  .horizSegProgress {
+    flex: 1;
+    min-width: 0;
+    background: rgba(255, 255, 255, 0.07);
+  }
+
+  /* Zone label below the bar */
+  .horizSegBottom {
+    padding-top: 9px;
+    display: flex;
+    justify-content: center;
+  }
+
+  .horizZoneLabel {
+    font-family: var(--font-space-grotesk);
+    font-size: 0.6rem;
+    font-weight: 700;
+    letter-spacing: 0.03em;
+    text-align: center;
+    white-space: nowrap;
+    color: var(--zone-color, #5a5959);
+    opacity: var(--zone-opacity, 0.5);
+    transition: color 0.3s, opacity 0.3s;
+  }
+
+  .horizZoneLabelActive {
+    opacity: 1;
+  }
+}
+
+/* ── Modal cancel section ── */
+
+.modalCancelSection {
+  margin-top: 20px;
+}
+
+.modalCancelDivider {
+  height: 1px;
+  background: rgba(255, 255, 255, 0.06);
+  margin-bottom: 16px;
+}
+
+/* ── Refund policy note ── */
+
+.policyNote {
+  margin-top: 20px;
+  background: rgba(255, 255, 255, 0.025);
+  border: 1px solid rgba(255, 255, 255, 0.07);
+  border-radius: 8px;
+  padding: 12px 14px;
+}
+
+.policyNoteList {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 7px;
+}
+
+.policyNoteItem {
+  display: flex;
+  align-items: baseline;
+  gap: 8px;
+}
+
+.policyNoteDot {
+  width: 9px;
+  height: 9px;
+  border-radius: 50%;
+  background: var(--rule-color, #5a5959);
+  flex-shrink: 0;
+  position: relative;
+  top: 1px;
+}
+
+.policyNoteText {
+  font-family: var(--font-space-grotesk);
+  font-size: 0.82rem;
+  color: #777;
+  line-height: 1.4;
+}
+
+.policyNoteRange {
+  font-family: var(--font-epilogue);
+  font-size: 0.8rem;
+  font-weight: 800;
+  font-style: italic;
+  color: #adaaaa;
+  margin-right: 5px;
+  letter-spacing: 0.02em;
+}
+
+.policyNoteRefund {
+  font-weight: 700;
+  color: var(--rule-color, #adaaaa);
+}
+
+/* ── Cancel Confirm Modal (standalone) ── */
+
+.cancelConfirmModalContent {
+  background: #141414;
+  border: 1px solid rgba(255, 107, 107, 0.2);
+  border-radius: 16px;
+  width: 100%;
+  max-width: 460px;
+  padding: 28px;
+  box-shadow: 0 24px 80px rgba(0, 0, 0, 0.7);
+}
+
+.cancelConfirmModalBody {
+  margin: 20px 0;
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+
+.cancelConfirmModalText {
+  font-family: var(--font-space-grotesk);
+  font-size: 0.9rem;
+  color: #adaaaa;
+  line-height: 1.65;
+  margin: 0;
+}
+
+.cancelConfirmModalText strong {
+  color: #ff6b6b;
+}
+
+.viewPolicyButton {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  font-family: var(--font-space-grotesk);
+  font-size: 0.8rem;
+  font-weight: 600;
+  background: transparent;
+  border: 1px solid rgba(184, 255, 0, 0.25);
+  color: #b8ff00;
+  border-radius: 6px;
+  padding: 6px 14px;
+  cursor: pointer;
+  transition: background 0.15s, border-color 0.15s;
+  width: fit-content;
+}
+
+.viewPolicyButton:hover {
+  background: rgba(184, 255, 0, 0.08);
+  border-color: rgba(184, 255, 0, 0.5);
+}
+
+.cancelConfirmModalActions {
+  display: flex;
+  align-items: center;
+  justify-content: flex-end;
+  gap: 8px;
+  padding-top: 16px;
+  border-top: 1px solid rgba(255, 255, 255, 0.06);
 }

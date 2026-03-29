@@ -42,7 +42,7 @@ function mergeSlotCounts(
   });
 }
 
-export default function TournamentContent({ tournaments: initialTournaments }: { tournaments: Tournament[] }) {
+export default function TournamentContent({ tournaments: initialTournaments, termsUrl }: { tournaments: Tournament[]; termsUrl: string }) {
   const [tournaments, setTournaments] = useState<Tournament[]>(initialTournaments);
   const [activeIndex, setActiveIndex] = useState(0);
   const [viewMode, setViewMode] = useState<ViewMode>('carousel');
@@ -138,7 +138,7 @@ export default function TournamentContent({ tournaments: initialTournaments }: {
       {showDetails && (
         <div ref={detailsRef}>
           <PrizesSection key={activeTournament.id} prizes={activeTournament.prizes} />
-          <RegistrationSection key={`reg-${activeTournament.id}`} tournamentId={activeTournament.id} tournament={{ name: activeTournament.name, venue: activeTournament.venue, schedule: { displayDate: activeTournament.schedule.displayDate } }} registration={activeTournament.registration} onBack={handleBack} />
+          <RegistrationSection key={`reg-${activeTournament.id}`} tournamentId={activeTournament.id} tournament={{ name: activeTournament.name, venue: activeTournament.venue, schedule: { displayDate: activeTournament.schedule.displayDate } }} registration={activeTournament.registration} termsUrl={termsUrl} onBack={handleBack} />
         </div>
       )}
     </>

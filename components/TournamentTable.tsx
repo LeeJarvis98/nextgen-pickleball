@@ -168,6 +168,16 @@ function TournamentDetailCard({ tournament: t, onClose, onSelectTournament }: To
                   <span className={styles.detailInfoLabel}>Kết thúc</span>
                   <span className={styles.detailInfoValue}>{t.schedule.closingTime}</span>
                 </Group>
+                {t.registration.rulesUrl && (
+                  <a
+                    href={t.registration.rulesUrl}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className={styles.rulesLink}
+                  >
+                    Điều lệ giải
+                  </a>
+                )}
               </Stack>
               <Box className={styles.detailFeeBox}>
                 <span className={styles.detailFeeLabel}>Phí Tham Gia</span>

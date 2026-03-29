@@ -16,9 +16,9 @@ async function lookupRegistrations(query: string) {
       tournaments(
         name, status,
         tournament_venues(logo_url, image_url, name, city, country, courts, court_type),
-        tournament_schedule(display_date, check_in_time, opening_time, closing_time, schedule_status),
+        tournament_schedule(display_date, start_date, end_date, check_in_time, opening_time, closing_time, schedule_status),
         tournament_prizes(total_prize),
-        tournament_registration_info(deadline, total_slots, entry_fee_mode, entry_fee, category_fees, category_slots)
+        tournament_registration_info(deadline, total_slots, entry_fee_mode, entry_fee, category_fees, category_slots, rules_url)
       )
     `)
     .eq(field, query)

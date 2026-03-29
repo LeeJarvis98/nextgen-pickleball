@@ -20,11 +20,13 @@ export default function RegistrationSection({
   tournamentId,
   tournament,
   registration,
+  termsUrl,
   onBack,
 }: {
   tournamentId: string;
   tournament: TournamentSummary;
   registration: TournamentRegistration;
+  termsUrl: string;
   onBack?: () => void;
 }) {
   const [opened, { open, close }] = useDisclosure(false);
@@ -132,6 +134,8 @@ export default function RegistrationSection({
         entryFee={registration.entryFee}
         categoryFees={registration.categoryFees}
         groupUrl={registration.groupUrl}
+        rulesUrl={registration.rulesUrl}
+        termsUrl={termsUrl}
       />
     </>
   );

@@ -2,7 +2,7 @@ import { NextRequest, NextResponse } from 'next/server';
 import { createServerSupabaseClient } from '@/lib/supabase-server';
 import { verifyAdminToken, COOKIE_NAME } from '@/lib/admin-auth';
 
-const ALLOWED_KEYS = new Set(['bank_name', 'bank_account', 'account_holder', 'qr_url']);
+const ALLOWED_KEYS = new Set(['bank_name', 'bank_account', 'account_holder', 'qr_url', 'terms_url']);
 
 export async function GET() {
   const supabase = createServerSupabaseClient();

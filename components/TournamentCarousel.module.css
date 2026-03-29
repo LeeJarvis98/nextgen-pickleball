@@ -418,6 +418,22 @@
   cursor: not-allowed;
 }
 
+.rulesLink {
+  display: inline-block;
+  margin-top: 10px;
+  font-size: 1rem;
+  font-weight: 600;
+  color: #b8ff00;
+  text-decoration: underline;
+  text-underline-offset: 2px;
+  letter-spacing: 0.03em;
+  transition: opacity 0.15s;
+}
+
+.rulesLink:hover {
+  opacity: 0.75;
+}
+
 .compactSelectBtn:disabled:hover {
   background: rgba(72, 72, 71, 0.4);
   border-color: rgba(72, 72, 71, 0.4);
